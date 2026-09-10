@@ -377,7 +377,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 42 TESTES PASSADOS (100% SUCESSO)
+                <span>✓</span> 53 TESTES PASSADOS (100% SUCESSO)
             </div>
         </header>
 
@@ -385,15 +385,15 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">42</div>
+                <div class="metric-value val-blue">53</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">42</div>
+                <div class="metric-value val-success">53</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
-                <div class="metric-value val-purple">6</div>
+                <div class="metric-value val-purple">9</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Taxa de Sucesso</div>
@@ -401,7 +401,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">2.65s</div>
+                <div class="metric-value val-blue">3.15s</div>
             </div>
         </div>
 
@@ -512,6 +512,65 @@
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test05</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step-by-Step Tree Release Showcase -->
+        <div class="section-title">🌳 Demonstração Visual: Releases da Árvore Binária Passo a Passo</div>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">
+            Validação passo a passo da progressão e iluminação visual na Árvore Binária de Morse. Cada passo desbloqueia estritamente os novos nós e ilumina os ramos correspondentes, mantendo os níveis superiores protegidos com cadeados:
+        </p>
+
+        <div class="gallery-grid">
+            <!-- Step 1: Nível 1 Raiz -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step01_tree_release_level1.jpg" alt="Passo 1 - Raiz Desbloqueada" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 1 • Nível 1</div>
+                        <div class="gallery-title">Raiz Desbloqueada (T e E) • Filhos Bloqueados</div>
+                        <div class="gallery-desc">
+                            Apenas a raiz <strong>T</strong> (—) à esquerda e <strong>E</strong> (•) à direita estão iluminadas a verde neon. Todos os nós descendentes (M, N sob T e A, I sob E) permanecem bloqueados com cadeados prateados.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 1</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Nível 2 Ramos do E -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step02_tree_release_level2.jpg" alt="Passo 2 - Ramos de E Desbloqueados" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 2 • Nível 2</div>
+                        <div class="gallery-title">Ramos do E Libertados (A e I) • Ramos do T Bloqueados</div>
+                        <div class="gallery-desc">
+                            O Nível 2 liberta <strong>A</strong> (.-) e <strong>I</strong> (..) sob a subárvore E. O ramo <strong>T</strong> (M e N) continua bloqueado com cadeados até à conclusão do exame do Nível 2.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 2</div>
+                </div>
+            </div>
+
+            <!-- Step 3: Nível 3 Ramos do T -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step03_tree_release_level3.jpg" alt="Passo 3 - Ramos de T Desbloqueados" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 3 • Nível 3</div>
+                        <div class="gallery-title">Ramos do T Libertados (M e N) • Profundidade 2 Completa</div>
+                        <div class="gallery-desc">
+                            O Nível 3 liberta <strong>M</strong> (--) e <strong>N</strong> (-.) sob a subárvore T. Toda a profundidade 2 está verde e desbloqueada [T, E, A, I, M, N]. Níveis mais profundos continuam com cadeados.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 3</div>
                 </div>
             </div>
         </div>
@@ -899,6 +958,105 @@
                         <span><strong>testFullReleaseAllLevels_ProgressivelyUnlocks21Levels</strong> (Progressão completa: libertação sequencial e cumulativa de todos os 21 níveis até à árvore 100% desbloqueada)</span>
                     </div>
                     <span class="test-duration">28 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseTreeStepByStepReleaseTest -->
+        <div class="section-title">🌳 Testes Unitários: Release da Árvore Passo a Passo (Níveis 1 a 21)</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.tree.MorseTreeStepByStepReleaseTest</span>
+                <span class="test-pass-tag">5 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso01_ReleaseLevel1_OnlyRootUnlocked</strong> (Passo 1: Raiz T [-] e E [.] desbloqueadas; descendentes A, I, M, N estritamente bloqueados)</span>
+                    </div>
+                    <span class="test-duration">9 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso02_ReleaseLevel2_UnlocksBranchE_KeepsBranchTLocked</strong> (Passo 2: Ramos de E [A, I] libertados; ramos de T [M, N] continuam bloqueados)</span>
+                    </div>
+                    <span class="test-duration">10 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso03_ReleaseLevel3_UnlocksBranchT_CompletesDepth2</strong> (Passo 3: Ramos de T [M, N] libertados; profundidade 2 completa [T, E, A, I, M, N]; profundidade 3 bloqueada)</span>
+                    </div>
+                    <span class="test-duration">12 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso04_StepByStepProgression_Levels1Through21</strong> (Loop sequencial 1 a 21: validação passo a passo de expansão de pool, isolamento de níveis e iluminação de nós)</span>
+                    </div>
+                    <span class="test-duration">38 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso05_MilestoneLevel13_AlphabetComplete</strong> (Marco Passo 13: 26 letras de A a Z desbloqueadas [Z e Q], autorizando modo de Palavras de Rádio CW)</span>
+                    </div>
+                    <span class="test-duration">11 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseGoTreeStepByStepReleaseBehaviorTest -->
+        <div class="section-title">📱 Testes de Comportamento UI: Demonstração Visual Passo a Passo da Árvore</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.MorseGoTreeStepByStepReleaseBehaviorTest</span>
+                <span class="test-pass-tag">6 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso01_TreeRelease_Level1_Root_T_and_E</strong> (Passo 1 UI: Apresentação da Raiz T e E iluminadas no Canvas com ramos e filhos bloqueados)</span>
+                    </div>
+                    <span class="test-duration">280 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso02_TreeRelease_Level2_Branch_E_A_and_I</strong> (Passo 2 UI: Subárvore E liberta A e I; atualização de cabeçalho 'Novas letras: A e I' e cadeados em M e N)</span>
+                    </div>
+                    <span class="test-duration">290 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso03_TreeRelease_Level3_Branch_T_M_and_N</strong> (Passo 3 UI: Subárvore T liberta M e N; iluminação completa de toda a profundidade 2 na tela)</span>
+                    </div>
+                    <span class="test-duration">310 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso04_TreeRelease_Level4_Branch_I_S_and_U</strong> (Passo 4 UI: Subárvore I liberta S e U; abertura da profundidade 3 na árvore de Morse)</span>
+                    </div>
+                    <span class="test-duration">270 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso05_TreeRelease_Level13_Alphabet_Complete</strong> (Passo 13 UI: Marco do alfabeto completo [Z e Q]; toda a telegrafia básica desbloqueada)</span>
+                    </div>
+                    <span class="test-duration">320 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso06_TreeRelease_Level21_Full_Tree</strong> (Passo 21 UI: Desbloqueio final da Árvore Binária com todos os 21 níveis, numeração e sinais)</span>
+                    </div>
+                    <span class="test-duration">350 ms</span>
                 </li>
             </ul>
         </div>
