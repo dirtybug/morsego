@@ -143,28 +143,42 @@ public class MorseGoBehaviorScreenshotsTest {
     }
 
     /**
-     * BEHAVIOR 5: External Hardware Paddle Monitor & Calibration (USB CW Keyer).
+     * BEHAVIOR 5: External Hardware Paddle Setup & Calibration (USB CW Keyer ASIN B0F666MVG6).
+     * Tests paddle live monitoring, Dit/Dah calibration buttons, paddle reversal switch,
+     * VBand default reset, and captures the Hardware Setup screenshot.
      */
     @Test
-    public void test05_HardwarePaddleMonitor_UsbCalibration() throws InterruptedException {
-        // When user navigates to "Hardware"
+    public void test05_HardwarePaddleSetupAndCalibration_Screenshot() throws InterruptedException {
+        // When user navigates to "Hardware CW" tab
         onView(withId(R.id.nav_hardware)).perform(click());
-        Thread.sleep(500);
+        Thread.sleep(600);
 
-        // Verify hardware monitor cards
-        onView(withId(R.id.tvPaddleDitState)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvPaddleDahState)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvUsbLog)).check(matches(isDisplayed()));
+        // Verify hardware monitor cards and controls
+        onView(withId(R.id.cardLeftPaddle)).check(matches(isDisplayed()));
+        onView(withId(R.id.cardRightPaddle)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvLeftPaddleState)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvRightPaddleState)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnCalibrateDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnCalibrateDah)).check(matches(isDisplayed()));
+        onView(withId(R.id.switchReversePaddles)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnResetVband)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvHardwareLogs)).check(matches(isDisplayed()));
 
-        // Capture hardware screen
-        ScreenshotHelper.capture("08_hardware_paddle_monitor");
+        // Capture initial hardware setup screen
+        ScreenshotHelper.capture("08_hardware_setup_cw_paddle");
 
-        // When user clicks test calibration
-        onView(withId(R.id.btnTestHardwareKeyer)).perform(click());
-        Thread.sleep(700);
+        // Toggle paddle reversal switch (left-handed / right-handed)
+        onView(withId(R.id.switchReversePaddles)).perform(click());
+        Thread.sleep(400);
 
-        ScreenshotHelper.capture("09_hardware_calibration_active");
+        // Reset to standard VBand (Left Ctrl / Right Ctrl)
+        onView(withId(R.id.btnResetVband)).perform(click());
+        Thread.sleep(400);
+
+        // Capture calibrated hardware setup screen
+        ScreenshotHelper.capture("09_hardware_setup_calibrated");
     }
+
 
     /**
      * BEHAVIOR 6: Practice Listening Quiz (strictly restricted to unlocked pool).

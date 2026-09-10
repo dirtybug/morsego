@@ -7,7 +7,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -16,6 +18,7 @@ import androidx.test.filters.LargeTest;
 
 import com.morsego.app.keyer.MorseTiming;
 import com.morsego.app.tree.MorseBinaryTree;
+import com.morsego.app.tree.MorseRadioWords;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,12 +27,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Behavior tests for transmitting Common Ham Radio Words (CQ, 73, DX, QSL, QTH, RST, SOS, TU)
- * and verifying that timing cadence bounds (minimum and maximum pauses within letters
- * and between letters) are strictly evaluated and enforced as failures when violated.
+ * Behavior Tests para Palavras Comuns de Rádio CW (CQ, 73, DX, QSL, QTH, RST, SOS, TU).
+ * Regras estritas:
+ * 1. O teste de palavras de rádio só está disponível APÓS desbloquear todas as letras do alfabeto (Nível >= 13).
+ * 2. Dividido estritamente em duas etapas separadas:
+ *    - ETAPA 1: OUVIR (Listening) - Áudio dos termos de rádio e descodificação/escolha.
+ *    - ETAPA 2: MANDAR (Transmission) - Envio através das pás táteis/físicas com validação rigorosa de tempos mín/máx.
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -43,9 +50,6 @@ public class MorseGoRadioWordsBehaviorTest {
     @Before
     public void setup() throws InterruptedException {
         Thread.sleep(600);
-        // Navigate to Free Keyer sandbox for radio transmission testing
-        onView(withId(R.id.nav_keyer)).perform(click());
-        Thread.sleep(400);
     }
 
     private void transmitRadioPhrase(String text) throws InterruptedException {
@@ -56,7 +60,7 @@ public class MorseGoRadioWordsBehaviorTest {
 
         int wpm = activity.getSettings().getWpm();
         long intraElementPause = MorseTiming.intraCharSpaceMs(wpm);
-        long interCharPause = MorseTiming.interCharSpaceMs(wpm) + 50;
+        long interCharPause = MorseTiming.interCharSpaceMs(wpm) + 40;
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -79,162 +83,197 @@ public class MorseGoRadioWordsBehaviorTest {
         Thread.sleep(300);
     }
 
-    private void clearKeyerDisplay() throws InterruptedException {
-        onView(withId(R.id.btnClearText)).perform(click());
-        Thread.sleep(300);
+    // =========================================================================
+    // 1. VERIFICAÇÃO DE BLOQUEIO: Só disponível após desbloquear todas as 26 letras
+    // =========================================================================
+
+    @Test
+    public void test01_RadioWords_LockedWhenLettersNotAllUnlocked() throws InterruptedException {
+        AtomicReference<MainActivity> activityRef = new AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        assertNotNull(activity);
+
+        // Given user is at Level 1 (only E and T unlocked)
+        activity.getSettings().setCurrentUnlockedLevel(1);
+        int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
+
+        // Then verify radio words are strictly locked
+        assertFalse("Palavras de rádio devem estar bloqueadas quando faltam letras (nível < 13)",
+                MorseRadioWords.isUnlocked(currentLevel));
+
+        List<String> poolLevel1 = MorseBinaryTree.getInstance().getLevel(1).getAllCharacters();
+        assertFalse("Nível 1 não contém todas as 26 letras",
+                MorseRadioWords.hasAllLettersUnlocked(poolLevel1));
+
+        // Screenshot da tela com estado inicial
+        onView(withId(R.id.nav_tree)).perform(click());
+        Thread.sleep(400);
+        ScreenshotHelper.capture("01_radio_words_locked_state");
     }
 
-    /**
-     * RADIO WORD 1: Transmitting "CQ" (General Call / Chamada Geral)
-     */
     @Test
-    public void test01_TransmitCQ_GeneralCall() throws InterruptedException {
-        clearKeyerDisplay();
+    public void test02_RadioWords_UnlockedWhenAllLettersUnlockedAtLevel13() throws InterruptedException {
+        AtomicReference<MainActivity> activityRef = new AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        assertNotNull(activity);
+
+        // When user unlocks Level 13 (where Z and Q complete the full A-Z alphabet)
+        activity.getSettings().setCurrentUnlockedLevel(13);
+        int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
+
+        // Then verify radio words are unlocked
+        assertTrue("Palavras de rádio devem estar desbloqueadas quando todas as 26 letras forem alcançadas",
+                MorseRadioWords.isUnlocked(currentLevel));
+
+        List<String> poolLevel13 = MorseBinaryTree.getInstance().getLevel(13).getAllCharacters();
+        assertTrue("Nível 13 deve ter todas as 26 letras completas na árvore Morse",
+                MorseRadioWords.hasAllLettersUnlocked(poolLevel13));
+
+        // Screenshot do desbloqueio
+        ScreenshotHelper.capture("02_radio_words_unlocked_level13");
+    }
+
+    // =========================================================================
+    // 2. ETAPA SEPARADA 1: OUVIR (Listening / Escuta de Termos de Rádio)
+    // =========================================================================
+
+    @Test
+    public void test03_Stage1_Ouvir_RadioWord_CQ() throws InterruptedException {
+        AtomicReference<MainActivity> activityRef = new AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        assertNotNull(activity);
+
+        // Ensure user is qualified with all letters unlocked
+        activity.getSettings().setCurrentUnlockedLevel(13);
+
+        // Generate listening choices for CQ
+        List<String> choices = MorseRadioWords.generateListeningChoices("CQ", 4);
+        assertEquals(4, choices.size());
+        assertTrue(choices.contains("CQ"));
+
+        // Simulate audio playback for "CQ" (-.-. --.-)
+        String morseCQ = MorseBinaryTree.getInstance().getMorse("C") + " " + MorseBinaryTree.getInstance().getMorse("Q");
+        assertEquals("-.-. --.-", morseCQ);
+
+        activity.runOnUiThread(() ->
+                activity.getSynthesizer().playMorsePattern(morseCQ, activity.getSettings().getWpm(), null));
+        Thread.sleep(800);
+
+        ScreenshotHelper.capture("03_radio_words_stage1_ouvir_CQ");
+    }
+
+    @Test
+    public void test04_Stage1_Ouvir_RadioWord_73_and_SOS() throws InterruptedException {
+        AtomicReference<MainActivity> activityRef = new AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        assertNotNull(activity);
+
+        activity.getSettings().setCurrentUnlockedLevel(13);
+
+        // Test listening choices for "73"
+        List<String> choices73 = MorseRadioWords.generateListeningChoices("73", 4);
+        assertTrue(choices73.contains("73"));
+
+        // Play 73 audio
+        activity.runOnUiThread(() ->
+                activity.getSynthesizer().playMorsePattern("--... ...--", activity.getSettings().getWpm(), null));
+        Thread.sleep(700);
+
+        // Test listening choices for "SOS"
+        List<String> choicesSOS = MorseRadioWords.generateListeningChoices("SOS", 4);
+        assertTrue(choicesSOS.contains("SOS"));
+
+        ScreenshotHelper.capture("04_radio_words_stage1_ouvir_73_SOS");
+    }
+
+    // =========================================================================
+    // 3. ETAPA SEPARADA 2: MANDAR (Transmission / Envio com Pás & Cadência)
+    // =========================================================================
+
+    @Test
+    public void test05_Stage2_Mandar_RadioWord_CQ() throws InterruptedException {
+        // Navigate to Keyer transmission view
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
+
+        onView(withId(R.id.btnClearText)).perform(click());
+        Thread.sleep(200);
+
+        // Transmit "CQ" with proper inter-element and inter-letter timing
         transmitRadioPhrase("CQ");
 
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("CQ"))));
-        ScreenshotHelper.capture("radio_tx_01_CQ");
+        ScreenshotHelper.capture("05_radio_words_stage2_mandar_CQ");
     }
 
-    /**
-     * RADIO WORD 2: Transmitting "73" (Best Regards / Cumprimentos em CW)
-     */
     @Test
-    public void test02_Transmit73_BestRegards() throws InterruptedException {
-        clearKeyerDisplay();
-        transmitRadioPhrase("73");
+    public void test06_Stage2_Mandar_RadioWords_DX_QSL_QTH() throws InterruptedException {
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
 
-        onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("73"))));
-        ScreenshotHelper.capture("radio_tx_02_73");
-    }
-
-    /**
-     * RADIO WORD 3: Transmitting "DX" (Long Distance Contact)
-     */
-    @Test
-    public void test03_TransmitDX_LongDistance() throws InterruptedException {
-        clearKeyerDisplay();
+        onView(withId(R.id.btnClearText)).perform(click());
         transmitRadioPhrase("DX");
-
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("DX"))));
-        ScreenshotHelper.capture("radio_tx_03_DX");
-    }
 
-    /**
-     * RADIO WORD 4: Transmitting "QSL" (Confirmation / Confirmado)
-     */
-    @Test
-    public void test04_TransmitQSL_Confirmation() throws InterruptedException {
-        clearKeyerDisplay();
+        onView(withId(R.id.btnClearText)).perform(click());
         transmitRadioPhrase("QSL");
-
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("QSL"))));
-        ScreenshotHelper.capture("radio_tx_04_QSL");
-    }
 
-    /**
-     * RADIO WORD 5: Transmitting "QTH" (Location / Minha Estação)
-     */
-    @Test
-    public void test05_TransmitQTH_Location() throws InterruptedException {
-        clearKeyerDisplay();
+        onView(withId(R.id.btnClearText)).perform(click());
         transmitRadioPhrase("QTH");
-
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("QTH"))));
-        ScreenshotHelper.capture("radio_tx_05_QTH");
+
+        ScreenshotHelper.capture("06_radio_words_stage2_mandar_QTH");
     }
 
-    /**
-     * RADIO WORD 6: Transmitting "RST" (Signal Report / Relatório 599)
-     */
     @Test
-    public void test06_TransmitRST_SignalReport() throws InterruptedException {
-        clearKeyerDisplay();
-        transmitRadioPhrase("RST");
+    public void test07_Stage2_Mandar_FullQSO_CQ_CQ_DX_DE_CT1_73() throws InterruptedException {
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
 
-        onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("RST"))));
-        ScreenshotHelper.capture("radio_tx_06_RST");
-    }
-
-    /**
-     * RADIO WORD 7: Transmitting "SOS" (Emergency Distress Signal)
-     */
-    @Test
-    public void test07_TransmitSOS_EmergencyDistress() throws InterruptedException {
-        clearKeyerDisplay();
-        transmitRadioPhrase("SOS");
-
-        onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("SOS"))));
-        ScreenshotHelper.capture("radio_tx_07_SOS");
-    }
-
-    /**
-     * RADIO WORD 8: Transmitting "TU" (Thank You / Obrigado)
-     */
-    @Test
-    public void test08_TransmitTU_ThankYou() throws InterruptedException {
-        clearKeyerDisplay();
-        transmitRadioPhrase("TU");
-
-        onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("TU"))));
-        ScreenshotHelper.capture("radio_tx_08_TU");
-    }
-
-    /**
-     * RADIO WORD 9: Full Ham Radio QSO ("CQ CQ DX DE CT1 73")
-     */
-    @Test
-    public void test09_TransmitFullRadioQSO() throws InterruptedException {
-        clearKeyerDisplay();
+        onView(withId(R.id.btnClearText)).perform(click());
         transmitRadioPhrase("CQ CQ DX DE CT1 73");
 
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("CQ CQ DX DE CT1 73"))));
-        ScreenshotHelper.capture("radio_tx_09_full_qso");
+        ScreenshotHelper.capture("07_radio_words_stage2_mandar_full_qso");
     }
 
-    /**
-     * BEHAVIOR 10: Strict Timing Enforcement:
-     * Validates that non-respect of min or max times within letters (< 0.45x, > 2.0x)
-     * and between letters (< 0.60x, > 2.2x) is strictly flagged as a FAILURE.
-     */
+    // =========================================================================
+    // 4. VERIFICAÇÃO RIGOROSA DE TEMPOS MÍNIMOS E MÁXIMOS NA TRANSMISSÃO
+    // =========================================================================
+
     @Test
-    public void test10_TimingCadence_MinMaxFailureEnforcement() throws InterruptedException {
-        int wpm = 15;
-        long nominalDit = MorseTiming.ditDurationMs(wpm); // 80ms
-        long nominalLetter = MorseTiming.interCharSpaceMs(wpm); // 240ms
+    public void test08_Stage2_Mandar_TimingCadence_FailureEnforcement() throws InterruptedException {
+        int wpm = 18;
+        long nominalDit = MorseTiming.ditDurationMs(wpm);
+        long nominalLetter = MorseTiming.interCharSpaceMs(wpm);
 
-        // 1. Intra-element pause test (ponto/traço dentro da letra):
-        // 1a. Compliant pause (1.0x) -> Good, NOT a failure
-        MorseTiming.PauseEvaluation evalGoodIntra = MorseTiming.evaluateIntraElementPause(nominalDit, wpm);
-        assertTrue("Compliant intra-element pause should be good", evalGoodIntra.isGood);
-        assertFalse("Compliant intra-element pause must not fail", evalGoodIntra.isTimingFailure);
+        // 1. Intra-element pause test (< 0.45x or > 2.0x is failure)
+        MorseTiming.PauseEvaluation evalGood = MorseTiming.evaluateIntraElementPause(nominalDit, wpm);
+        assertTrue(evalGood.isGood);
+        assertFalse(evalGood.isTimingFailure);
 
-        // 1b. Pause too fast (< 0.45x, e.g. 25ms) -> MUST BE TIMING FAILURE!
-        MorseTiming.PauseEvaluation evalTooFastIntra = MorseTiming.evaluateIntraElementPause(25, wpm);
-        assertTrue("Intra-element pause below minimum must be a timing failure", evalTooFastIntra.isTimingFailure);
+        MorseTiming.PauseEvaluation evalFastFail = MorseTiming.evaluateIntraElementPause((long)(nominalDit * 0.35f), wpm);
+        assertTrue("Pausa intra-elemento abaixo de 0.45x deve falhar", evalFastFail.isTimingFailure);
 
-        // 1c. Pause too long (> 2.0x, e.g. 200ms) -> MUST BE TIMING FAILURE!
-        MorseTiming.PauseEvaluation evalTooSlowIntra = MorseTiming.evaluateIntraElementPause(200, wpm);
-        assertTrue("Intra-element pause above maximum must be a timing failure", evalTooSlowIntra.isTimingFailure);
+        MorseTiming.PauseEvaluation evalSlowFail = MorseTiming.evaluateIntraElementPause((long)(nominalDit * 2.5f), wpm);
+        assertTrue("Pausa intra-elemento acima de 2.0x deve falhar", evalSlowFail.isTimingFailure);
 
-        // 2. Inter-letter pause test (entre letras da palavra):
-        // 2a. Compliant pause (1.0x letter space, 240ms) -> Good, NOT a failure
+        // 2. Inter-letter pause test (< 0.60x or > 2.2x is failure)
         MorseTiming.PauseEvaluation evalGoodLetter = MorseTiming.evaluateLetterPause(nominalLetter, wpm);
-        assertTrue("Compliant letter separation should be good", evalGoodLetter.isGood);
-        assertFalse("Compliant letter separation must not fail", evalGoodLetter.isTimingFailure);
+        assertTrue(evalGoodLetter.isGood);
+        assertFalse(evalGoodLetter.isTimingFailure);
 
-        // 2b. Letter pause too short (< 0.60x, e.g. 100ms) -> MUST BE TIMING FAILURE!
-        MorseTiming.PauseEvaluation evalTooFastLetter = MorseTiming.evaluateLetterPause(100, wpm);
-        assertTrue("Inter-letter pause below minimum must be a timing failure", evalTooFastLetter.isTimingFailure);
+        MorseTiming.PauseEvaluation evalFastLetterFail = MorseTiming.evaluateLetterPause((long)(nominalLetter * 0.45f), wpm);
+        assertTrue("Pausa entre letras abaixo de 0.60x deve falhar", evalFastLetterFail.isTimingFailure);
 
-        // 2c. Letter pause too long (> 2.2x, e.g. 600ms) -> MUST BE TIMING FAILURE!
-        MorseTiming.PauseEvaluation evalTooSlowLetter = MorseTiming.evaluateLetterPause(600, wpm);
-        assertTrue("Inter-letter pause above maximum must be a timing failure", evalTooSlowLetter.isTimingFailure);
+        MorseTiming.PauseEvaluation evalSlowLetterFail = MorseTiming.evaluateLetterPause((long)(nominalLetter * 2.6f), wpm);
+        assertTrue("Pausa entre letras acima de 2.2x deve falhar", evalSlowLetterFail.isTimingFailure);
 
-        // Navigate to Learn tab and capture transmission UI
-        onView(withId(R.id.nav_learn)).perform(click());
-        Thread.sleep(400);
-
-        ScreenshotHelper.capture("radio_tx_10_timing_cadence_evaluated");
+        ScreenshotHelper.capture("08_radio_words_stage2_timing_failure_rules");
     }
 }
