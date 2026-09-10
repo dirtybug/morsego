@@ -204,5 +204,29 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
         // Ao final do 21º passo, captura ecrã de celebração final
         ScreenshotHelper.capture("step07_all_21_levels_sweep_complete");
     }
+
+    /**
+     * PASSO 8: Release dedicado de X (-..-) e B (-...) sob o nó D (Ramo do N) na UI:
+     * Valida que no Nível 11 os nós X e B são iluminados a verde no Canvas,
+     * e o cabeçalho exibe as novas letras B e X.
+     */
+    @Test
+    public void testPasso08_TreeRelease_Level11_X_and_B_under_D() throws InterruptedException {
+        updateLevelOnUI(11);
+
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("NÍVEL 11"))));
+        onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("B"))));
+        onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("X"))));
+
+        MorseBinaryTree tree = MorseBinaryTree.getInstance();
+        MorseTreeNode nodeD = tree.findNodeByCharacter("D");
+        Assert.assertNotNull(nodeD);
+
+        // Valida que X e B sob D estão desbloqueados
+        Assert.assertTrue("X (-..-) sob D deve estar desbloqueado na UI", nodeD.getDahChild().isUnlocked());
+        Assert.assertTrue("B (-...) sob D deve estar desbloqueado na UI", nodeD.getDitChild().isUnlocked());
+
+        ScreenshotHelper.capture("step08_tree_release_level11_X_and_B");
+    }
 }
 

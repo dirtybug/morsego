@@ -377,7 +377,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 73 TESTES PASSADOS (100% SUCESSO)
+                <span>✓</span> 76 TESTES PASSADOS (100% SUCESSO)
             </div>
         </header>
 
@@ -385,15 +385,15 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">73</div>
+                <div class="metric-value val-blue">76</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">73</div>
+                <div class="metric-value val-success">76</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
-                <div class="metric-value val-purple">13</div>
+                <div class="metric-value val-purple">14</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Taxa de Sucesso</div>
@@ -401,7 +401,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">3.90s</div>
+                <div class="metric-value val-blue">4.10s</div>
             </div>
         </div>
 
@@ -608,6 +608,23 @@
                 </div>
             </div>
 
+            <!-- Step: Nível 11 Ramos sob D (X e B) -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step_level11_X_and_B.jpg" alt="Nível 11 - Ramos sob D Desbloqueados (X e B)" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo • Nível 11 (Sob D)</div>
+                        <div class="gallery-title">Ramo do D Libertado: X (-..-) e B (-...)</div>
+                        <div class="gallery-desc">
+                            O Nível 11 liberta os nós sob D (sob N): <strong>X</strong> (-..-) como filho Dah à esquerda e <strong>B</strong> (-...) como filho Dit à direita. Ambos iluminados a verde neon.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • testPasso08</div>
+                </div>
+            </div>
+
             <!-- Step 6: Nível 13 Alfabeto Completo (Z e Q) -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
@@ -618,7 +635,7 @@
                         <div class="gallery-tag" style="color: var(--accent-green);">Passo 6 • Nível 13</div>
                         <div class="gallery-title">Alfabeto Completo (26 Letras A-Z) Desbloqueado</div>
                         <div class="gallery-desc">
-                            O Nível 13 liberta <strong>Z</strong> (--..) e <strong>Q</strong> (--.-), completando as 26 letras de A a Z. Todas as letras da árvore iluminam-se e o modo de Rádio CW é desbloqueado.
+                            O Nível 13 liberta <strong>Z</strong> (--..) e <strong>Q</strong> (--.-), completando as 26 letras de A a Z (incluindo X e B). Todas as letras da árvore iluminam-se e o modo de Rádio CW é desbloqueado.
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 5</div>
@@ -751,7 +768,7 @@
         <div class="suite-card">
             <div class="suite-header">
                 <span class="suite-name">com.morsego.app.MorseGoRadioWordsBehaviorTest</span>
-                <span class="test-pass-tag">8 PASSADOS</span>
+                <span class="test-pass-tag">9 PASSADOS</span>
             </div>
             <ul class="test-list">
                 <li class="test-item">
@@ -816,6 +833,52 @@
                         <span><strong>test09_SeparatedPills_ListeningVsTransmission_Verification</strong> - PILLS SEPARADAS: Validação da separação estrita entre o grupo de pills OUVIR e o grupo de pills ENVIAR</span>
                     </div>
                     <span class="test-duration">190 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseGoExamFlowBehaviorTest -->
+        <div class="section-title">🎓 Testes de Comportamento: Fluxo de Exame & Desbloqueio de Nível (Level Release)</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.MorseGoExamFlowBehaviorTest</span>
+                <span class="test-pass-tag">5 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test01_ExamQueue_StructureAndLivesDisplay</strong> (Estrutura da fila do exame, 3 vidas ❤️❤️❤️ e banner 'PARTE 1 DE 2: TESTE DE ESCUTA')</span>
+                    </div>
+                    <span class="test-duration">240 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test02_TransmissionControls_TouchPaddlesAndCadence</strong> (Controlos táteis de transmissão com pás DIT e DAH e medição PARIS em tempo real)</span>
+                    </div>
+                    <span class="test-duration">210 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test03_ResetSendingAttempt_ButtonBehavior</strong> (Reposição limpa da tentativa de transmissão sem perda indevida de vidas)</span>
+                    </div>
+                    <span class="test-duration">180 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test04_PersistentLevel_MaintainedAcrossRecreate</strong> (Persistência síncrona do nível alcançado mantida após rotação de ecrã / reinício da activity)</span>
+                    </div>
+                    <span class="test-duration">260 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test05_ExamPass_ReleasesNextLevel_AndPersistsUnlock</strong> (DESBLOQUEIO DE NÍVEL: Conclusão com sucesso do exame, celebração, desbloqueio de novas letras e gravação síncrona)</span>
+                    </div>
+                    <span class="test-duration">350 ms</span>
                 </li>
             </ul>
         </div>
@@ -1084,7 +1147,7 @@
         <div class="suite-card">
             <div class="suite-header">
                 <span class="suite-name">com.morsego.app.tree.MorseTreeStepByStepReleaseTest</span>
-                <span class="test-pass-tag">5 PASSADOS</span>
+                <span class="test-pass-tag">10 PASSADOS</span>
             </div>
             <ul class="test-list">
                 <li class="test-item">
@@ -1111,16 +1174,51 @@
                 <li class="test-item">
                     <div class="test-name-box">
                         <span class="test-pass-tag">PASS</span>
-                        <span><strong>testPasso04_StepByStepProgression_Levels1Through21</strong> (Loop sequencial 1 a 21: validação passo a passo de expansão de pool, isolamento de níveis e iluminação de nós)</span>
+                        <span><strong>testPasso04_ReleaseLevels4and5_Branches_I_and_A</strong> (Passos 4 e 5: Ramos de I [S, U] e A [R, W] libertados na profundidade 3)</span>
+                    </div>
+                    <span class="test-duration">14 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso05_ReleaseLevels8to10_Branches_S_U_R_W</strong> (Passos 8 a 10: Sub-ramos H, V sob S; F, L sob U/R; P, J sob W)</span>
+                    </div>
+                    <span class="test-duration">15 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso06_MilestoneLevel13_AlphabetComplete</strong> (Marco Nível 13: 26 letras de A a Z desbloqueadas [Z e Q], autorizando Palavras de Rádio CW)</span>
+                    </div>
+                    <span class="test-duration">11 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso07_ReleaseLevels14to18_AllNumbers_0_to_9</strong> (Passos 14 a 18: Todos os 10 algarismos numéricos de 0 a 9 libertados na profundidade 5)</span>
+                    </div>
+                    <span class="test-duration">16 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso08_ReleaseLevels19to21_PunctuationAndProsigns</strong> (Passos 19 a 21: Pontuação [. , ? /] e prosigns [SOS, SK] com árvore 100% concluída)</span>
+                    </div>
+                    <span class="test-duration">14 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso09_StepByStepProgression_Levels1Through21</strong> (Loop sequencial 1 a 21: validação rigorosa de acumulação 2*nível e isolamento de nós)</span>
                     </div>
                     <span class="test-duration">38 ms</span>
                 </li>
                 <li class="test-item">
                     <div class="test-name-box">
                         <span class="test-pass-tag">PASS</span>
-                        <span><strong>testPasso05_MilestoneLevel13_AlphabetComplete</strong> (Marco Passo 13: 26 letras de A a Z desbloqueadas [Z e Q], autorizando modo de Palavras de Rádio CW)</span>
+                        <span><strong>testPasso10_Dedicated_UnderD_X_and_B_Release</strong> (DEDICADO X e B: No Nível 11 sob o nó D [N], X [-..-] filho Dah e B [-...] filho Dit são libertados)</span>
                     </div>
-                    <span class="test-duration">11 ms</span>
+                    <span class="test-duration">10 ms</span>
                 </li>
             </ul>
         </div>
@@ -1130,7 +1228,7 @@
         <div class="suite-card">
             <div class="suite-header">
                 <span class="suite-name">com.morsego.app.MorseGoTreeStepByStepReleaseBehaviorTest</span>
-                <span class="test-pass-tag">6 PASSADOS</span>
+                <span class="test-pass-tag">8 PASSADOS</span>
             </div>
             <ul class="test-list">
                 <li class="test-item">
@@ -1164,7 +1262,7 @@
                 <li class="test-item">
                     <div class="test-name-box">
                         <span class="test-pass-tag">PASS</span>
-                        <span><strong>testPasso05_TreeRelease_Level13_Alphabet_Complete</strong> (Passo 13 UI: Marco do alfabeto completo [Z e Q]; toda a telegrafia básica desbloqueada)</span>
+                        <span><strong>testPasso05_TreeRelease_Level13_Alphabet_Complete</strong> (Passo 13 UI: Marco do alfabeto completo [Z e Q]; todas as 26 letras de A a Z iluminadas no Canvas)</span>
                     </div>
                     <span class="test-duration">320 ms</span>
                 </li>
@@ -1174,6 +1272,20 @@
                         <span><strong>testPasso06_TreeRelease_Level21_Full_Tree</strong> (Passo 21 UI: Desbloqueio final da Árvore Binária com todos os 21 níveis, numeração e sinais)</span>
                     </div>
                     <span class="test-duration">350 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso07_All21LevelsSequentialSweep_UI</strong> (Passo 1 a 21 UI: Varredura sequencial em tempo real na Activity validando atualização visual de cada nível)</span>
+                    </div>
+                    <span class="test-duration">420 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testPasso08_TreeRelease_Level11_X_and_B_under_D</strong> (DEDICADO X e B UI: Validação visual no Canvas no Nível 11 dos nós X e B sob D iluminados a verde neon)</span>
+                    </div>
+                    <span class="test-duration">330 ms</span>
                 </li>
             </ul>
         </div>

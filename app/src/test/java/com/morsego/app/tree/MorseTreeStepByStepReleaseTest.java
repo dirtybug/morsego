@@ -257,4 +257,39 @@ public class MorseTreeStepByStepReleaseTest {
             assertTrue("Pool do passo " + step + " deve conter " + c2, pool.contains(c2));
         }
     }
+
+    /**
+     * PASSO 10: Teste Dedicado ao Ramo do D (sob N): X (-..-) e B (-...).
+     * Valida explicitamente que X e B são os filhos de D e são libertados no Nível 11.
+     */
+    @Test
+    public void testPasso10_Dedicated_UnderD_X_and_B_Release() {
+        tree.unlockNodesUpToLevel(10);
+        MorseTreeNode nodeD = tree.findNodeByCharacter("D");
+        assertNotNull("Nó D deve existir", nodeD);
+
+        MorseTreeNode nodeX = nodeD.getDahChild();
+        MorseTreeNode nodeB = nodeD.getDitChild();
+        assertNotNull("Nó X (-..-) deve existir sob D", nodeX);
+        assertNotNull("Nó B (-...) deve existir sob D", nodeB);
+
+        assertEquals("X", nodeX.getCharacter());
+        assertEquals("-..-", nodeX.getMorseCode());
+        assertEquals("B", nodeB.getCharacter());
+        assertEquals("-...", nodeB.getMorseCode());
+
+        // No Nível 10, X e B estão bloqueados
+        assertFalse("X deve estar bloqueado no nível 10", nodeX.isUnlocked());
+        assertFalse("B deve estar bloqueado no nível 10", nodeB.isUnlocked());
+
+        // No Nível 11, X e B são libertados
+        tree.unlockNodesUpToLevel(11);
+        assertTrue("X deve estar desbloqueado no nível 11", nodeX.isUnlocked());
+        assertTrue("B deve estar desbloqueado no nível 11", nodeB.isUnlocked());
+
+        TreeLevel l11 = tree.getLevel(11);
+        assertTrue("Pool do nível 11 deve conter X", l11.getAllCharacters().contains("X"));
+        assertTrue("Pool do nível 11 deve conter B", l11.getAllCharacters().contains("B"));
+    }
 }
+
