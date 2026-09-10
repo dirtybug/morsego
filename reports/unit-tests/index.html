@@ -377,7 +377,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 53 TESTES PASSADOS (100% SUCESSO)
+                <span>✓</span> 64 TESTES PASSADOS (100% SUCESSO)
             </div>
         </header>
 
@@ -385,15 +385,15 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">53</div>
+                <div class="metric-value val-blue">64</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">53</div>
+                <div class="metric-value val-success">64</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
-                <div class="metric-value val-purple">9</div>
+                <div class="metric-value val-purple">11</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Taxa de Sucesso</div>
@@ -401,7 +401,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">3.15s</div>
+                <div class="metric-value val-blue">3.60s</div>
             </div>
         </div>
 
@@ -517,7 +517,7 @@
         </div>
 
         <!-- Step-by-Step Tree Release Showcase -->
-        <div class="section-title">🌳 Demonstração Visual: Releases da Árvore Binária Passo a Passo</div>
+        <div class="section-title">🌳 Demonstração Visual: Releases da Árvore Binária Passo a Passo (Incluindo Sob M e Sob N)</div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
             Validação passo a passo da progressão e iluminação visual na Árvore Binária de Morse. Cada passo desbloqueia estritamente os novos nós e ilumina os ramos correspondentes, mantendo os níveis superiores protegidos com cadeados:
         </p>
@@ -571,6 +571,40 @@
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 3</div>
+                </div>
+            </div>
+
+            <!-- Step 4: Nível 6 Ramos sob N (D e K) -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_under_n_level6_D_and_K.jpg" alt="Passo 4 - Ramos sob N Desbloqueados" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 4 • Nível 6 (Sob N)</div>
+                        <div class="gallery-title">Ramo do N Libertado: D (-..) e K (-.-)</div>
+                        <div class="gallery-desc">
+                            O Nível 6 liberta os nós sob N: <strong>D</strong> (-..) como filho Dit e <strong>K</strong> (-.-) como filho Dah. Os nós sob M (G e O) permanecem bloqueados com cadeados.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoUnderMAndNBehaviorTest • test01</div>
+                </div>
+            </div>
+
+            <!-- Step 5: Nível 7 Ramos sob M (G e O) -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_under_m_level7_G_and_O.jpg" alt="Passo 5 - Ramos sob M Desbloqueados" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 5 • Nível 7 (Sob M)</div>
+                        <div class="gallery-title">Ramo do M Libertado: G (--.) e O (---)</div>
+                        <div class="gallery-desc">
+                            O Nível 7 liberta os nós sob M: <strong>G</strong> (--.) como filho Dit e <strong>O</strong> (---) como filho Dah. Completa toda a profundidade 3 sob o ramo T (M, N, G, O, D, K).
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoUnderMAndNBehaviorTest • test02</div>
                 </div>
             </div>
         </div>
@@ -1057,6 +1091,105 @@
                         <span><strong>testPasso06_TreeRelease_Level21_Full_Tree</strong> (Passo 21 UI: Desbloqueio final da Árvore Binária com todos os 21 níveis, numeração e sinais)</span>
                     </div>
                     <span class="test-duration">350 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseUnderMAndNTreeReleaseTest -->
+        <div class="section-title">🌳 Testes Unitários: Subárvores sob M e sob N (D, K, G, O, B, X, C, Y, Z, Q)</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.tree.MorseUnderMAndNTreeReleaseTest</span>
+                <span class="test-pass-tag">7 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test01_UnderN_DirectChildren_D_and_K_ReleaseLevel6</strong> (Filhos diretos sob N: D [-..] filho Dit e K [-.-] filho Dah libertados no Nível 6)</span>
+                    </div>
+                    <span class="test-duration">9 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test02_UnderM_DirectChildren_G_and_O_ReleaseLevel7</strong> (Filhos diretos sob M: G [--.] filho Dit e O [---] filho Dah libertados no Nível 7)</span>
+                    </div>
+                    <span class="test-duration">10 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test03_UnderN_SubBranchD_Children_B_and_X_ReleaseLevel11</strong> (Sub-ramo sob D [N]: B [-...] filho Dit e X [-..-] filho Dah libertados no Nível 11)</span>
+                    </div>
+                    <span class="test-duration">8 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test04_UnderN_SubBranchK_Children_C_and_Y_ReleaseLevel12</strong> (Sub-ramo sob K [N]: C [-.-.] filho Dit e Y [-.--] filho Dah libertados no Nível 12)</span>
+                    </div>
+                    <span class="test-duration">9 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test05_UnderM_SubBranchG_Children_Z_and_Q_ReleaseLevel13</strong> (Sub-ramo sob G [M]: Z [--..] filho Dit e Q [--.-] filho Dah libertados no Nível 13)</span>
+                    </div>
+                    <span class="test-duration">11 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test06_UnderM_SubBranchO_Numbers_9_and_0</strong> (Sub-ramo sob O [M]: Números 9 [----.] e 0 [-----] na profundidade 5)</span>
+                    </div>
+                    <span class="test-duration">7 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test07_IsolationBetweenBranchM_and_BranchN</strong> (Isolamento estrito: abrir D e K sob N no Nível 6 não abre G e O sob M)</span>
+                    </div>
+                    <span class="test-duration">8 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseGoUnderMAndNBehaviorTest -->
+        <div class="section-title">📱 Testes de Comportamento UI: Libertação Visual sob M e sob N</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.MorseGoUnderMAndNBehaviorTest</span>
+                <span class="test-pass-tag">4 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test01_UnderN_BranchRelease_Level6_D_and_K</strong> (UI Nível 6: Ramo sob N ilumina D e K no canvas, mantendo G e O sob M bloqueados com cadeado)</span>
+                    </div>
+                    <span class="test-duration">290 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test02_UnderM_BranchRelease_Level7_G_and_O</strong> (UI Nível 7: Ramo sob M ilumina G e O, completando toda a profundidade 3 sob o ramo T)</span>
+                    </div>
+                    <span class="test-duration">310 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test03_UnderN_SubBranches_Level11_and_12</strong> (UI Níveis 11 e 12: Libertação dos sub-ramos sob N: B e X sob D, e C e Y sob K)</span>
+                    </div>
+                    <span class="test-duration">330 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test04_UnderM_SubBranch_Level13_Z_and_Q</strong> (UI Nível 13: Libertação do sub-ramo sob M: Z e Q sob G completando o alfabeto)</span>
+                    </div>
+                    <span class="test-duration">320 ms</span>
                 </li>
             </ul>
         </div>
