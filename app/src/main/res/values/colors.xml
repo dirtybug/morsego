@@ -1,0 +1,8 @@
+<resources>
+    <color name="morse_amber">#FFB300</color>
+    <color name="morse_amber_dark">#FF8F00</color>
+    <color name="morse_cyan">#00E5FF</color>
+    <color name="morse_dark_bg">#121418</color>
+    <color name="morse_surface">#1A1D24</color>
+    <color name="morse_on_surface">#E1E2E6</color>
+</resources>

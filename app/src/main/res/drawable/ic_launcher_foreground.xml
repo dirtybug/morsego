@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:translateX="21.6"
+        android:translateY="21.6">
+        <!-- Dot (Dit) -->
+        <path
+            android:fillColor="#FFB300"
+            android:pathData="M 32,54 m -10,0 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0" />
+        <!-- Dash (Dah) -->
+        <path
+            android:fillColor="#00E5FF"
+            android:pathData="M 50,44 h 38 c 5.5,0 10,4.5 10,10 c 0,5.5 -4.5,10 -10,10 H 50 c -5.5,0 -10,-4.5 -10,-10 c 0,-5.5 4.5,-10 10,-10 Z" />
+    </group>
+</vector>

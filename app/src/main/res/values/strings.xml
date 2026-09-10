@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MorseGO</string>
+    <string name="learn_title">Aprender</string>
+    <string name="practice_title">Praticar</string>
+    <string name="keyer_title">Manipulador</string>
+    <string name="dictionary_title">Dicionário</string>
+    <string name="hardware_title">Hardware CW</string>
+    <string name="settings_title">Definições</string>
+</resources>
