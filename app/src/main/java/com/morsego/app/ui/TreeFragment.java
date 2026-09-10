@@ -61,6 +61,20 @@ public class TreeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (binding != null && getActivity() != null) {
+            MainActivity activity = (MainActivity) getActivity();
+            int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
+            TreeLevel treeLevel = MorseBinaryTree.getInstance().getLevel(currentLevel);
+
+            binding.tvTreeLevelTitle.setText("ÁRVORE BINÁRIA (DESBLOQUEADO ATÉ NÍVEL " + currentLevel + " DE " + MorseBinaryTree.getInstance().getTotalLevels() + ")");
+            binding.tvTreeLevelSub.setText(treeLevel.getTitle() + "\nNovas letras: " + treeLevel.getChar1() + " (" + treeLevel.getMorse1() + ") e " + treeLevel.getChar2() + " (" + treeLevel.getMorse2() + ")");
+            binding.morseTreeView.setUnlockedLevel(currentLevel);
+        }
+    }
+
     private void updateSelectedNode(String character, String morse) {
         this.selectedChar = character;
         binding.tvSelectedChar.setText(character);

@@ -7,10 +7,62 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Scrollable content -->
+    <!-- Level Navigation Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnPrevLevel"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@color/radio_surface_variant"
+            android:contentDescription="Nível Anterior"
+            android:src="@android:drawable/ic_media_previous" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvLevelNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="NÍVEL 1 / 21"
+                android:textColor="@color/morse_amber"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLevelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A Raiz da Árvore"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnNextLevel"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@color/radio_surface_variant"
+            android:contentDescription="Próximo Nível"
+            android:src="@android:drawable/ic_media_next" />
+    </LinearLayout>
+
+    <!-- Scrollable Main Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:fillViewport="true">
 
@@ -19,265 +71,520 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Level Navigation & Title -->
+            <!-- ================= VIEW 1: ESTUDO / APRESENTAÇÃO ================= -->
             <LinearLayout
+                android:id="@+id/layoutStudyView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <ImageButton
-                    android:id="@+id/btnPrevLevel"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@color/radio_surface_variant"
-                    android:contentDescription="Nível Anterior"
-                    android:src="@android:drawable/ic_media_previous" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvLevelNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:text="NÍVEL 1 / 21"
-                        android:textColor="@color/morse_amber"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvLevelTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="A Raiz da Árvore"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/btnNextLevel"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@color/radio_surface_variant"
-                    android:contentDescription="Próximo Nível"
-                    android:src="@android:drawable/ic_media_next" />
-            </LinearLayout>
-
-            <!-- 2 New Letters Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/radio_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/radio_surface_variant"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
+                <!-- 2 New Characters Card -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:text="2 NOVAS LETRAS DA ÁRVORE:"
-                        android:textColor="@color/morse_cyan"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
+                    android:layout_marginTop="6dp"
+                    android:backgroundTint="@color/radio_surface"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/radio_surface_variant"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                        <!-- New Char 1 -->
-                        <LinearLayout
-                            android:id="@+id/btnPlayChar1"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@color/radio_surface_variant"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
+                            android:fontFamily="monospace"
+                            android:text="2 NOVAS LETRAS DESTE NÍVEL:"
+                            android:textColor="@color/morse_cyan"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <!-- New Char 1 -->
+                            <LinearLayout
+                                android:id="@+id/btnPlayChar1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/radio_surface_variant"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <TextView
+                                    android:id="@+id/tvNewChar1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="monospace"
+                                    android:text="E"
+                                    android:textColor="@color/morse_amber"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvNewMorse1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:fontFamily="monospace"
+                                    android:text="•"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="20sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Ouvir som 🔊"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="match_parent" />
+
+                            <!-- New Char 2 -->
+                            <LinearLayout
+                                android:id="@+id/btnPlayChar2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/radio_surface_variant"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="14dp">
+
+                                <TextView
+                                    android:id="@+id/tvNewChar2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="monospace"
+                                    android:text="T"
+                                    android:textColor="@color/morse_amber"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvNewMorse2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:fontFamily="monospace"
+                                    android:text="—"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="20sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Ouvir som 🔊"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- All Letters Pool Description -->
+                        <TextView
+                            android:id="@+id/tvPoolDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:fontFamily="monospace"
+                            android:text="Letras no teste (anteriores + novas): E, T"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Requirements Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/radio_surface"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/radio_surface_variant"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:text="REQUISITOS PARA SUBIR DE NÍVEL:"
+                            android:textColor="@color/morse_amber"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="1. Teste de Escuta (Ouvir): Identificar 5 letras transmitidas em Morse.\n2. Teste de Envio (Mandar): Transmitir 5 letras usando as pás DI e DAH (ou manipulador USB).\n\nPara desbloquear o próximo nível, precisa de acertar pelo menos 80% (4 de 5) em cada teste!"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Start Test Button -->
+                <Button
+                    android:id="@+id/btnStartLevelTest"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="@color/morse_amber"
+                    android:fontFamily="monospace"
+                    android:text="INICIAR TESTE DO NÍVEL ▶"
+                    android:textColor="@color/radio_dark"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- ================= VIEW 2: TESTE EM ANDAMENTO ================= -->
+            <LinearLayout
+                android:id="@+id/layoutTestView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Test Phase Header -->
+                <TextView
+                    android:id="@+id/tvTestPhaseBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/morse_cyan"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="ETAPA 1 DE 2: TESTE DE ESCUTA (OUVIR)"
+                    android:textColor="@color/radio_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <!-- Question / Score Tracker -->
+                <TextView
+                    android:id="@+id/tvTestProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="monospace"
+                    android:text="Pergunta 1 de 5 | Acertos: 0"
+                    android:textColor="@color/morse_amber"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <!-- STAGE A: LISTENING (OUVIR) -->
+                <LinearLayout
+                    android:id="@+id/layoutStageListening"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/radio_surface"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/radio_surface_variant"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:padding="20dp">
+
+                            <Button
+                                android:id="@+id/btnReplayTestAudio"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:backgroundTint="@color/radio_surface_variant"
+                                android:text="🔊"
+                                android:textSize="32sp"
+                                app:cornerRadius="40dp"
+                                app:strokeColor="@color/morse_amber"
+                                app:strokeWidth="2dp" />
 
                             <TextView
-                                android:id="@+id/tvNewChar1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Toque para ouvir novamente"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 4 Choices Grid -->
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:columnCount="2"
+                        android:rowCount="2">
+
+                        <Button
+                            android:id="@+id/btnTestOpt1"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:backgroundTint="@color/radio_surface_variant"
+                            android:fontFamily="monospace"
+                            android:text="A"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp" />
+
+                        <Button
+                            android:id="@+id/btnTestOpt2"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:backgroundTint="@color/radio_surface_variant"
+                            android:fontFamily="monospace"
+                            android:text="B"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp" />
+
+                        <Button
+                            android:id="@+id/btnTestOpt3"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:backgroundTint="@color/radio_surface_variant"
+                            android:fontFamily="monospace"
+                            android:text="C"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp" />
+
+                        <Button
+                            android:id="@+id/btnTestOpt4"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:backgroundTint="@color/radio_surface_variant"
+                            android:fontFamily="monospace"
+                            android:text="D"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp" />
+                    </GridLayout>
+                </LinearLayout>
+
+                <!-- STAGE B: SENDING (MANDAR) -->
+                <LinearLayout
+                    android:id="@+id/layoutStageSending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/radio_surface"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/radio_surface_variant"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="monospace"
+                                android:text="TRANSMITA ESTA LETRA:"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSendingPrompt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="monospace"
                                 android:text="E"
                                 android:textColor="@color/morse_amber"
-                                android:textSize="22sp"
+                                android:textSize="64sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvNewMorse1"
+                                android:id="@+id/tvSendingBuffer"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:text="•"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="10dp"
-                            android:layout_height="match_parent" />
-
-                        <!-- New Char 2 -->
-                        <LinearLayout
-                            android:id="@+id/btnPlayChar2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@color/radio_surface_variant"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="10dp">
-
-                            <TextView
-                                android:id="@+id/tvNewChar2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="monospace"
-                                android:text="T"
-                                android:textColor="@color/morse_amber"
-                                android:textSize="22sp"
+                                android:text="A introduzir: —"
+                                android:textColor="@color/morse_cyan"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvNewMorse2"
+                                android:id="@+id/tvSendingFeedback"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="monospace"
-                                android:text="—"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp" />
+                                android:layout_marginTop="8dp"
+                                android:text="Use os botões DI e DAH abaixo para transmitir"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
                         </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Pool of All Previous Characters -->
-                    <TextView
-                        android:id="@+id/tvPoolDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="monospace"
-                        android:text="Todas as letras no teste: E, T"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="11sp" />
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Target Transmit Challenge Card -->
-            <com.google.android.material.card.MaterialCardView
+                <!-- Cancel Test Button -->
+                <Button
+                    android:id="@+id/btnCancelTest"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="Cancelar Teste"
+                    android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <!-- ================= VIEW 3: RESULTADO DO EXAME ================= -->
+            <LinearLayout
+                android:id="@+id/layoutResultView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/radio_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/radio_surface_variant"
-                app:strokeWidth="1dp">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/radio_surface"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/radio_surface_variant"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:text="TRANSMITA COM O SEU MANIPULADOR CW:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvChallengeChar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:text="E"
-                        android:textColor="@color/morse_amber"
-                        android:textSize="64sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvChallengeMorse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:text="Código: ."
-                        android:textColor="@color/morse_cyan"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnListenChallenge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="@color/radio_surface_variant"
-                        android:text="Ouvir Ritmo"
-                        android:textColor="@color/text_primary" />
-
-                    <!-- Live Buffer & Feedback -->
-                    <TextView
-                        android:id="@+id/tvLiveBuffer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="monospace"
-                        android:text="A introduzir: —"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvFeedback"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:text="Toque nas pás do manipulador para responder"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:id="@+id/tvResultTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:text="🎉 NÍVEL CONCLUÍDO!"
+                            android:textColor="@color/morse_green"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvResultSummary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="monospace"
+                            android:gravity="center"
+                            android:lineSpacingExtra="4dp"
+                            android:text="Escuta (Ouvir): 5 / 5\nEnvio (Mandar): 5 / 5\nAproveitamento: 100%"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/tvResultUnlockMsg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center"
+                            android:text="Próximo nível desbloqueado na Árvore Binária!"
+                            android:textColor="@color/morse_amber"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Action Button after test -->
+                <Button
+                    android:id="@+id/btnResultAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/morse_amber"
+                    android:fontFamily="monospace"
+                    android:text="AVANÇAR PARA O PRÓXIMO NÍVEL ▶"
+                    android:textColor="@color/radio_dark"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnReviewLevel"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Rever Este Nível"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
-    <!-- On-screen Paddle Controls (or hardware CW keyer) -->
+    <!-- ================= DEDICATED BOTTOM PADDLE BUTTONS ================= -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="monospace"
-        android:text="PÁS DE MANIPULAÇÃO (OU USE O HARDWARE TYPE-C):"
+        android:text="PÁS DE ENVIO (DI / DAH OU MANIPULADOR USB):"
         android:textColor="@color/text_secondary"
         android:textSize="10sp"
         android:textStyle="bold" />
@@ -287,7 +594,7 @@
         android:layout_height="110dp"
         android:orientation="horizontal">
 
-        <!-- DIT Paddle -->
+        <!-- Left Button: DI / PONTO -->
         <Button
             android:id="@+id/btnTouchDit"
             android:layout_width="0dp"
@@ -296,15 +603,16 @@
             android:layout_weight="1"
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
-            android:text="DIT (•)\nPonto [Esq]"
+            android:gravity="center"
+            android:text="DI (•)\nPONTO [ESQ]"
             android:textColor="@color/morse_amber"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:strokeColor="@color/morse_amber"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
-        <!-- DAH Paddle -->
+        <!-- Right Button: DAH / TRAÇO -->
         <Button
             android:id="@+id/btnTouchDah"
             android:layout_width="0dp"
@@ -313,13 +621,14 @@
             android:layout_weight="1"
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
-            android:text="DAH (—)\nTraço [Dir]"
+            android:gravity="center"
+            android:text="DAH (—)\nTRAÇO [DIR]"
             android:textColor="@color/morse_cyan"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:strokeColor="@color/morse_cyan"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
     </LinearLayout>
 
 </LinearLayout>

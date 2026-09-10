@@ -62,6 +62,17 @@ public class PracticeFragment extends Fragment {
         setupNewQuestion();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null && binding != null) {
+            int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
+            TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
+            binding.tvPracticeUnlockedInfo.setText("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + level.getAllCharacters().size() + " caracteres");
+        }
+    }
+
     private void setupNewQuestion() {
         MainActivity activity = (MainActivity) getActivity();
         if (activity == null) return;

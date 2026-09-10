@@ -116,4 +116,17 @@ public class KeyerSettings {
         this.currentUnlockedLevel = Math.max(1, level);
         save();
     }
+
+    public boolean isLevelUnlocked(int level) {
+        return level <= currentUnlockedLevel;
+    }
+
+    public boolean unlockNextLevel(int completedLevel) {
+        if (completedLevel >= currentUnlockedLevel) {
+            currentUnlockedLevel = completedLevel + 1;
+            save();
+            return true;
+        }
+        return false;
+    }
 }

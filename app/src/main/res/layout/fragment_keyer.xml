@@ -207,13 +207,13 @@
             android:layout_weight="1"
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
-            android:text="DIT (•)\nPonto [Esq]"
+            android:text="DI (•)\nPONTO [ESQ]"
             android:textColor="@color/morse_amber"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:strokeColor="@color/morse_amber"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
         <Button
             android:id="@+id/btnFreeDah"
@@ -223,13 +223,13 @@
             android:layout_weight="1"
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
-            android:text="DAH (—)\nTraço [Dir]"
+            android:text="DAH (—)\nTRAÇO [DIR]"
             android:textColor="@color/morse_cyan"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:strokeColor="@color/morse_cyan"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
     </LinearLayout>
 
 </LinearLayout>
