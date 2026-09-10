@@ -534,8 +534,46 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     @Override
     public void onTimingFeedback(MorseTiming.PauseEvaluation eval) {
         if (binding == null || currentStage != TestStage.SENDING) return;
-        binding.tvTimingFeedback.setText(eval.feedback);
-        binding.tvTimingFeedback.setTextColor(eval.isGood ? Color.parseColor("#00E676") : Color.parseColor("#FFB300"));
+        if (!eval.isTimingFailure) {
+            binding.tvTimingFeedback.setText(eval.feedback);
+            binding.tvTimingFeedback.setTextColor(eval.isGood ? Color.parseColor("#00E676") : Color.parseColor("#FFB300"));
+        }
+    }
+
+    /**
+     * Timing failure rule: "considera falha o não respeito dos tempos mín e máx nas letras e entre letras"
+     */
+    @Override
+    public void onTimingFailure(MorseTiming.PauseEvaluation eval) {
+        if (binding == null || currentStage != TestStage.SENDING || !sendingWaitingForInput) return;
+
+        sendingWaitingForInput = false;
+        questionsAnsweredInStage++;
+        currentStageFailures++;
+
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            for (int i = 0; i < currentSendingTarget.length(); i++) {
+                activity.getSettings().recordLetterFailure(String.valueOf(currentSendingTarget.charAt(i)));
+            }
+            activity.getDecoder().clear();
+        }
+
+        applyFailurePenalty(currentSendingTarget);
+
+        binding.tvSendingFeedback.setText("✗ " + eval.feedback);
+        binding.tvSendingFeedback.setTextColor(Color.parseColor("#FF5252"));
+        binding.tvTimingFeedback.setText("❌ " + eval.feedback);
+        binding.tvTimingFeedback.setTextColor(Color.parseColor("#FF5252"));
+
+        updateLivesUi();
+
+        if (currentStageFailures >= MAX_ALLOWED_FAILURES) {
+            sendingTotalFailures = currentStageFailures;
+            binding.getRoot().postDelayed(() -> showExamResults(false, "Excedeu o limite de 3 falhas no Teste de Envio (desrespeito dos tempos mín/máx de pausa)."), 1400);
+        } else {
+            binding.getRoot().postDelayed(this::nextSendingQuestion, 1600);
+        }
     }
 
     /**

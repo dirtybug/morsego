@@ -12,6 +12,7 @@ public class MorseDecoder {
         void onTextUpdated(String fullText);
         void onCharacterDecoded(char character);
         default void onTimingFeedback(MorseTiming.PauseEvaluation evaluation) {}
+        default void onTimingFailure(MorseTiming.PauseEvaluation evaluation) {}
     }
 
     private final KeyerSettings settings;
@@ -23,10 +24,11 @@ public class MorseDecoder {
 
     private Runnable charPauseRunnable;
     private Runnable wordPauseRunnable;
+    private Runnable maxLetterPauseRunnable;
 
     // Timing tracking
-    private long lastElementEndTime = 0;
-    private long lastCharCommitTime = 0;
+    private long lastToneStopTime = 0;
+    private long lastCharToneStopTime = 0;
 
     // Manual / Straight-key timing
     private long toneStartTime = 0;
@@ -40,17 +42,48 @@ public class MorseDecoder {
         this.listener = listener;
     }
 
+    public synchronized void onToneStarted() {
+        cancelMaxLetterPauseWatcher();
+        long now = System.currentTimeMillis();
+
+        if (lastToneStopTime > 0) {
+            long pause = now - lastToneStopTime;
+
+            if (currentPattern.length() > 0) {
+                // Intra-element pause between dits/dahs of the same character
+                MorseTiming.PauseEvaluation eval = MorseTiming.evaluateIntraElementPause(pause, settings.getWpm());
+                notifyTimingFeedback(eval);
+                if (eval.isTimingFailure) {
+                    notifyTimingFailure(eval);
+                }
+            } else if (lastCharToneStopTime > 0) {
+                // Inter-letter pause between letters of a word
+                MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(pause, settings.getWpm());
+                notifyTimingFeedback(eval);
+                if (eval.isTimingFailure) {
+                    notifyTimingFailure(eval);
+                }
+            }
+        }
+    }
+
+    public synchronized void onToneStopped() {
+        lastToneStopTime = System.currentTimeMillis();
+        restartPauseWatchers();
+    }
+
     public synchronized void onElementReceived(char element) {
         long now = System.currentTimeMillis();
-        if (lastElementEndTime > 0 && currentPattern.length() > 0) {
-            long pause = now - lastElementEndTime;
+        if (lastToneStopTime > 0 && currentPattern.length() > 0) {
+            long pause = now - lastToneStopTime;
             MorseTiming.PauseEvaluation eval = MorseTiming.evaluateIntraElementPause(pause, settings.getWpm());
             notifyTimingFeedback(eval);
+            if (eval.isTimingFailure) {
+                notifyTimingFailure(eval);
+            }
         }
 
         currentPattern.append(element);
-        lastElementEndTime = now;
-
         notifyPatternChanged();
         restartPauseWatchers();
     }
@@ -60,14 +93,18 @@ public class MorseDecoder {
         if (toneOn && !isToneActive) {
             toneStartTime = now;
             isToneActive = true;
+            onToneStarted();
             cancelPauseWatchers();
         } else if (!toneOn && isToneActive) {
             isToneActive = false;
+            onToneStopped();
             long duration = now - toneStartTime;
             long ditDuration = MorseTiming.ditDurationMs(settings.getWpm());
 
             char element = (duration >= ditDuration * 2) ? '-' : '.';
-            onElementReceived(element);
+            currentPattern.append(element);
+            notifyPatternChanged();
+            restartPauseWatchers();
         }
     }
 
@@ -103,16 +140,33 @@ public class MorseDecoder {
         }
     }
 
+    private void scheduleMaxLetterPauseWatcher() {
+        cancelMaxLetterPauseWatcher();
+        int wpm = settings.getWpm();
+        // 2.2x inter-character pause is the maximum allowed pause before failure
+        long maxWait = (long) (MorseTiming.interCharSpaceMs(wpm) * 2.2f) + 80;
+        maxLetterPauseRunnable = () -> {
+            if (listener != null && decodedText.length() > 0) {
+                MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
+                        false, true, "Falha: Pausa excessiva entre letras (> máx 2.2x)", 2.5f);
+                notifyTimingFeedback(eval);
+                notifyTimingFailure(eval);
+            }
+        };
+        handler.postDelayed(maxLetterPauseRunnable, maxWait);
+    }
+
+    private void cancelMaxLetterPauseWatcher() {
+        if (maxLetterPauseRunnable != null) {
+            handler.removeCallbacks(maxLetterPauseRunnable);
+            maxLetterPauseRunnable = null;
+        }
+    }
+
     private synchronized void commitCharacter() {
         if (currentPattern.length() == 0) return;
 
-        long now = System.currentTimeMillis();
-        if (lastCharCommitTime > 0) {
-            long letterPause = now - lastCharCommitTime;
-            MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(letterPause, settings.getWpm());
-            notifyTimingFeedback(eval);
-        }
-        lastCharCommitTime = now;
+        lastCharToneStopTime = lastToneStopTime > 0 ? lastToneStopTime : System.currentTimeMillis();
 
         String pattern = currentPattern.toString();
         currentPattern.setLength(0);
@@ -127,6 +181,8 @@ public class MorseDecoder {
         if (listener != null) {
             listener.onCharacterDecoded(c);
         }
+
+        scheduleMaxLetterPauseWatcher();
     }
 
     private void notifyTimingFeedback(MorseTiming.PauseEvaluation eval) {
@@ -135,8 +191,17 @@ public class MorseDecoder {
         }
     }
 
+    private void notifyTimingFailure(MorseTiming.PauseEvaluation eval) {
+        if (listener != null) {
+            handler.post(() -> listener.onTimingFailure(eval));
+        }
+    }
+
     public synchronized void clear() {
         cancelPauseWatchers();
+        cancelMaxLetterPauseWatcher();
+        lastToneStopTime = 0;
+        lastCharToneStopTime = 0;
         currentPattern.setLength(0);
         decodedText.setLength(0);
         notifyPatternChanged();

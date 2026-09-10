@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         if (settings.isSoundEnabled()) {
             synthesizer.startTone();
         }
+        decoder.onToneStarted();
         runOnUiThread(() -> {
             if (currentFragment instanceof FreeKeyerFragment) {
                 ((FreeKeyerFragment) currentFragment).setLedActive(true);
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     @Override
     public void onToneStop() {
         synthesizer.stopTone();
+        decoder.onToneStopped();
         runOnUiThread(() -> {
             if (currentFragment instanceof FreeKeyerFragment) {
                 ((FreeKeyerFragment) currentFragment).setLedActive(false);

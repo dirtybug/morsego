@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Service to run Unit Tests (morseGO core logic, tree, timing, dynamic generator)
+  test-unit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-test:latest
+    container_name: morsego-unit-tests
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    command: ["unit"]
+
+  # Service to build debug and test APKs
+  build-apk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-test:latest
+    container_name: morsego-build
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    command: ["build"]
+
+  # Service to run Android instrumented tests (connecting to host ADB or emulator)
+  test-instrumented:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-test:latest
+    container_name: morsego-instrumented-tests
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["connected"]
+
+  # Service to run full suite (unit tests, APK build, and instrumented tests if device present)
+  test-all:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-test:latest
+    container_name: morsego-all-tests
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["all"]
+
+volumes:
+  gradle-cache:
+    name: morsego-gradle-cache

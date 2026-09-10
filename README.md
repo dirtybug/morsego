@@ -74,3 +74,48 @@ O projeto foi construído inteiramente em **Java** com o framework oficial Andro
 3. Conecte o dispositivo Android ou inicie um emulador.
 4. Pressione **Run ▶**.
 5. Ligue o manipulador USB Type-C ao telemóvel e explore os ramos da Árvore de Morse!
+
+---
+
+## 🐳 Executar Testes em Container Docker
+
+Para garantir que o código e todos os testes correm num ambiente idêntico, isolado e reprodutível (com OpenJDK 17 e Android SDK 34), o projeto inclui suporte Docker completo:
+
+### 1. Testes Unitários (Rápido, ~3 segundos):
+No Windows (Prompt de Comando):
+```cmd
+run-docker-tests.bat unit
+```
+No Windows (PowerShell):
+```powershell
+.\run-docker-tests.ps1 unit
+```
+Ou diretamente com Docker Compose:
+```bash
+docker compose run --rm test-unit
+```
+Executa todos os testes de lógica de negócio:
+* [`MorseTimingTest.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/test/java/com/morsego/app/keyer/MorseTimingTest.java): Validação da temporização PARIS, limites mín/máx de pausas entre elementos ($0.45\times - 2.0\times$) e entre letras ($0.60\times - 2.2\times$).
+* [`MorseBinaryTreeTest.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/test/java/com/morsego/app/tree/MorseBinaryTreeTest.java): Validação dos 21 níveis, nós e travessia da árvore.
+* [`MorseWordGeneratorTest.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/test/java/com/morsego/app/tree/MorseWordGeneratorTest.java): Validação da geração dinâmica de palavras, cobertura de letras desbloqueadas e penalizações.
+
+Os relatórios HTML ficam acessíveis em `./reports/unit-tests/index.html`.
+
+### 2. Compilar APKs de Debug e Teste:
+```cmd
+run-docker-tests.bat build
+```
+Os binários compilados são guardados em `./build-apks/`.
+
+### 3. Testes Instrumentados de Comportamento com Screenshots:
+Com o emulador ou telemóvel conectado no host (`adb tcpip 5555`):
+```cmd
+run-docker-tests.bat instrumented
+```
+Executa os testes de interface, envio de palavras de rádio (CQ, 73, SOS, QSO) e extrai automaticamente os screenshots para `./screenshots/`.
+
+### 4. Executar Suite Completa:
+```cmd
+run-docker-tests.bat all
+```
+
