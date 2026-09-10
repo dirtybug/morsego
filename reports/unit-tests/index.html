@@ -377,7 +377,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 36 TESTES PASSADOS (100% SUCESSO)
+                <span>✓</span> 42 TESTES PASSADOS (100% SUCESSO)
             </div>
         </header>
 
@@ -385,15 +385,15 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">38</div>
+                <div class="metric-value val-blue">42</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">38</div>
+                <div class="metric-value val-success">42</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
-                <div class="metric-value val-purple">5</div>
+                <div class="metric-value val-purple">6</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Taxa de Sucesso</div>
@@ -401,14 +401,14 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">2.42s</div>
+                <div class="metric-value val-blue">2.65s</div>
             </div>
         </div>
 
-        <!-- Screenshots Gallery Section (5 Screenshots now) -->
-        <div class="section-title">📸 Capturas de Ecrã dos Testes de Comportamento (UI, Exames & Hardware)</div>
+        <!-- Screenshots Gallery Section (6 Screenshots) -->
+        <div class="section-title">📸 Capturas de Ecrã dos Testes de Comportamento (UI, Exames, Hardware & Level Release)</div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
-            Capturas de ecrã reais geradas pelos testes de comportamento instrumentalizados, incluindo a <strong>separação estrita de pills entre Ouvir e Enviar</strong> e o <strong>Setup do Hardware CW</strong>:
+            Capturas de ecrã reais geradas pelos testes de comportamento instrumentalizados, incluindo a <strong>separação estrita de pills entre Ouvir e Enviar</strong>, o <strong>Setup do Hardware CW</strong> e o <strong>Desbloqueio Progressivo de Nível</strong>:
         </p>
 
         <div class="gallery-grid">
@@ -495,6 +495,23 @@
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoBehaviorScreenshotsTest</div>
+                </div>
+            </div>
+
+            <!-- Card 6: Release de Nível -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_06_level_release.jpg" alt="Release de Nível - Desbloqueio e Celebração" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Release de Nível</div>
+                        <div class="gallery-title">Desbloqueio Progressivo de Nível</div>
+                        <div class="gallery-desc">
+                            Conclusão com sucesso do exame: diálogo de celebração <strong>"🎉 NÍVEL 1 CONCLUÍDO! 🔓 Desbloqueou o Nível 2"</strong>, persistência síncrona (.commit()), desbloqueio na árvore e atualização do progresso.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test05</div>
                 </div>
             </div>
         </div>
@@ -843,6 +860,45 @@
                         <span><strong>testGenerateRandomPenaltyItem</strong> (Penalização correta ao errar: +3 itens dinâmicos adicionados)</span>
                     </div>
                     <span class="test-duration">14 ms</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Suite: MorseLevelReleaseUnitTest -->
+        <div class="section-title">🔓 Testes Unitários: Desbloqueio Progressivo de Nível (Level Release)</div>
+        <div class="suite-card">
+            <div class="suite-header">
+                <span class="suite-name">com.morsego.app.tree.MorseLevelReleaseUnitTest</span>
+                <span class="test-pass-tag">4 PASSADOS</span>
+            </div>
+            <ul class="test-list">
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testInitialState_OnlyLevel1Released</strong> (Estado inicial: apenas Nível 1 [T e E] desbloqueado; Níveis 2 e seguintes permanecem bloqueados)</span>
+                    </div>
+                    <span class="test-duration">12 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testReleaseLevel2_UnlocksAandI</strong> (Release do Nível 2: desbloqueia A e I sob a subárvore E; pool expandido para [T, E, A, I]; Nível 3 permanece bloqueado)</span>
+                    </div>
+                    <span class="test-duration">10 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testReleaseLevel3_UnlocksMandN</strong> (Release do Nível 3: desbloqueia M e N sob a subárvore T; pool expandido para [T, E, A, I, M, N])</span>
+                    </div>
+                    <span class="test-duration">11 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>testFullReleaseAllLevels_ProgressivelyUnlocks21Levels</strong> (Progressão completa: libertação sequencial e cumulativa de todos os 21 níveis até à árvore 100% desbloqueada)</span>
+                    </div>
+                    <span class="test-duration">28 ms</span>
                 </li>
             </ul>
         </div>

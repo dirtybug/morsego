@@ -124,4 +124,78 @@ public class MorseGoExamFlowBehaviorTest {
         onView(withId(R.id.tvTreeLevelTitle)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("18_persistent_level_after_recreate");
     }
+
+    /**
+     * BEHAVIOR 5: LEVEL RELEASE / DESBLOQUEIO DE NÍVEL:
+     * 1. Confirma que o Nível 2 está bloqueado inicialmente.
+     * 2. Aprova no exame (ouvindo e mandando com sucesso).
+     * 3. Verifica a exibição do diálogo de aprovação e mensagem de desbloqueio do Nível 2.
+     * 4. Clica em "AVANÇAR PARA O PRÓXIMO NÍVEL".
+     * 5. Confirma que o Nível 2 foi libertado/desbloqueado com os caracteres A e I disponíveis.
+     * 6. Recria a Activity e confirma que o novo nível desbloqueado persiste de forma síncrona.
+     */
+    @Test
+    public void test05_ExamPass_ReleasesNextLevel_AndPersistsUnlock() throws InterruptedException {
+        java.util.concurrent.atomic.AtomicReference<MainActivity> activityRef = new java.util.concurrent.atomic.AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        org.junit.Assert.assertNotNull(activity);
+
+        // Given: User is at Level 1, Level 2 is locked
+        activity.getSettings().setCurrentUnlockedLevel(1);
+        org.junit.Assert.assertEquals(1, activity.getSettings().getCurrentUnlockedLevel());
+        org.junit.Assert.assertFalse("Nível 2 deve estar bloqueado inicialmente", activity.getSettings().isLevelUnlocked(2));
+
+        // Navigate to Learn tab
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(600);
+
+        // Find LearnFragment and trigger exam pass
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateExamPassForTesting();
+            }
+        });
+        Thread.sleep(800);
+
+        // Verify result layout shows success and level unlock message
+        onView(withId(R.id.tvResultTitle)).check(matches(withText(containsString("CONCLUÍDO"))));
+        onView(withId(R.id.tvResultUnlockMsg)).check(matches(withText(containsString("Desbloqueou o Nível 2"))));
+
+        // Capture screenshot of level unlock success dialog
+        ScreenshotHelper.capture("19_level_release_unlock_dialog");
+
+        // Advance to next level
+        onView(withId(R.id.btnResultAction)).perform(click());
+        Thread.sleep(700);
+
+        // Verify Level 2 has been released/unlocked
+        org.junit.Assert.assertEquals("Nível desbloqueado deve ser incrementado para 2",
+                2, activity.getSettings().getCurrentUnlockedLevel());
+        org.junit.Assert.assertTrue("Nível 2 deve estar agora desbloqueado",
+                activity.getSettings().isLevelUnlocked(2));
+
+        // Verify Level 2 study screen is displayed with new letters A and I
+        onView(withId(R.id.tvLevelNumber)).check(matches(withText(containsString("NÍVEL 2"))));
+        onView(withId(R.id.tvNewChar1)).check(matches(withText("A")));
+        onView(withId(R.id.tvNewChar2)).check(matches(withText("I")));
+
+        // Capture screenshot of newly released Level 2 screen
+        ScreenshotHelper.capture("20_level2_released_study_active");
+
+        // Verify synchronous persistence across app restart/activity recreate
+        activityRule.getScenario().recreate();
+        Thread.sleep(800);
+
+        activityRule.getScenario().onActivity(a -> {
+            org.junit.Assert.assertEquals("Nível desbloqueado deve persistir após recreação",
+                    2, a.getSettings().getCurrentUnlockedLevel());
+            org.junit.Assert.assertTrue("Nível 2 deve permanecer desbloqueado após recreação",
+                    a.getSettings().isLevelUnlocked(2));
+        });
+
+        ScreenshotHelper.capture("21_level2_persisted_after_restart");
+    }
 }
+

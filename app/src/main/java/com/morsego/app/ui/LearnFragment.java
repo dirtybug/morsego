@@ -618,11 +618,22 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
     // --- STAGE 3: RESULTS & UNLOCKING ---
 
-    private void showExamResults(boolean passed, String detailMessage) {
+    /**
+     * Helper for behavior testing: simulates student completing the exam with zero failures
+     * to verify the level release and unlock flow.
+     */
+    public void simulateExamPassForTesting() {
+        listeningTotalFailures = 0;
+        sendingTotalFailures = 0;
+        showExamResults(true, "Aprovado com sucesso em ambas as etapas.");
+    }
+
+    public void showExamResults(boolean passed, String detailMessage) {
         currentStage = TestStage.RESULT;
         binding.layoutStudyView.setVisibility(View.GONE);
         binding.layoutTestView.setVisibility(View.GONE);
         binding.layoutResultView.setVisibility(View.VISIBLE);
+
 
         MainActivity activity = (MainActivity) getActivity();
 
