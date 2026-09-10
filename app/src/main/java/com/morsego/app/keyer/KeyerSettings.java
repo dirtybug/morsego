@@ -48,6 +48,8 @@ public class KeyerSettings {
     private boolean hapticsEnabled = true;
     private int currentUnlockedLevel = 1;
 
+    private static final String KEY_BACKUP_LEVEL = "highest_unlocked_level_backup";
+
     private final SharedPreferences prefs;
 
     public KeyerSettings(Context context) {
@@ -63,7 +65,11 @@ public class KeyerSettings {
         this.dahKeyCode = prefs.getInt(KEY_DAH_KEY, KeyEvent.KEYCODE_CTRL_RIGHT);
         this.soundEnabled = prefs.getBoolean(KEY_SOUND, true);
         this.hapticsEnabled = prefs.getBoolean(KEY_HAPTICS, true);
-        this.currentUnlockedLevel = prefs.getInt(KEY_LEVEL, 1);
+
+        // Persistent level restoration with backup redundancy
+        int savedLevel = prefs.getInt(KEY_LEVEL, 1);
+        int backupLevel = prefs.getInt(KEY_BACKUP_LEVEL, 1);
+        this.currentUnlockedLevel = Math.max(1, Math.max(savedLevel, backupLevel));
 
         String modeStr = prefs.getString(KEY_MODE, Mode.IAMBIC_B.name());
         try {
@@ -84,7 +90,8 @@ public class KeyerSettings {
                 .putBoolean(KEY_SOUND, soundEnabled)
                 .putBoolean(KEY_HAPTICS, hapticsEnabled)
                 .putInt(KEY_LEVEL, currentUnlockedLevel)
-                .apply();
+                .putInt(KEY_BACKUP_LEVEL, currentUnlockedLevel)
+                .commit();
     }
 
     public int getWpm() { return wpm; }
@@ -111,20 +118,33 @@ public class KeyerSettings {
     public boolean isHapticsEnabled() { return hapticsEnabled; }
     public void setHapticsEnabled(boolean hapticsEnabled) { this.hapticsEnabled = hapticsEnabled; save(); }
 
-    public int getCurrentUnlockedLevel() { return currentUnlockedLevel; }
-    public void setCurrentUnlockedLevel(int level) {
+    public int getCurrentUnlockedLevel() {
+        int saved = prefs.getInt(KEY_LEVEL, 1);
+        int backup = prefs.getInt(KEY_BACKUP_LEVEL, 1);
+        this.currentUnlockedLevel = Math.max(this.currentUnlockedLevel, Math.max(saved, backup));
+        return this.currentUnlockedLevel;
+    }
+
+    public synchronized void setCurrentUnlockedLevel(int level) {
         this.currentUnlockedLevel = Math.max(1, level);
-        save();
+        prefs.edit()
+                .putInt(KEY_LEVEL, this.currentUnlockedLevel)
+                .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
+                .commit();
     }
 
     public boolean isLevelUnlocked(int level) {
-        return level <= currentUnlockedLevel;
+        return level <= getCurrentUnlockedLevel();
     }
 
-    public boolean unlockNextLevel(int completedLevel) {
-        if (completedLevel >= currentUnlockedLevel) {
-            currentUnlockedLevel = completedLevel + 1;
-            save();
+    public synchronized boolean unlockNextLevel(int completedLevel) {
+        int current = getCurrentUnlockedLevel();
+        if (completedLevel >= current) {
+            this.currentUnlockedLevel = completedLevel + 1;
+            prefs.edit()
+                    .putInt(KEY_LEVEL, this.currentUnlockedLevel)
+                    .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
+                    .commit();
             return true;
         }
         return false;
@@ -134,7 +154,7 @@ public class KeyerSettings {
         if (letter == null || letter.isEmpty()) return;
         String key = "fail_cnt_" + letter.toUpperCase();
         int current = prefs.getInt(key, 0);
-        prefs.edit().putInt(key, current + 1).apply();
+        prefs.edit().putInt(key, current + 1).commit();
     }
 
     public int getLetterFailureCount(String letter) {

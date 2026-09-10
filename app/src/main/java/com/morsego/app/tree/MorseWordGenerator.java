@@ -1,242 +1,150 @@
 package com.morsego.app.tree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
+/**
+ * Generates dynamic, randomized Morse words and code sequences on the fly.
+ * Completely avoids static lists so students cannot memorize patterns, ensuring
+ * authentic acoustic Morse decoding and transmission rhythm training.
+ */
 public class MorseWordGenerator {
 
-    // Common real words and ham radio vocabulary in Portuguese and international CW
-    private static final List<String> DICTIONARY = Arrays.asList(
-            // E, T
-            "ET", "TE", "TEE", "TET", "ETTE", "TETE",
-            // + I, A
-            "AT", "IT", "TEA", "EAT", "ATE", "TIE", "TAI", "AIT", "TATE", "TA", "AI",
-            // + N, M
-            "NO", "ON", "MAN", "MEN", "NET", "TEN", "NAME", "MAIN", "MINT",
-            "TEAM", "MINE", "TIME", "NOTE", "MATE", "MEAT", "NINE", "ITEM",
-            "MAE", "MIM", "TEM", "TOM", "MAO", "NAO",
-            // + S, U
-            "SUN", "SET", "USE", "SUIT", "MUST", "SITE", "SAME", "MUSE",
-            "TENT", "SEAT", "EAST", "STEM", "SUET", "MIST", "TEST", "SATE",
-            "SIM", "SEM", "MAS", "TUA", "SEU", "MES", "SUMO",
-            // + R, W
-            "WAR", "RAW", "WIRE", "STAR", "REST", "TRUE", "WATER", "WRITE",
-            "RAIN", "WEST", "WEAR", "WAIT", "WINE", "RATE", "RUST", "ROSE",
-            "RUA", "REI", "RATO", "REDE", "RODA", "ROMA",
-            // + D, K
-            "DAY", "DARK", "DEAR", "KITE", "KING", "KNOW", "KIND",
-            "ROAD", "DATE", "DINE", "DESK", "RISK", "DUST", "MAKE", "MARK",
-            "DAR", "DIA", "DADO", "DEDO", "DOR",
-            // + G, O
-            "GOOD", "GOAT", "GAME", "GOLD", "OPEN", "OVER", "MOON", "ROOM",
-            "MORE", "GONE", "DOG", "GATO", "GOTA", "OVO", "ORA", "ONDA",
-            // + H, V
-            "HOME", "HOPE", "HAVE", "VOTE", "VIEW", "VENTO", "VIDA", "HORA", "HOJE", "VELA",
-            // + F, L
-            "FIVE", "FAST", "FISH", "LOVE", "LINE", "LATE", "LAKE", "LAMP",
-            "FALL", "LEAF", "LIFE", "FOGO", "FALA", "LUA", "LUZ", "LIVRO",
-            // + P, J
-            "PARK", "PORT", "PAGE", "JOIN", "JUMP", "JUST", "JULY", "JUNE",
-            "PAZ", "PAI", "PAO", "PATO", "JOGO", "JATO",
-            // + B, X
-            "BOAT", "BLUE", "BEST", "BIRD", "BELL", "BOX", "NEXT", "TAXI",
-            "BOCA", "BEM", "BOM", "BELO", "BAIXO",
-            // + C, Y
-            "CITY", "CALL", "COLD", "CARE", "YEAR", "YARD", "YES", "YOU",
-            "CASA", "CAFE", "CEU", "COR", "CIMA",
-            // + Z, Q
-            "ZERO", "ZONE", "ZOOM", "QUIZ", "QUIT", "QUICK", "QUEEN",
-            "QUE", "QUASE", "QUEM", "ZEBRA", "ZONA",
-            // CW abbreviations
-            "CQ", "DX", "QSL", "QTH", "RST", "TU", "TNX", "SOS", "SK", "AR", "GM", "GA", "GE", "RIG", "ANT", "DIT", "DAH"
-    );
+    private static final Random RNG = new Random();
 
     /**
-     * Checks if all letters in 'word' belong to 'allowedLetters'.
+     * Generates a single dynamic word of random length between minLen and maxLen
+     * formed strictly from allowed letters.
      */
-    public static boolean canFormWord(String word, Set<String> allowedLetters) {
-        for (int i = 0; i < word.length(); i++) {
-            String c = String.valueOf(word.charAt(i)).toUpperCase();
-            if (!allowedLetters.contains(c)) {
-                return false;
-            }
+    public static String generateDynamicWord(List<String> pool, int minLen, int maxLen) {
+        if (pool == null || pool.isEmpty()) return "E";
+        int len = minLen + RNG.nextInt(Math.max(1, maxLen - minLen + 1));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(pool.get(RNG.nextInt(pool.size())));
         }
-        return true;
+        return sb.toString();
     }
 
     /**
-     * Gets valid words formed ONLY using the allowed letters.
+     * Generates a dynamic word that is guaranteed to contain 'requiredChar'
+     * at a randomized position, with other letters drawn randomly from 'pool'.
      */
-    public static List<String> getWordsForLetters(List<String> allowedLetters) {
-        Set<String> set = new HashSet<>();
-        for (String l : allowedLetters) {
-            set.add(l.toUpperCase());
+    public static String generateWordWithLetter(String requiredChar, List<String> pool, int minLen, int maxLen) {
+        if (pool == null || pool.isEmpty()) return requiredChar;
+        int len = minLen + RNG.nextInt(Math.max(1, maxLen - minLen + 1));
+        List<String> chars = new ArrayList<>();
+        chars.add(requiredChar.toUpperCase());
+        for (int i = 1; i < len; i++) {
+            chars.add(pool.get(RNG.nextInt(pool.size())).toUpperCase());
         }
-
-        List<String> matches = new ArrayList<>();
-        for (String w : DICTIONARY) {
-            if (canFormWord(w, set)) {
-                matches.add(w);
-            }
+        Collections.shuffle(chars, RNG);
+        StringBuilder sb = new StringBuilder();
+        for (String c : chars) {
+            sb.append(c);
         }
-
-        // If no dictionary words or very few, generate synthetic words
-        if (matches.size() < 4) {
-            matches.addAll(generateSyntheticWords(allowedLetters, 6));
-        }
-
-        return matches;
+        return sb.toString();
     }
 
     /**
-     * Generates synthetic combinations of 2 to 3 characters from allowed letters.
-     */
-    public static List<String> generateSyntheticWords(List<String> allowedLetters, int count) {
-        List<String> list = new ArrayList<>();
-        if (allowedLetters.isEmpty()) return list;
-
-        int attempts = 0;
-        while (list.size() < count && attempts < 100) {
-            attempts++;
-            int len = 2 + (int) (Math.random() * 2); // 2 or 3 letters
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < len; i++) {
-                sb.append(allowedLetters.get((int) (Math.random() * allowedLetters.size())));
-            }
-            String w = sb.toString();
-            if (!list.contains(w)) {
-                list.add(w);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Generates an exam word sequence that strictly satisfies:
-     * 1. Considers every previous & current unlocked letter in 'pool' at least once.
-     * 2. Adds 25% extra words incorporating the user's most-failed letters.
-     * 3. All words are randomized.
+     * Generates an exam word sequence dynamically satisfying:
+     * 1. Never static: newly generated on every test run so user cannot memorize.
+     * 2. Covers EVERY letter in 'pool' (all previous levels + current) at least once.
+     * 3. Adds 25% extra dynamic words incorporating the user's most failed letters.
+     * 4. Shuffles the final sequence.
      */
     public static List<String> generateExamWordSequence(List<String> pool, List<String> mostFailedLetters) {
-        List<String> validWords = getWordsForLetters(pool);
-        Collections.shuffle(validWords);
-
-        Set<String> uncovered = new HashSet<>(pool);
-        List<String> chosenWords = new ArrayList<>();
-
-        // 1. Pick words from dictionary that cover as many uncovered letters as possible
-        for (String w : validWords) {
-            boolean coversNew = false;
-            for (int i = 0; i < w.length(); i++) {
-                String c = String.valueOf(w.charAt(i)).toUpperCase();
-                if (uncovered.contains(c)) {
-                    coversNew = true;
-                    break;
-                }
-            }
-            if (coversNew) {
-                chosenWords.add(w);
-                for (int i = 0; i < w.length(); i++) {
-                    uncovered.remove(String.valueOf(w.charAt(i)).toUpperCase());
-                }
-            }
-            if (uncovered.isEmpty()) {
-                break;
-            }
+        if (pool == null || pool.isEmpty()) {
+            List<String> fallback = new ArrayList<>();
+            fallback.add("ET");
+            return fallback;
         }
 
-        // If any letters remain uncovered, synthesize words that specifically include them
-        for (String missingChar : new ArrayList<>(uncovered)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(missingChar);
-            int len = 2 + (int) (Math.random() * 2);
-            for (int i = 1; i < len; i++) {
-                sb.append(pool.get((int) (Math.random() * pool.size())));
-            }
-            List<Character> chars = new ArrayList<>();
-            for (char c : sb.toString().toCharArray()) chars.add(c);
-            Collections.shuffle(chars);
-            StringBuilder shuffledWord = new StringBuilder();
-            for (char c : chars) shuffledWord.append(c);
+        Set<String> uniqueWords = new HashSet<>();
 
-            chosenWords.add(shuffledWord.toString());
-            uncovered.remove(missingChar);
+        // Part 1: Ensure every single character in the level's pool appears at least once
+        for (String letter : pool) {
+            int attempts = 0;
+            String word;
+            do {
+                int maxL = pool.size() <= 4 ? 3 : 4;
+                word = generateWordWithLetter(letter, pool, 2, maxL);
+                attempts++;
+            } while (uniqueWords.contains(word) && attempts < 30);
+            uniqueWords.add(word);
         }
 
-        // Ensure minimum sensible word count
-        while (chosenWords.size() < 4) {
-            if (!validWords.isEmpty()) {
-                String extra = validWords.get((int) (Math.random() * validWords.size()));
-                if (!chosenWords.contains(extra)) {
-                    chosenWords.add(extra);
-                } else {
-                    chosenWords.add(generateSyntheticWords(pool, 1).get(0));
-                }
+        // Guarantee a minimum of 4 base words even on Level 1
+        while (uniqueWords.size() < 4) {
+            int maxL = pool.size() <= 2 ? 3 : 4;
+            uniqueWords.add(generateDynamicWord(pool, 2, maxL));
+        }
+
+        // Part 2: Add 25% extra words based on the user's most-failed letters
+        int baseCount = uniqueWords.size();
+        int extraCount = Math.max(1, (int) Math.round(baseCount * 0.25));
+
+        for (int i = 0; i < extraCount; i++) {
+            String failedChar;
+            if (mostFailedLetters != null && !mostFailedLetters.isEmpty()) {
+                failedChar = mostFailedLetters.get(i % mostFailedLetters.size());
             } else {
-                chosenWords.add(generateSyntheticWords(pool, 1).get(0));
+                failedChar = pool.get(RNG.nextInt(pool.size()));
             }
+
+            int attempts = 0;
+            String extraWord;
+            do {
+                int maxL = pool.size() <= 4 ? 3 : 4;
+                extraWord = generateWordWithLetter(failedChar, pool, 2, maxL);
+                attempts++;
+            } while (uniqueWords.contains(extraWord) && attempts < 30);
+            uniqueWords.add(extraWord);
         }
 
-        // 2. Add 25% extra words targeting the most failed letters
-        int extra25Percent = Math.max(1, (int) Math.round(chosenWords.size() * 0.25));
-        for (int i = 0; i < extra25Percent; i++) {
-            String targetFailedLetter = (mostFailedLetters != null && !mostFailedLetters.isEmpty())
-                    ? mostFailedLetters.get(i % mostFailedLetters.size())
-                    : pool.get((int) (Math.random() * pool.size()));
-
-            String wordWithFailed = null;
-            for (String w : validWords) {
-                if (w.contains(targetFailedLetter) && !chosenWords.contains(w)) {
-                    wordWithFailed = w;
-                    break;
-                }
-            }
-            if (wordWithFailed == null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(targetFailedLetter);
-                int len = 2 + (int) (Math.random() * 2);
-                for (int j = 1; j < len; j++) {
-                    sb.append(pool.get((int) (Math.random() * pool.size())));
-                }
-                wordWithFailed = sb.toString();
-            }
-            chosenWords.add(wordWithFailed);
-        }
-
-        Collections.shuffle(chosenWords);
-        return chosenWords;
+        List<String> result = new ArrayList<>(uniqueWords);
+        Collections.shuffle(result, RNG);
+        return result;
     }
 
     /**
-     * Generates alternative word choices strictly from allowed letters for listening tests.
+     * Generates alternative word choices for listening tests dynamically on the fly.
+     * All distractors are formed strictly from 'allowedLetters' and have similar lengths,
+     * randomized so the user cannot guess by pattern elimination or memorize button positions.
      */
     public static List<String> generateWordChoices(String targetWord, List<String> allowedLetters, int count) {
-        List<String> validWords = getWordsForLetters(allowedLetters);
-        List<String> options = new ArrayList<>();
-        options.add(targetWord);
+        List<String> choices = new ArrayList<>();
+        choices.add(targetWord);
 
-        Collections.shuffle(validWords);
-        for (String w : validWords) {
-            if (!options.contains(w) && options.size() < count) {
-                options.add(w);
+        int targetLen = targetWord.length();
+        int attempts = 0;
+
+        while (choices.size() < count && attempts < 150) {
+            attempts++;
+            int len = Math.max(2, targetLen + (RNG.nextBoolean() ? 0 : (RNG.nextBoolean() ? -1 : 1)));
+            String distractor = generateDynamicWord(allowedLetters, len, len);
+            if (!choices.contains(distractor)) {
+                choices.add(distractor);
             }
         }
 
-        // Fill remaining with synthetic words from allowed letters if needed
-        while (options.size() < count) {
-            List<String> syn = generateSyntheticWords(allowedLetters, 1);
-            if (!syn.isEmpty() && !options.contains(syn.get(0))) {
-                options.add(syn.get(0));
-            } else {
-                break;
-            }
-        }
+        Collections.shuffle(choices, RNG);
+        return choices;
+    }
 
-        Collections.shuffle(options);
-        return options;
+    /**
+     * Generates a random dynamic item (letter or word) from pool for penalty additions.
+     */
+    public static String generateRandomPenaltyItem(List<String> pool, boolean asWord) {
+        if (asWord) {
+            int maxL = pool.size() <= 4 ? 3 : 4;
+            return generateDynamicWord(pool, 2, maxL);
+        } else {
+            return pool.get(RNG.nextInt(pool.size()));
+        }
     }
 }

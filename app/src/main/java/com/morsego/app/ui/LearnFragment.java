@@ -243,17 +243,16 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
         LinkedList<String> queue = new LinkedList<>();
 
-        // Part A: First 4 questions are strictly the 2 new characters of this level
-        List<String> first4 = new ArrayList<>(Arrays.asList(
-                currentLevel.getChar1(),
-                currentLevel.getChar2(),
-                currentLevel.getChar1(),
-                currentLevel.getChar2()
-        ));
+        // Part A: First 4 questions are strictly the 2 new characters of this level, dynamically randomized
+        List<String> first4 = new ArrayList<>();
+        first4.add(currentLevel.getChar1());
+        first4.add(currentLevel.getChar2());
+        first4.add(Math.random() < 0.5 ? currentLevel.getChar1() : currentLevel.getChar2());
+        first4.add(Math.random() < 0.5 ? currentLevel.getChar1() : currentLevel.getChar2());
         Collections.shuffle(first4);
         queue.addAll(first4);
 
-        // Part B: Words covering all previous & current letters at least once + 25% extra of most-failed letters
+        // Part B: Words dynamically generated to cover all previous & current letters at least once + 25% extra of most-failed letters
         List<String> pool = currentLevel.getAllCharacters();
         List<String> mostFailed = settings.getMostFailedLetters(pool, 5);
         List<String> words = MorseWordGenerator.generateExamWordSequence(pool, mostFailed);
@@ -534,17 +533,16 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         boolean isWord = failedItem.length() > 1;
 
         if (isWord) {
-            List<String> words = MorseWordGenerator.getWordsForLetters(pool);
-            String rand1 = words.get((int) (Math.random() * words.size()));
-            String rand2 = words.get((int) (Math.random() * words.size()));
+            String rand1 = MorseWordGenerator.generateRandomPenaltyItem(pool, true);
+            String rand2 = MorseWordGenerator.generateRandomPenaltyItem(pool, true);
 
             currentQueue.add(failedItem);
             currentQueue.add(rand1);
             currentQueue.add(rand2);
             binding.tvPenaltyNotice.setText("⚠️ Falha! Adicionada a palavra '" + failedItem + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ")!");
         } else {
-            String rand1 = pool.get((int) (Math.random() * pool.size()));
-            String rand2 = pool.get((int) (Math.random() * pool.size()));
+            String rand1 = MorseWordGenerator.generateRandomPenaltyItem(pool, false);
+            String rand2 = MorseWordGenerator.generateRandomPenaltyItem(pool, false);
 
             currentQueue.add(failedItem);
             currentQueue.add(rand1);
@@ -621,6 +619,14 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
             activity.getDecoder().setListener(this);
+            int unlocked = activity.getSettings().getCurrentUnlockedLevel();
+            if (currentLevel != null) {
+                boolean isUnlocked = activity.getSettings().isLevelUnlocked(currentLevelNumber);
+                binding.tvLevelNumber.setText("NÍVEL " + currentLevel.getLevelNumber() + " / " + MorseBinaryTree.getInstance().getTotalLevels() + (isUnlocked ? "" : " 🔒"));
+                int nextLevel = currentLevelNumber + 1;
+                boolean nextUnlocked = activity.getSettings().isLevelUnlocked(nextLevel);
+                binding.btnNextLevel.setAlpha(nextUnlocked ? 1.0f : 0.4f);
+            }
         }
     }
 
