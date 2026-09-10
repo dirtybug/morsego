@@ -91,25 +91,24 @@ public class PracticeFragment extends Fragment {
         List<String> options = new ArrayList<>();
         options.add(currentAnswer);
 
-        // Fill remaining with other pool characters or other alphabet letters
+        // Fill remaining ONLY with characters from the level's pool
         for (String c : pool) {
             if (!options.contains(c) && options.size() < 4) {
                 options.add(c);
-            }
-        }
-        while (options.size() < 4) {
-            char randomLetter = (char) ('A' + (int) (Math.random() * 26));
-            String randStr = String.valueOf(randomLetter);
-            if (!options.contains(randStr)) {
-                options.add(randStr);
             }
         }
 
         Collections.shuffle(options);
 
         for (int i = 0; i < optionButtons.size(); i++) {
-            optionButtons.get(i).setText(options.get(i));
-            optionButtons.get(i).setBackgroundColor(Color.parseColor("#21262D"));
+            Button btn = optionButtons.get(i);
+            if (i < options.size()) {
+                btn.setVisibility(View.VISIBLE);
+                btn.setText(options.get(i));
+                btn.setBackgroundColor(Color.parseColor("#21262D"));
+            } else {
+                btn.setVisibility(View.GONE);
+            }
         }
 
         playQuestionAudio();

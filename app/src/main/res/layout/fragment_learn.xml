@@ -471,10 +471,11 @@
                             android:padding="16dp">
 
                             <TextView
+                                android:id="@+id/tvSendingPromptLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="monospace"
-                                android:text="TRANSMITA ESTA LETRA:"
+                                android:text="TRANSMITA (LETRA OU PALAVRA):"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -486,7 +487,7 @@
                                 android:fontFamily="monospace"
                                 android:text="E"
                                 android:textColor="@color/morse_amber"
-                                android:textSize="64sp"
+                                android:textSize="56sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -500,15 +501,39 @@
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
 
+                            <!-- Real-time pause & rhythm feedback -->
+                            <TextView
+                                android:id="@+id/tvTimingFeedback"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="monospace"
+                                android:text="Cadência de pausa: —"
+                                android:textColor="@color/morse_amber_light"
+                                android:textSize="12sp" />
+
                             <TextView
                                 android:id="@+id/tvSendingFeedback"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
+                                android:layout_marginTop="6dp"
                                 android:text="Use os botões DI e DAH abaixo para transmitir"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/btnResetSendingAttempt"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_marginTop="8dp"
+                                android:paddingLeft="12dp"
+                                android:paddingRight="12dp"
+                                android:text="🔄 Limpar / Recomeçar Palavra"
+                                android:textColor="@color/morse_cyan"
+                                android:textSize="11sp"
+                                app:strokeColor="@color/morse_cyan" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>

@@ -11,6 +11,7 @@ public class MorseDecoder {
         void onPatternChanged(String currentPattern);
         void onTextUpdated(String fullText);
         void onCharacterDecoded(char character);
+        default void onTimingFeedback(MorseTiming.PauseEvaluation evaluation) {}
     }
 
     private final KeyerSettings settings;
@@ -22,6 +23,10 @@ public class MorseDecoder {
 
     private Runnable charPauseRunnable;
     private Runnable wordPauseRunnable;
+
+    // Timing tracking
+    private long lastElementEndTime = 0;
+    private long lastCharCommitTime = 0;
 
     // Manual / Straight-key timing
     private long toneStartTime = 0;
@@ -36,7 +41,16 @@ public class MorseDecoder {
     }
 
     public synchronized void onElementReceived(char element) {
+        long now = System.currentTimeMillis();
+        if (lastElementEndTime > 0 && currentPattern.length() > 0) {
+            long pause = now - lastElementEndTime;
+            MorseTiming.PauseEvaluation eval = MorseTiming.evaluateIntraElementPause(pause, settings.getWpm());
+            notifyTimingFeedback(eval);
+        }
+
         currentPattern.append(element);
+        lastElementEndTime = now;
+
         notifyPatternChanged();
         restartPauseWatchers();
     }
@@ -92,6 +106,14 @@ public class MorseDecoder {
     private synchronized void commitCharacter() {
         if (currentPattern.length() == 0) return;
 
+        long now = System.currentTimeMillis();
+        if (lastCharCommitTime > 0) {
+            long letterPause = now - lastCharCommitTime;
+            MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(letterPause, settings.getWpm());
+            notifyTimingFeedback(eval);
+        }
+        lastCharCommitTime = now;
+
         String pattern = currentPattern.toString();
         currentPattern.setLength(0);
         notifyPatternChanged();
@@ -104,6 +126,12 @@ public class MorseDecoder {
 
         if (listener != null) {
             listener.onCharacterDecoded(c);
+        }
+    }
+
+    private void notifyTimingFeedback(MorseTiming.PauseEvaluation eval) {
+        if (listener != null) {
+            handler.post(() -> listener.onTimingFeedback(eval));
         }
     }
 
