@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tree"
+        android:icon="@drawable/ic_tree"
+        android:title="Árvore Morse" />
+    <item
+        android:id="@+id/nav_learn"
+        android:icon="@drawable/ic_school"
+        android:title="Aprender" />
+    <item
+        android:id="@+id/nav_practice"
+        android:icon="@drawable/ic_practice"
+        android:title="Praticar" />
+    <item
+        android:id="@+id/nav_keyer"
+        android:icon="@drawable/ic_radio"
+        android:title="Manipulador" />
+    <item
+        android:id="@+id/nav_hardware"
+        android:icon="@drawable/ic_hardware"
+        android:title="Hardware CW" />
+</menu>

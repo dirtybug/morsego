@@ -1,7 +1,24 @@
 <resources>
-    <style name="Theme.MorseGO" parent="android:Theme.Material.NoActionBar">
-        <item name="android:statusBarColor">#121418</item>
-        <item name="android:navigationBarColor">#121418</item>
-        <item name="android:windowBackground">#121418</item>
+    <!-- Base application theme with Dark Ham Radio / SDR look -->
+    <style name="Theme.MorseGO" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color (Morse Amber) -->
+        <item name="colorPrimary">@color/morse_amber</item>
+        <item name="colorPrimaryVariant">@color/morse_amber_dark</item>
+        <item name="colorOnPrimary">@color/radio_dark</item>
+
+        <!-- Secondary brand color (Morse Cyan) -->
+        <item name="colorSecondary">@color/morse_cyan</item>
+        <item name="colorSecondaryVariant">@color/morse_cyan_dark</item>
+        <item name="colorOnSecondary">@color/radio_dark</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/radio_dark</item>
+        <item name="colorSurface">@color/radio_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- Status bar and navigation bar -->
+        <item name="android:statusBarColor">@color/radio_dark</item>
+        <item name="android:navigationBarColor">@color/radio_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

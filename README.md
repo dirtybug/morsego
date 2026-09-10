@@ -1,109 +1,76 @@
 # MorseGO 📻
 
-**MorseGO** é uma aplicação Android moderna e completa, desenvolvida em **Kotlin** e **Jetpack Compose**, desenhada para aprender, praticar e aperfeiçoar a telegrafia (Código Morse / CW) — com suporte nativo e compatibilidade total para o manipulador físico de pás duplas USB Type-C / 3.5mm:
+**MorseGO** é uma aplicação Android pura em **JAVA** desenhada para aprender, praticar e dominar a telegrafia (Código Morse / CW) através da **Árvore Binária de Morse** (*Morse Binary Tree*), com suporte e compatibilidade nativa para o manipulador físico de pás duplas USB Type-C / 3.5mm:
 > **CW Keyer Automatic Trainer PCB 4 ND Magnet Bases Doble Paddle** ([Ver na Amazon](https://www.amazon.es/-/pt/gp/product/B0F666MVG6/ref=ox_sc_act_title_1?smid=A2N32YIZWO8AUG&psc=1))
 
 ---
 
-## ⚡ Compatibilidade com o Hardware da Amazon (CW Keyer Trainer)
+## 🌳 Progressão pela Árvore Binária de Morse (Binary Tree)
 
-O dispositivo em questão é um manipulador de pás duplas (*Iambic Double Paddle Keyer*) montado em PCB com base magnética de 4 ímanes de neodímio, porta **USB Type-C** e ficha **Jack 3.5mm**.
+A aprendizagem segue rigorosamente a estrutura hierárquica da **Árvore Binária de Morse**:
+* Na árvore, mover para a **Esquerda** corresponde a um **Ponto / DIT (`.`)**.
+* Mover para a **Direita** corresponde a um **Traço / DAH (`-`)**.
 
-### Como funciona no MorseGO:
-1. **Ligação Plug-and-Play USB-C (OTG):**
-   * Basta ligar o cabo USB Type-C incluído diretamente à porta do telemóvel ou tablet Android.
-2. **Modo 2 (Recomendado - LED a piscar / VBand):**
-   * Neste modo, o hardware emula um teclado USB HID padrão, enviando:
-     * **Pá Esquerda (DIT •):** `Ctrl Esquerdo` (`KEYCODE_CTRL_LEFT`)
-     * **Pá Direita (DAH —):** `Ctrl Direito` (`KEYCODE_CTRL_RIGHT`)
-   * O `MorseGO` interceta estes eventos diretamente no `MainActivity.dispatchKeyEvent()`, sem interferir com os atalhos do sistema operativo.
-3. **Modo 1 (LED fixo / Emulação de Rato):**
-   * O dispositivo emula cliques de rato (Botão Primário e Secundário). O `MorseGO` inclui interceção via `dispatchGenericMotionEvent()` para suportar também este modo.
-4. **Calibração Automática em 1 Toque:**
-   * No separador **Hardware CW**, existe o botão de calibração dinâmica: clique em "Calibrar Dit", toque na sua pá física, e o código é automaticamente gravado!
-5. **Inversão de Pás:**
-   * Alterne instantaneamente se prefere Dit na esquerda ou na direita (ótimo para canhotos ou destros).
+### Como funcionam os Níveis:
+Cada nível **adiciona exatamente 2 letras novas** descendo pelos ramos da árvore e **inclui todas as letras anteriores** no conjunto de treino:
 
----
-
-## 🚀 Funcionalidades Principais
-
-### 1. 🎓 Método Koch (40 Lições Progressivas)
-* O método com maior taxa de sucesso no mundo dos radioamadores.
-* Começa com as letras **K** e **M** a velocidade real de CW (15 a 20 WPM), introduzindo novos caracteres gradualmente.
-* Exercícios de **Escuta** (ritmo sonoro) e **Transmissão** com o seu manipulador físico ou pás virtuais no ecrã.
-
-### 2. 🎯 Prática & Testes Interativos
-* **Treino de Escuta:** A aplicação reproduz áudio de CW e apresenta opções de escolha múltipla para identificação imediata.
-* **Treino de Transmissão:** A aplicação pede uma sequência de caracteres e avalia a precisão do seu envio em tempo real.
-
-### 3. 📻 Manipulador Livre & Descodificador em Tempo Real (*Free Keyer*)
-* Utilize o seu manipulador como numa estação de rádio real.
-* Tradução instantânea de Dits e Dahs para texto em português/alfabeto internacional.
-* Botões para copiar o texto descodificado, apagar ou limpar.
-* Controlo de velocidade de 5 a 40 WPM.
-
-### 4. 📖 Dicionário Morse & Soundboard
-* Tabela completa com:
-  * Todas as letras (**A-Z**) e números (**0-9**).
-  * Pontuação oficial (`.`, `,`, `?`, `/`, `=`, `-`, `@`, `!`).
-  * Sinais de serviço / Prosigns de rádio amador (**SOS**, **AR**, **SK**, **BT**, **AS**, **KN**).
-* Clique em qualquer cartão para ouvir o som reproduzido fielmente.
-
-### 5. 🎛️ Motor de Áudio de Baixa Latência & Síntese
-* Síntese de onda sinusoidal pura com envelope suave anti-ruído (elimina cliques e estalidos ao manipular rapidamente).
-* Ajuste de tom (*pitch*) de **400 Hz** a **1000 Hz** (padrão 700 Hz).
-* Modos do Manipulador: **Iambic B** (Curtis com memória), **Iambic A** e **Straight Key** (manual).
-* Feedback háptico/vibração opcional a cada toque.
+* **Nível 1 (A Raiz da Árvore):**
+  * Novas: **E** (`.`) e **T** (`-`)
+  * Em jogo: `[E, T]`
+* **Nível 2 (Ramo do E):**
+  * Novas: **I** (`..`) e **A** (`.-`)
+  * Em jogo: `[E, T, I, A]`
+* **Nível 3 (Ramo do T):**
+  * Novas: **N** (`-.`) e **M** (`--`)
+  * Em jogo: `[E, T, I, A, N, M]` *(Todas as letras de profundidade 1 e 2 completas!)*
+* **Nível 4 (Sub-ramo do I):**
+  * Novas: **S** (`...`) e **U** (`..-`)
+  * Em jogo: `[E, T, I, A, N, M, S, U]`
+* **Nível 5 (Sub-ramo do A):**
+  * Novas: **R** (`.-.`) e **W** (`.--`)
+  * Em jogo: `[E, T, I, A, N, M, S, U, R, W]`
+* **Nível 6 (Sub-ramo do N):**
+  * Novas: **D** (`-..`) e **K** (`-.-`)
+  * Em jogo: `[E, T, I, A, N, M, S, U, R, W, D, K]`
+* **Nível 7 (Sub-ramo do M):**
+  * Novas: **G** (`--.`) e **O** (`---`)
+  * Em jogo: `[E, T, I, A, N, M, S, U, R, W, D, K, G, O]` *(Todas as letras de profundidade 3 completas!)*
+* **Níveis 8 a 13:** Adicionam em pares as letras de profundidade 4: **H** & **V**, **F** & **L**, **P** & **J**, **B** & **X**, **C** & **Y**, **Z** & **Q** (completando as 26 letras do alfabeto).
+* **Níveis 14 a 18:** Números de 5 elementos em pares: **5** & **4**, **3** & **2**, **1** & **6**, **7** & **8**, **9** & **0**.
+* **Níveis 19 a 21:** Pontuação e sinais de serviço (*prosigns*): **.** & **,**, **?** & **/**, **SOS** & **AR**.
 
 ---
 
-## 🛠️ Estrutura do Projeto
+## 🔌 Compatibilidade com o Manipulador USB da Amazon
 
-```
-morseGo/
-├── app/
-│   ├── build.gradle.kts
-│   ├── src/main/
-│   │   ├── AndroidManifest.xml
-│   │   ├── java/com/morsego/app/
-│   │   │   ├── MainActivity.kt               # Ponto de entrada e interceção de hardware USB/OTG
-│   │   │   ├── MorseGoApp.kt                 # Classe Application
-│   │   │   ├── audio/
-│   │   │   │   └── MorseAudioSynthesizer.kt  # Síntese de áudio PCM de baixa latência
-│   │   │   ├── keyer/
-│   │   │   │   ├── KeyerInputManager.kt      # Gestão de eventos USB, rato e calibração
-│   │   │   │   ├── IambicKeyerEngine.kt      # Motor Iambic A/B e Straight Key
-│   │   │   │   ├── MorseDecoder.kt           # Descodificador Morse em tempo real
-│   │   │   │   └── MorseTiming.kt            # Padrão PARIS e temporizações WPM
-│   │   │   ├── model/
-│   │   │   │   ├── KeyerSettings.kt          # Configurações do manipulador
-│   │   │   │   ├── KochLesson.kt             # Lições do Método Koch
-│   │   │   │   ├── MorseDictionary.kt        # Dicionário e fonética internacional
-│   │   │   │   └── UserProgress.kt           # Progresso do utilizador
-│   │   │   ├── ui/
-│   │   │   │   ├── components/               # Pás virtuais, barra de sinal RF, controlo WPM
-│   │   │   │   ├── navigation/               # Rotas e destinos
-│   │   │   │   ├── screens/                  # 6 Ecrãs da app
-│   │   │   │   └── theme/                    # Tema Cyber Dark Ham Radio
-│   │   │   └── viewmodel/
-│   │   │       └── MorseViewModel.kt         # Gestão de estado reativo
-│   │   └── res/                              # Recursos, ícones adaptativos, strings e estilos
-├── gradle/
-│   ├── libs.versions.toml                    # Version Catalog
-│   └── wrapper/
-│       └── gradle-wrapper.properties         # Gradle 8.6
-├── build.gradle.kts
-├── settings.gradle.kts
-└── gradlew / gradlew.bat
-```
+O hardware da Amazon é um circuito PCB com base de 4 ímanes Nd, entrada USB Type-C e tomada Jack 3.5mm:
+1. **Modo 2 (Recomendado - LED a piscar / VBand):**
+   * Emula teclado USB HID enviando `Ctrl Esquerdo` (Pá DIT) e `Ctrl Direito` (Pá DAH).
+   * O MorseGO captura estes eventos diretamente no `MainActivity.dispatchKeyEvent()`.
+2. **Modo 1 (LED contínuo / Emulação de Rato):**
+   * Emula cliques de rato (Primary Click e Secondary Click), capturados em `dispatchGenericMotionEvent()`.
+3. **Calibração em 1 Toque:**
+   * No separador **Hardware CW**, toque em *"Calibrar Dit"* ou *"Calibrar Dah"* e prima a respetiva pá física para associar imediatamente qualquer comando.
+4. **Inversão de Pás:**
+   * Alterne livremente entre destro e canhoto com o botão de inversão.
 
 ---
 
-## 📱 Como Executar
+## 💻 Arquitetura 100% Java
 
-1. Abra o projeto no **Android Studio** (versão Iguana, Jellyfish, Koala ou superior).
-2. O Gradle irá sincronizar automaticamente as dependências (`libs.versions.toml`).
-3. Conecte o seu dispositivo Android (com depuração USB ativada) ou inicie um emulador.
-4. Pressione **Run ▶** no Android Studio.
-5. Conecte o seu manipulador USB Type-C ao telemóvel e comece a transmitir!
+O projeto foi construído inteiramente em **Java** com o framework oficial Android e Material Components:
+* **UI Custom View:** [`MorseTreeView.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/java/com/morsego/app/ui/view/MorseTreeView.java) desenha a árvore binária em 2D de forma interativa.
+* **Motor de Áudio:** [`MorseAudioSynthesizer.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/java/com/morsego/app/audio/MorseAudioSynthesizer.java) gera tom PCM puro sem ruídos nem estalidos através de `AudioTrack`.
+* **Motor de Pá Dupla:** [`IambicKeyerEngine.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/java/com/morsego/app/keyer/IambicKeyerEngine.java) suporta Iambic B (Curtis), Iambic A e Straight Key manual.
+* **Descodificador:** [`MorseDecoder.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/java/com/morsego/app/keyer/MorseDecoder.java) traduz a cadência das pás para texto em tempo real.
+* **Temporização PARIS:** [`MorseTiming.java`](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/java/com/morsego/app/keyer/MorseTiming.java) calcula durações de ponto, traço e pausas segundo a velocidade WPM.
+
+---
+
+## 📱 Como Executar no Android Studio
+
+1. Abra a pasta `C:\Users\JúlioAndrade\morseGo` no **Android Studio**.
+2. Deixe o Gradle sincronizar os ficheiros `build.gradle` e `settings.gradle`.
+3. Conecte o dispositivo Android ou inicie um emulador.
+4. Pressione **Run ▶**.
+5. Ligue o manipulador USB Type-C ao telemóvel e explore os ramos da Árvore de Morse!

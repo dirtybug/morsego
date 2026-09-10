@@ -1,8 +1,25 @@
 <resources>
+    <!-- Ham Radio / SDR Cyber Dark Palette -->
+    <color name="radio_dark">#0E1117</color>
+    <color name="radio_surface">#161B22</color>
+    <color name="radio_surface_variant">#21262D</color>
+    <color name="radio_border">#30363D</color>
+
+    <!-- Amber / Gold Accents (Morse TX / Dits) -->
     <color name="morse_amber">#FFB300</color>
     <color name="morse_amber_dark">#FF8F00</color>
+    <color name="morse_amber_light">#FFE082</color>
+
+    <!-- Cyan / Neon Accents (Morse RX / Dahs) -->
     <color name="morse_cyan">#00E5FF</color>
-    <color name="morse_dark_bg">#121418</color>
-    <color name="morse_surface">#1A1D24</color>
-    <color name="morse_on_surface">#E1E2E6</color>
+    <color name="morse_cyan_dark">#00B0FF</color>
+
+    <!-- Status Colors -->
+    <color name="morse_green">#00E676</color>
+    <color name="morse_red">#FF5252</color>
+
+    <!-- Typography Colors -->
+    <color name="text_primary">#F0F6FC</color>
+    <color name="text_secondary">#8B949E</color>
+    <color name="text_tertiary">#6E7681</color>
 </resources>
