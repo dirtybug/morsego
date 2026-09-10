@@ -133,24 +133,9 @@ public class MorseTreeView extends View {
 
         renderNodes.add(new RenderNode(node, x, y, radius));
 
-        // Draw left child (DIT .)
-        if (node.getDitChild() != null) {
-            float childX = x - xOffset;
-            float childY = y + layerHeight;
-
-            linePaint.setColor(node.getDitChild().isUnlocked() ? Color.parseColor("#FFB300") : Color.parseColor("#21262D"));
-            canvas.drawLine(x, y + radius, childX, childY - radius, linePaint);
-
-            // Draw branch indicator "."
-            branchLabelPaint.setColor(Color.parseColor("#FFB300"));
-            canvas.drawText("•", (x + childX) / 2f - 14f, (y + childY) / 2f, branchLabelPaint);
-
-            drawTreeRecursive(canvas, node.getDitChild(), childX, childY, xOffset / 2f, layerHeight, radius, depth + 1);
-        }
-
-        // Draw right child (DAH -)
+        // Draw left child (DAH — : e.g. T under Root, M under T, A under E)
         if (node.getDahChild() != null) {
-            float childX = x + xOffset;
+            float childX = x - xOffset;
             float childY = y + layerHeight;
 
             linePaint.setColor(node.getDahChild().isUnlocked() ? Color.parseColor("#00E5FF") : Color.parseColor("#21262D"));
@@ -158,10 +143,26 @@ public class MorseTreeView extends View {
 
             // Draw branch indicator "—"
             branchLabelPaint.setColor(Color.parseColor("#00E5FF"));
-            canvas.drawText("—", (x + childX) / 2f + 14f, (y + childY) / 2f, branchLabelPaint);
+            canvas.drawText("—", (x + childX) / 2f - 14f, (y + childY) / 2f, branchLabelPaint);
 
             drawTreeRecursive(canvas, node.getDahChild(), childX, childY, xOffset / 2f, layerHeight, radius, depth + 1);
         }
+
+        // Draw right child (DIT • : e.g. E under Root, N under T, I under E)
+        if (node.getDitChild() != null) {
+            float childX = x + xOffset;
+            float childY = y + layerHeight;
+
+            linePaint.setColor(node.getDitChild().isUnlocked() ? Color.parseColor("#FFB300") : Color.parseColor("#21262D"));
+            canvas.drawLine(x, y + radius, childX, childY - radius, linePaint);
+
+            // Draw branch indicator "•"
+            branchLabelPaint.setColor(Color.parseColor("#FFB300"));
+            canvas.drawText("•", (x + childX) / 2f + 14f, (y + childY) / 2f, branchLabelPaint);
+
+            drawTreeRecursive(canvas, node.getDitChild(), childX, childY, xOffset / 2f, layerHeight, radius, depth + 1);
+        }
+
 
         // Draw Node Circle
         if (node.isUnlocked()) {

@@ -29,30 +29,49 @@ public class MorseBinaryTreeTest {
     public void testLevel1Content() {
         TreeLevel l1 = tree.getLevel(1);
         assertEquals(1, l1.getLevelNumber());
-        assertEquals("E", l1.getNewChar1());
-        assertEquals(".", l1.getMorse1());
-        assertEquals("T", l1.getNewChar2());
-        assertEquals("-", l1.getMorse2());
+        assertEquals("T", l1.getNewChar1());
+        assertEquals("-", l1.getMorse1());
+        assertEquals("E", l1.getNewChar2());
+        assertEquals(".", l1.getMorse2());
         assertEquals(2, l1.getAllCharacters().size());
-        assertTrue(l1.getAllCharacters().contains("E"));
         assertTrue(l1.getAllCharacters().contains("T"));
+        assertTrue(l1.getAllCharacters().contains("E"));
     }
 
     @Test
     public void testLevel2Content() {
         TreeLevel l2 = tree.getLevel(2);
         assertEquals(2, l2.getLevelNumber());
-        assertEquals("I", l2.getNewChar1());
-        assertEquals("..", l2.getMorse1());
-        assertEquals("A", l2.getNewChar2());
-        assertEquals(".-", l2.getMorse2());
-        // Level 2 should have E, T, I, A
+        assertEquals("A", l2.getNewChar1());
+        assertEquals(".-", l2.getMorse1());
+        assertEquals("I", l2.getNewChar2());
+        assertEquals("..", l2.getMorse2());
+        // Level 2 should have T, E, A, I
         assertEquals(4, l2.getAllCharacters().size());
-        assertTrue(l2.getAllCharacters().contains("E"));
         assertTrue(l2.getAllCharacters().contains("T"));
-        assertTrue(l2.getAllCharacters().contains("I"));
+        assertTrue(l2.getAllCharacters().contains("E"));
         assertTrue(l2.getAllCharacters().contains("A"));
+        assertTrue(l2.getAllCharacters().contains("I"));
     }
+
+    @Test
+    public void testLevel3Content() {
+        TreeLevel l3 = tree.getLevel(3);
+        assertEquals(3, l3.getLevelNumber());
+        assertEquals("M", l3.getNewChar1());
+        assertEquals("--", l3.getMorse1());
+        assertEquals("N", l3.getNewChar2());
+        assertEquals("-.", l3.getMorse2());
+        // Level 3 should have T, E, A, I, M, N
+        assertEquals(6, l3.getAllCharacters().size());
+        assertTrue(l3.getAllCharacters().contains("T"));
+        assertTrue(l3.getAllCharacters().contains("E"));
+        assertTrue(l3.getAllCharacters().contains("A"));
+        assertTrue(l3.getAllCharacters().contains("I"));
+        assertTrue(l3.getAllCharacters().contains("M"));
+        assertTrue(l3.getAllCharacters().contains("N"));
+    }
+
 
     @Test
     public void testMorseLookup() {

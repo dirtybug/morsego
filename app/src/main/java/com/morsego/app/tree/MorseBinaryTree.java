@@ -112,26 +112,27 @@ public class MorseBinaryTree {
     private void buildLevels() {
         List<String> pool = new ArrayList<>();
 
-        // Level 1: Root branches (depth 1)
-        TreeLevel l1 = new TreeLevel(1, "E", ".", "T", "-", pool,
-                "Nível 1: A Raiz da Árvore",
-                "Comece com os dois blocos fundamentais: E (.) e T (-).");
+        // Level 1: Root branches (depth 1): T (-) e E (.)
+        TreeLevel l1 = new TreeLevel(1, "T", "-", "E", ".", pool,
+                "Nível 1: A Raiz da Árvore (T e E)",
+                "Comece com os dois blocos fundamentais: T (-) e E (.).");
         levels.add(l1);
         pool = l1.getAllCharacters();
 
-        // Level 2: Left sub-branch under E
-        TreeLevel l2 = new TreeLevel(2, "I", "..", "A", ".-", pool,
-                "Nível 2: Ramo do E (.)",
-                "Descendo pelo ramo do E: I (..) e A (.-).");
+        // Level 2: Sub-branches under E: A (.-) e I (..)
+        TreeLevel l2 = new TreeLevel(2, "A", ".-", "I", "..", pool,
+                "Nível 2: Ramos do E (A e I)",
+                "Descendo pelos ramos do E (.): A (.-) e I (..).");
         levels.add(l2);
         pool = l2.getAllCharacters();
 
-        // Level 3: Right sub-branch under T
-        TreeLevel l3 = new TreeLevel(3, "N", "-.", "M", "--", pool,
-                "Nível 3: Ramo do T (-)",
-                "Descendo pelo ramo do T: N (-.) e M (--).");
+        // Level 3: Sub-branches under T: M (--) e N (-.)
+        TreeLevel l3 = new TreeLevel(3, "M", "--", "N", "-.", pool,
+                "Nível 3: Ramos do T (M e N)",
+                "Descendo pelos ramos do T (-): M (--) e N (-.).");
         levels.add(l3);
         pool = l3.getAllCharacters();
+
 
         // Level 4: Sub-branch under I (..)
         TreeLevel l4 = new TreeLevel(4, "S", "...", "U", "..-", pool,
