@@ -63,6 +63,41 @@ public class MorseRadioWords {
         return RADIO_WORDS;
     }
 
+    public static class RadioPill {
+        public enum Mode { OUVIR, ENVIAR }
+        public final Mode mode;
+        public final String word;
+        public final String label;
+
+        public RadioPill(Mode mode, String word) {
+            this.mode = mode;
+            this.word = word;
+            this.label = (mode == Mode.OUVIR ? "Ouvir " : "Enviar ") + word;
+        }
+    }
+
+    /**
+     * Retorna a lista de pills estritamente separada para a secção OUVIR (Escuta).
+     */
+    public static List<RadioPill> getListeningPills() {
+        List<RadioPill> list = new ArrayList<>();
+        for (RadioWordItem item : RADIO_WORDS) {
+            list.add(new RadioPill(RadioPill.Mode.OUVIR, item.word));
+        }
+        return list;
+    }
+
+    /**
+     * Retorna a lista de pills estritamente separada para a secção ENVIAR (Transmissão).
+     */
+    public static List<RadioPill> getTransmissionPills() {
+        List<RadioPill> list = new ArrayList<>();
+        for (RadioWordItem item : RADIO_WORDS) {
+            list.add(new RadioPill(RadioPill.Mode.ENVIAR, item.word));
+        }
+        return list;
+    }
+
     /**
      * Generates choices for the Ouvir (Listening) radio words test.
      */
@@ -83,3 +118,4 @@ public class MorseRadioWords {
         return choices;
     }
 }
+

@@ -65,4 +65,31 @@ public class MorseRadioWordsTest {
         assertEquals(4, choices.size());
         assertTrue("Choices must contain the target radio word 'CQ'", choices.contains("CQ"));
     }
+
+    @Test
+    public void testSeparatedPillsListeningAndTransmission() {
+        List<MorseRadioWords.RadioPill> listenPills = MorseRadioWords.getListeningPills();
+        List<MorseRadioWords.RadioPill> sendPills = MorseRadioWords.getTransmissionPills();
+
+        assertNotNull(listenPills);
+        assertNotNull(sendPills);
+        assertEquals("Both pill categories must have the same number of radio words",
+                listenPills.size(), sendPills.size());
+        assertTrue("Must have at least 8 radio words in each category", listenPills.size() >= 8);
+
+        // Verify Listening pills have Mode OUVIR and "Ouvir " prefix
+        for (MorseRadioWords.RadioPill p : listenPills) {
+            assertEquals(MorseRadioWords.RadioPill.Mode.OUVIR, p.mode);
+            assertTrue("Listening pill label must start with 'Ouvir '", p.label.startsWith("Ouvir "));
+        }
+
+        // Verify Transmission pills have Mode ENVIAR and "Enviar " prefix
+        for (MorseRadioWords.RadioPill p : sendPills) {
+            assertEquals(MorseRadioWords.RadioPill.Mode.ENVIAR, p.mode);
+            assertTrue("Transmission pill label must start with 'Enviar '", p.label.startsWith("Enviar "));
+        }
+
+        // Verify they are completely separate instances/lists
+        assertNotSame(listenPills, sendPills);
+    }
 }

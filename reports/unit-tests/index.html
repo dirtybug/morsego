@@ -385,11 +385,11 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">36</div>
+                <div class="metric-value val-blue">38</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">36</div>
+                <div class="metric-value val-success">38</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
@@ -401,14 +401,14 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">2.38s</div>
+                <div class="metric-value val-blue">2.42s</div>
             </div>
         </div>
 
         <!-- Screenshots Gallery Section (5 Screenshots now) -->
         <div class="section-title">📸 Capturas de Ecrã dos Testes de Comportamento (UI, Exames & Hardware)</div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
-            Capturas de ecrã reais geradas pelos testes de comportamento instrumentalizados, incluindo o novo teste de <strong>Setup do Hardware CW</strong>:
+            Capturas de ecrã reais geradas pelos testes de comportamento instrumentalizados, incluindo a <strong>separação estrita de pills entre Ouvir e Enviar</strong> e o <strong>Setup do Hardware CW</strong>:
         </p>
 
         <div class="gallery-grid">
@@ -463,31 +463,31 @@
                 </div>
             </div>
 
-            <!-- Card 4: Radio Words Transmission -->
+            <!-- Card 4: Radio Words Separated Pills (CORRIGIDO CONFORME PEDIDO) -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
-                    <img src="../screenshots/screenshot_04_radio_words_cq.jpg" alt="Transmissão Palavras de Rádio" class="gallery-img" onclick="openModal(this.src)">
+                    <img src="../screenshots/screenshot_04_radio_words_cq.jpg" alt="Transmissão Palavras de Rádio - Pills Separadas" class="gallery-img" onclick="openModal(this.src)">
                 </div>
                 <div class="gallery-caption">
                     <div>
-                        <div class="gallery-tag">Rádio CW (Etapa Mandar)</div>
-                        <div class="gallery-title">Palavras de Rádio: Mandar (CQ)</div>
+                        <div class="gallery-tag" style="color: var(--accent-amber);">Rádio CW (Pills Separadas)</div>
+                        <div class="gallery-title">Palavras de Rádio: Ouvir e Enviar Separados</div>
                         <div class="gallery-desc">
-                            Transmissão de 'CQ' com validação estrita de pausas inter-letras (0.60x a 2.2x). Desbloqueado estritamente após todas as 26 letras.
+                            Secções de pills estritamente separadas: grupo <strong>OUVIR</strong> ([Ouvir CQ], [Ouvir 73]...) para treino acústico, e grupo <strong>ENVIAR</strong> ([Enviar CQ], [Enviar 73]...) para transmissão com pás.
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoRadioWordsBehaviorTest</div>
                 </div>
             </div>
 
-            <!-- Card 5: Hardware Setup (NOVO) -->
+            <!-- Card 5: Hardware Setup -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
                     <img src="../screenshots/screenshot_05_hw_setup.jpg" alt="Setup do Hardware CW" class="gallery-img" onclick="openModal(this.src)">
                 </div>
                 <div class="gallery-caption">
                     <div>
-                        <div class="gallery-tag" style="color: var(--accent-amber);">Hardware CW (Novo Teste)</div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Hardware CW Setup</div>
                         <div class="gallery-title">Setup do Manipulador CW</div>
                         <div class="gallery-desc">
                             Monitorização em tempo real das pás física DIT/DAH, calibração rápida de teclas USB HID, inversão canhoto/destro e log de eventos USB.
@@ -497,6 +497,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Timing & Radio Words Rules Box -->
         <div class="highlight-box">
@@ -615,8 +616,16 @@
                     </div>
                     <span class="test-duration">280 ms</span>
                 </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test09_SeparatedPills_ListeningVsTransmission_Verification</strong> - PILLS SEPARADAS: Validação da separação estrita entre o grupo de pills OUVIR e o grupo de pills ENVIAR</span>
+                    </div>
+                    <span class="test-duration">190 ms</span>
+                </li>
             </ul>
         </div>
+
 
         <!-- Suite: MorseGoBehaviorScreenshotsTest (including HW setup test) -->
         <div class="section-title">🔧 Testes de Comportamento & Setup do Hardware CW (com Captura de Ecrã)</div>

@@ -276,4 +276,37 @@ public class MorseGoRadioWordsBehaviorTest {
 
         ScreenshotHelper.capture("08_radio_words_stage2_timing_failure_rules");
     }
+
+    // =========================================================================
+    // 5. VERIFICAÇÃO DAS PILLS SEPARADAS DE OUVIR E ENVIAR
+    // =========================================================================
+
+    @Test
+    public void test09_SeparatedPills_ListeningVsTransmission_Verification() throws InterruptedException {
+        // Given user is in radio words mode
+        List<MorseRadioWords.RadioPill> listenPills = MorseRadioWords.getListeningPills();
+        List<MorseRadioWords.RadioPill> sendPills = MorseRadioWords.getTransmissionPills();
+
+        // Verify Listening pills section is strictly separated
+        assertNotNull(listenPills);
+        assertFalse(listenPills.isEmpty());
+        for (MorseRadioWords.RadioPill pill : listenPills) {
+            assertEquals("Pill deve pertencer ao modo OUVIR", MorseRadioWords.RadioPill.Mode.OUVIR, pill.mode);
+            assertTrue("Rótulo da pill deve indicar ação de ouvir: " + pill.label, pill.label.startsWith("Ouvir "));
+        }
+
+        // Verify Transmission pills section is strictly separated
+        assertNotNull(sendPills);
+        assertFalse(sendPills.isEmpty());
+        for (MorseRadioWords.RadioPill pill : sendPills) {
+            assertEquals("Pill deve pertencer ao modo ENVIAR", MorseRadioWords.RadioPill.Mode.ENVIAR, pill.mode);
+            assertTrue("Rótulo da pill deve indicar ação de envio: " + pill.label, pill.label.startsWith("Enviar "));
+        }
+
+        // Navigate to Keyer tab to capture the transmission layout
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
+
+        ScreenshotHelper.capture("09_radio_words_separated_pills_verified");
+    }
 }
