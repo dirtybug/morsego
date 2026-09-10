@@ -16,18 +16,19 @@ import androidx.fragment.app.Fragment;
 
 import com.morsego.app.MainActivity;
 import com.morsego.app.databinding.FragmentLearnBinding;
+import com.morsego.app.keyer.KeyerSettings;
 import com.morsego.app.keyer.MorseDecoder;
 import com.morsego.app.tree.MorseBinaryTree;
 import com.morsego.app.tree.TreeLevel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LearnFragment extends Fragment implements MorseDecoder.DecoderListener {
 
-    private static final int TOTAL_QUESTIONS_PER_STAGE = 5;
-    private static final int PASSING_SCORE = 4; // 80% passing threshold
+    private static final int MAX_ALLOWED_FAILURES = 3;
 
     private enum TestStage {
         STUDY,
@@ -43,17 +44,22 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
     private TestStage currentStage = TestStage.STUDY;
 
+    // Active test queues & state
+    private final LinkedList<String> currentQueue = new LinkedList<>();
+    private int questionsAnsweredInStage = 0;
+    private int currentStageFailures = 0;
+
     // Listening test state
-    private int listeningIndex = 0;
-    private int listeningScore = 0;
-    private String currentListeningAnswer = "E";
+    private String currentListeningTarget = "";
     private final List<Button> testOptionButtons = new ArrayList<>();
 
     // Sending test state
-    private int sendingIndex = 0;
-    private int sendingScore = 0;
-    private String currentSendingPrompt = "E";
+    private String currentSendingTarget = "";
     private boolean sendingWaitingForInput = false;
+
+    // Overall test results
+    private int listeningTotalFailures = 0;
+    private int sendingTotalFailures = 0;
 
     @Nullable
     @Override
@@ -93,7 +99,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                 if (activity.getSettings().isLevelUnlocked(next)) {
                     loadLevel(next);
                 } else {
-                    Toast.makeText(getContext(), "🔒 Nível bloqueado! Passe o teste de Ouvir e Mandar deste nível para desbloquear.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "🔒 Nível bloqueado! Passe o teste deste nível para desbloquear.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -113,11 +119,10 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
         binding.btnStartLevelTest.setOnClickListener(v -> startExam());
         binding.btnCancelTest.setOnClickListener(v -> cancelExam());
-
         binding.btnReplayTestAudio.setOnClickListener(v -> playCurrentListeningAudio());
 
         binding.btnResultAction.setOnClickListener(v -> {
-            boolean passed = (listeningScore >= PASSING_SCORE) && (sendingScore >= PASSING_SCORE);
+            boolean passed = (listeningTotalFailures < MAX_ALLOWED_FAILURES) && (sendingTotalFailures < MAX_ALLOWED_FAILURES);
             if (passed) {
                 int nextLevel = currentLevelNumber + 1;
                 if (nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
@@ -198,42 +203,91 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     // ================= EXAM WORKFLOW =================
 
     private void startExam() {
-        currentStage = TestStage.LISTENING;
-        listeningIndex = 0;
-        listeningScore = 0;
-        sendingIndex = 0;
-        sendingScore = 0;
+        listeningTotalFailures = 0;
+        sendingTotalFailures = 0;
 
         binding.layoutStudyView.setVisibility(View.GONE);
         binding.layoutTestView.setVisibility(View.VISIBLE);
         binding.layoutResultView.setVisibility(View.GONE);
 
-        startListeningQuestion();
+        startListeningStage();
     }
 
     private void cancelExam() {
         showStudyView();
     }
 
+    /**
+     * Builds the test queue:
+     * - Every letter from current level's pool (all previous + 2 new letters) included at least once.
+     * - Plus 25% extra questions drawn from the most failed letters.
+     * - Shuffled randomly!
+     */
+    private LinkedList<String> generateExamQueue() {
+        MainActivity activity = (MainActivity) getActivity();
+        KeyerSettings settings = activity != null ? activity.getSettings() : new KeyerSettings(requireContext());
+
+        List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
+        int baseCount = pool.size();
+        int extra25Percent = Math.max(1, (int) Math.round(baseCount * 0.25));
+
+        List<String> mostFailed = settings.getMostFailedLetters(pool, extra25Percent);
+
+        List<String> combined = new ArrayList<>(pool);
+        combined.addAll(mostFailed);
+
+        Collections.shuffle(combined);
+        return new LinkedList<>(combined);
+    }
+
+    private void updateLivesUi() {
+        if (binding == null) return;
+        int remaining = MAX_ALLOWED_FAILURES - currentStageFailures;
+        StringBuilder hearts = new StringBuilder("Vidas: ");
+        for (int i = 0; i < MAX_ALLOWED_FAILURES; i++) {
+            hearts.append(i < remaining ? "❤️" : "🖤");
+        }
+        hearts.append(" (").append(currentStageFailures).append("/").append(MAX_ALLOWED_FAILURES).append(" falhas)");
+        binding.tvTestLives.setText(hearts.toString());
+        binding.tvTestLives.setTextColor(remaining > 1 ? Color.parseColor("#FFB300") : Color.parseColor("#FF5252"));
+
+        binding.tvTestProgress.setText("Restam: " + currentQueue.size() + " na fila | Feitas: " + questionsAnsweredInStage);
+    }
+
     // --- STAGE 1: LISTENING (OUVIR) ---
 
-    private void startListeningQuestion() {
+    private void startListeningStage() {
         currentStage = TestStage.LISTENING;
         binding.tvTestPhaseBanner.setText("PARTE 1 DE 2: TESTE DE ESCUTA (OUVIR)");
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#00E5FF"));
         binding.layoutStageListening.setVisibility(View.VISIBLE);
         binding.layoutStageSending.setVisibility(View.GONE);
+        binding.tvPenaltyNotice.setVisibility(View.GONE);
 
-        binding.tvTestProgress.setText("Pergunta " + (listeningIndex + 1) + " de " + TOTAL_QUESTIONS_PER_STAGE + " | Acertos: " + listeningScore);
+        currentQueue.clear();
+        currentQueue.addAll(generateExamQueue());
+        questionsAnsweredInStage = 0;
+        currentStageFailures = 0;
 
-        // Pick random answer from pool
-        List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
-        Collections.shuffle(pool);
-        currentListeningAnswer = pool.get(0);
+        nextListeningQuestion();
+    }
+
+    private void nextListeningQuestion() {
+        if (currentQueue.isEmpty()) {
+            // Stage 1 completed successfully!
+            listeningTotalFailures = currentStageFailures;
+            startSendingStage();
+            return;
+        }
+
+        currentListeningTarget = currentQueue.poll();
+        updateLivesUi();
 
         // 4 options
+        List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
         List<String> options = new ArrayList<>();
-        options.add(currentListeningAnswer);
+        options.add(currentListeningTarget);
+
         for (String c : pool) {
             if (!options.contains(c) && options.size() < 4) {
                 options.add(c);
@@ -259,7 +313,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void playCurrentListeningAudio() {
         MainActivity activity = (MainActivity) getActivity();
         if (activity == null) return;
-        String morse = MorseBinaryTree.getInstance().getMorse(currentListeningAnswer);
+        String morse = MorseBinaryTree.getInstance().getMorse(currentListeningTarget);
         if (morse != null) {
             activity.getSynthesizer().playMorsePattern(morse, activity.getSettings().getWpm(), null);
         }
@@ -270,30 +324,46 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             btn.setEnabled(false);
         }
 
-        boolean isCorrect = selected.equalsIgnoreCase(currentListeningAnswer);
+        questionsAnsweredInStage++;
+        boolean isCorrect = selected.equalsIgnoreCase(currentListeningTarget);
+
         if (isCorrect) {
-            listeningScore++;
-        }
-
-        for (Button btn : testOptionButtons) {
-            if (btn.getText().toString().equalsIgnoreCase(currentListeningAnswer)) {
-                btn.setBackgroundColor(Color.parseColor("#00E676"));
-            } else if (btn.getText().toString().equalsIgnoreCase(selected) && !isCorrect) {
-                btn.setBackgroundColor(Color.parseColor("#FF5252"));
+            binding.tvPenaltyNotice.setVisibility(View.GONE);
+            for (Button btn : testOptionButtons) {
+                if (btn.getText().toString().equalsIgnoreCase(currentListeningTarget)) {
+                    btn.setBackgroundColor(Color.parseColor("#00E676"));
+                }
             }
-        }
+            binding.getRoot().postDelayed(this::nextListeningQuestion, 700);
+        } else {
+            // FAILED THIS QUESTION!
+            currentStageFailures++;
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null) {
+                activity.getSettings().recordLetterFailure(currentListeningTarget);
+            }
 
-        listeningIndex++;
-        binding.tvTestProgress.setText("Pergunta " + listeningIndex + " de " + TOTAL_QUESTIONS_PER_STAGE + " | Acertos: " + listeningScore);
+            // Penalty: Add failed letter back + 2 random letters from pool
+            applyFailurePenalty(currentListeningTarget);
 
-        binding.getRoot().postDelayed(() -> {
-            if (listeningIndex < TOTAL_QUESTIONS_PER_STAGE) {
-                startListeningQuestion();
+            for (Button btn : testOptionButtons) {
+                if (btn.getText().toString().equalsIgnoreCase(currentListeningTarget)) {
+                    btn.setBackgroundColor(Color.parseColor("#00E676"));
+                } else if (btn.getText().toString().equalsIgnoreCase(selected)) {
+                    btn.setBackgroundColor(Color.parseColor("#FF5252"));
+                }
+            }
+
+            updateLivesUi();
+
+            if (currentStageFailures >= MAX_ALLOWED_FAILURES) {
+                // Game Over / Failed due to strikes!
+                listeningTotalFailures = currentStageFailures;
+                binding.getRoot().postDelayed(() -> showExamResults(false, "Excedeu o limite de 3 falhas no Teste de Escuta."), 1200);
             } else {
-                // Listening stage complete! Proceed to Sending Stage
-                startSendingStage();
+                binding.getRoot().postDelayed(this::nextListeningQuestion, 1200);
             }
-        }, 900);
+        }
     }
 
     // --- STAGE 2: SENDING (MANDAR) ---
@@ -304,19 +374,27 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
         binding.layoutStageSending.setVisibility(View.VISIBLE);
+        binding.tvPenaltyNotice.setVisibility(View.GONE);
 
-        sendingIndex = 0;
-        sendingScore = 0;
+        currentQueue.clear();
+        currentQueue.addAll(generateExamQueue());
+        questionsAnsweredInStage = 0;
+        currentStageFailures = 0;
+
         nextSendingQuestion();
     }
 
     private void nextSendingQuestion() {
-        sendingWaitingForInput = true;
-        binding.tvTestProgress.setText("Desafio " + (sendingIndex + 1) + " de " + TOTAL_QUESTIONS_PER_STAGE + " | Acertos: " + sendingScore);
+        if (currentQueue.isEmpty()) {
+            // Stage 2 completed successfully!
+            sendingTotalFailures = currentStageFailures;
+            showExamResults(true, "Parabéns! Passou no teste de Ouvir e Mandar!");
+            return;
+        }
 
-        List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
-        Collections.shuffle(pool);
-        currentSendingPrompt = pool.get(0);
+        sendingWaitingForInput = true;
+        currentSendingPrompt = currentQueue.poll();
+        updateLivesUi();
 
         binding.tvSendingPrompt.setText(currentSendingPrompt);
         binding.tvSendingBuffer.setText("A introduzir: —");
@@ -334,29 +412,59 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         if (binding == null || currentStage != TestStage.SENDING || !sendingWaitingForInput) return;
 
         sendingWaitingForInput = false;
+        questionsAnsweredInStage++;
+
         String decodedStr = String.valueOf(character).toUpperCase();
         boolean isCorrect = decodedStr.equalsIgnoreCase(currentSendingPrompt);
 
         if (isCorrect) {
-            sendingScore++;
+            binding.tvPenaltyNotice.setVisibility(View.GONE);
             binding.tvSendingFeedback.setText("✓ Correto! Transmitiu '" + character + "' perfeitamente!");
             binding.tvSendingFeedback.setTextColor(Color.parseColor("#00E676"));
+            binding.getRoot().postDelayed(this::nextSendingQuestion, 800);
         } else {
+            // FAILED SENDING QUESTION!
+            currentStageFailures++;
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null) {
+                activity.getSettings().recordLetterFailure(currentSendingPrompt);
+            }
+
+            // Penalty: Add failed letter back + 2 random letters from pool
+            applyFailurePenalty(currentSendingPrompt);
+
             binding.tvSendingFeedback.setText("✗ Incorreto: Transmitiu '" + character + "', mas o pedido era '" + currentSendingPrompt + "'.");
             binding.tvSendingFeedback.setTextColor(Color.parseColor("#FF5252"));
-        }
 
-        sendingIndex++;
-        binding.tvTestProgress.setText("Desafio " + sendingIndex + " de " + TOTAL_QUESTIONS_PER_STAGE + " | Acertos: " + sendingScore);
+            updateLivesUi();
 
-        binding.getRoot().postDelayed(() -> {
-            if (sendingIndex < TOTAL_QUESTIONS_PER_STAGE) {
-                nextSendingQuestion();
+            if (currentStageFailures >= MAX_ALLOWED_FAILURES) {
+                // Game Over in sending stage!
+                sendingTotalFailures = currentStageFailures;
+                binding.getRoot().postDelayed(() -> showExamResults(false, "Excedeu o limite de 3 falhas no Teste de Envio."), 1200);
             } else {
-                // Exam complete! Show Results
-                showExamResults();
+                binding.getRoot().postDelayed(this::nextSendingQuestion, 1400);
             }
-        }, 1100);
+        }
+    }
+
+    /**
+     * Penalty rule: "cada falha adiciona uma letra que falhou mais duas aleatoreas"
+     */
+    private void applyFailurePenalty(String failedLetter) {
+        List<String> pool = currentLevel.getAllCharacters();
+        String rand1 = pool.get((int) (Math.random() * pool.size()));
+        String rand2 = pool.get((int) (Math.random() * pool.size()));
+
+        currentQueue.add(failedLetter);
+        currentQueue.add(rand1);
+        currentQueue.add(rand2);
+
+        // Shuffle queue so repeated letters don't strictly appear in a row
+        Collections.shuffle(currentQueue);
+
+        binding.tvPenaltyNotice.setText("⚠️ Falha! Adicionada a letra '" + failedLetter + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ") à fila!");
+        binding.tvPenaltyNotice.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -371,30 +479,22 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
     // --- STAGE 3: RESULTS & UNLOCKING ---
 
-    private void showExamResults() {
+    private void showExamResults(boolean passed, String detailMessage) {
         currentStage = TestStage.RESULT;
         binding.layoutStudyView.setVisibility(View.GONE);
         binding.layoutTestView.setVisibility(View.GONE);
         binding.layoutResultView.setVisibility(View.VISIBLE);
 
-        boolean passedListening = listeningScore >= PASSING_SCORE;
-        boolean passedSending = sendingScore >= PASSING_SCORE;
-        boolean overallPass = passedListening && passedSending;
-
         MainActivity activity = (MainActivity) getActivity();
 
-        if (overallPass) {
+        if (passed) {
             binding.tvResultTitle.setText("🎉 NÍVEL " + currentLevelNumber + " CONCLUÍDO!");
             binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("Teste de Escuta (Ouvir): ").append(listeningScore).append(" / ").append(TOTAL_QUESTIONS_PER_STAGE).append(" ✓\n");
-            sb.append("Teste de Envio (Mandar): ").append(sendingScore).append(" / ").append(TOTAL_QUESTIONS_PER_STAGE).append(" ✓\n");
-            int totalCorrect = listeningScore + sendingScore;
-            int totalPossible = TOTAL_QUESTIONS_PER_STAGE * 2;
-            int percent = (totalCorrect * 100) / totalPossible;
-            sb.append("Aproveitamento Final: ").append(percent).append("%");
-            binding.tvResultSummary.setText(sb.toString());
+            String summary = "Etapa 1 (Ouvir): Aprovado (Falhas: " + listeningTotalFailures + "/3)\n" +
+                    "Etapa 2 (Mandar): Aprovado (Falhas: " + sendingTotalFailures + "/3)\n\n" +
+                    "Dominou todas as letras anteriores e novas deste nível!";
+            binding.tvResultSummary.setText(summary);
 
             if (activity != null) {
                 boolean newlyUnlocked = activity.getSettings().unlockNextLevel(currentLevelNumber);
@@ -411,17 +511,13 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             binding.btnResultAction.setText("AVANÇAR PARA O PRÓXIMO NÍVEL ▶");
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FFB300"));
         } else {
-            binding.tvResultTitle.setText("❌ NÃO PASSOU NO TESTE");
+            binding.tvResultTitle.setText("❌ TESTE FALHADO");
             binding.tvResultTitle.setTextColor(Color.parseColor("#FF5252"));
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("Teste de Escuta (Ouvir): ").append(listeningScore).append(" / ").append(TOTAL_QUESTIONS_PER_STAGE)
-                    .append(passedListening ? " ✓\n" : " (Mínimo: " + PASSING_SCORE + ")\n");
-            sb.append("Teste de Envio (Mandar): ").append(sendingScore).append(" / ").append(TOTAL_QUESTIONS_PER_STAGE)
-                    .append(passedSending ? " ✓\n" : " (Mínimo: " + PASSING_SCORE + ")\n");
-            sb.append("\nÉ necessário acertar pelo menos 80% (4 de 5) em AMBAS as etapas para desbloquear o próximo nível.");
-            binding.tvResultSummary.setText(sb.toString());
-
+            String summary = detailMessage + "\n\n" +
+                    "Regra: O teste só tolera até 3 falhas no total.\n" +
+                    "Pratique as letras com maior taxa de erro e tente novamente!";
+            binding.tvResultSummary.setText(summary);
             binding.tvResultUnlockMsg.setVisibility(View.GONE);
 
             binding.btnResultAction.setText("REPETIR TESTE 🔄");

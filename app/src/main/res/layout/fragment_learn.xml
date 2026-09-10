@@ -244,7 +244,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:lineSpacingExtra="3dp"
-                            android:text="1. Teste de Escuta (Ouvir): Identificar 5 letras transmitidas em Morse.\n2. Teste de Envio (Mandar): Transmitir 5 letras usando as pás DI e DAH (ou manipulador USB).\n\nPara desbloquear o próximo nível, precisa de acertar pelo menos 80% (4 de 5) em cada teste!"
+                            android:text="• O teste inclui todas as letras anteriores pelo menos 1x + 25% extras das letras mais falhadas.\n• Todas as perguntas são apresentadas de forma 100% aleatória.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona a letra errada + 2 letras aleatórias à fila do teste!\n• Tem de passar a etapa de Ouvir e a etapa de Mandar para desbloquear o próximo nível na Árvore."
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -287,18 +287,52 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <!-- Question / Score Tracker -->
-                <TextView
-                    android:id="@+id/tvTestProgress"
-                    android:layout_width="wrap_content"
+                <!-- Lives Indicator & Queue Tracker -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="monospace"
-                    android:text="Pergunta 1 de 5 | Acertos: 0"
-                    android:textColor="@color/morse_amber"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="8dp"
+                    android:background="@color/radio_surface"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tvTestLives"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="monospace"
+                        android:text="Vidas: ❤️❤️❤️ (0/3 falhas)"
+                        android:textColor="@color/morse_amber"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTestProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="Restam: 5 na fila"
+                        android:textColor="@color/morse_cyan"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Penalty Notice -->
+                <TextView
+                    android:id="@+id/tvPenaltyNotice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@color/morse_red"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="⚠️ Falha! Adicionada a letra errada + 2 aleatórias à fila!"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <!-- STAGE A: LISTENING (OUVIR) -->
                 <LinearLayout

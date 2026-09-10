@@ -129,4 +129,38 @@ public class KeyerSettings {
         }
         return false;
     }
+
+    public void recordLetterFailure(String letter) {
+        if (letter == null || letter.isEmpty()) return;
+        String key = "fail_cnt_" + letter.toUpperCase();
+        int current = prefs.getInt(key, 0);
+        prefs.edit().putInt(key, current + 1).apply();
+    }
+
+    public int getLetterFailureCount(String letter) {
+        if (letter == null || letter.isEmpty()) return 0;
+        return prefs.getInt("fail_cnt_" + letter.toUpperCase(), 0);
+    }
+
+    /**
+     * Returns up to 'count' letters from 'pool' that have the highest failure rates.
+     * If there are ties or letters with 0 failures, fills randomly from pool.
+     */
+    public java.util.List<String> getMostFailedLetters(java.util.List<String> pool, int count) {
+        java.util.List<String> sorted = new java.util.ArrayList<>(pool);
+        // Sort by failure count descending
+        java.util.Collections.sort(sorted, (a, b) -> Integer.compare(getLetterFailureCount(b), getLetterFailureCount(a)));
+
+        java.util.List<String> result = new java.util.ArrayList<>();
+        for (int i = 0; i < count && i < sorted.size(); i++) {
+            result.add(sorted.get(i));
+        }
+
+        // If count is greater than pool size, repeat randomly from pool
+        while (result.size() < count && !pool.isEmpty()) {
+            int idx = (int) (Math.random() * pool.size());
+            result.add(pool.get(idx));
+        }
+        return result;
+    }
 }
