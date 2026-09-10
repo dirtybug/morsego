@@ -233,30 +233,42 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
     /**
      * Builds the exam queue following the exact specification:
-     * - First 4 questions: strictly the 2 new letters of the level.
-     * - Questions 5+: words formed with random combinations of level's letters,
-     *   ensuring all letters are exercised at least once + 25% extra words with most failed letters.
+     * 1. Letters: Number of available letters times 4 (pool.size() * 4), dynamically randomized.
+     * 2. 4 words with the new letters of this level.
+     * 3. 4 random words formed from the available letters.
      */
     private LinkedList<String> generateExamQueue() {
         MainActivity activity = (MainActivity) getActivity();
         KeyerSettings settings = activity != null ? activity.getSettings() : new KeyerSettings(requireContext());
 
         LinkedList<String> queue = new LinkedList<>();
-
-        // Part A: First 4 questions are strictly the 2 new characters of this level, dynamically randomized
-        List<String> first4 = new ArrayList<>();
-        first4.add(currentLevel.getChar1());
-        first4.add(currentLevel.getChar2());
-        first4.add(Math.random() < 0.5 ? currentLevel.getChar1() : currentLevel.getChar2());
-        first4.add(Math.random() < 0.5 ? currentLevel.getChar1() : currentLevel.getChar2());
-        Collections.shuffle(first4);
-        queue.addAll(first4);
-
-        // Part B: Words dynamically generated to cover all previous & current letters at least once + 25% extra of most-failed letters
         List<String> pool = currentLevel.getAllCharacters();
-        List<String> mostFailed = settings.getMostFailedLetters(pool, 5);
-        List<String> words = MorseWordGenerator.generateExamWordSequence(pool, mostFailed);
-        queue.addAll(words);
+
+        // 1. Letters: available letters * 4 (each available letter appears 4 times, fully randomized)
+        List<String> letterQuestions = new ArrayList<>();
+        for (String letter : pool) {
+            for (int i = 0; i < 4; i++) {
+                letterQuestions.add(letter);
+            }
+        }
+        Collections.shuffle(letterQuestions);
+        queue.addAll(letterQuestions);
+
+        // 2. 4 words with the new letters of this level
+        List<String> newLetterWords = MorseWordGenerator.generateWordsWithNewLetters(
+                currentLevel.getChar1(), currentLevel.getChar2(), pool, 4);
+
+        // 3. 4 random words formed with available letters (incorporating most failed letters)
+        List<String> mostFailed = settings.getMostFailedLetters(pool, 4);
+        List<String> randomWords = MorseWordGenerator.generateRandomWords(pool, mostFailed, 4);
+
+        // Combine the 8 words and shuffle them
+        List<String> allWords = new ArrayList<>();
+        allWords.addAll(newLetterWords);
+        allWords.addAll(randomWords);
+        Collections.shuffle(allWords);
+
+        queue.addAll(allWords);
 
         return queue;
     }
@@ -272,7 +284,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvTestLives.setText(hearts.toString());
         binding.tvTestLives.setTextColor(remaining > 1 ? Color.parseColor("#FFB300") : Color.parseColor("#FF5252"));
 
-        String typeStr = (questionsAnsweredInStage < NUM_NEW_LETTER_QUESTIONS) ? "Letras Novas" : "Palavras";
+        int totalLetters = (currentLevel != null) ? currentLevel.getAllCharacters().size() * 4 : 8;
+        String typeStr = (questionsAnsweredInStage < totalLetters) ? "Letras (" + (questionsAnsweredInStage + 1) + "/" + totalLetters + ")" : "Palavras";
         binding.tvTestProgress.setText("[" + typeStr + "] Restam: " + currentQueue.size() + " na fila | Feitas: " + questionsAnsweredInStage);
     }
 

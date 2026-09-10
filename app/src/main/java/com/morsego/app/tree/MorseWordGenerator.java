@@ -51,6 +51,51 @@ public class MorseWordGenerator {
     }
 
     /**
+     * Generates 'count' dynamic words formed strictly from 'pool' that specifically
+     * include the 2 new letters of the level (char1 and/or char2).
+     */
+    public static List<String> generateWordsWithNewLetters(String char1, String char2, List<String> pool, int count) {
+        List<String> words = new ArrayList<>();
+        int maxL = pool.size() <= 4 ? 3 : 4;
+        for (int i = 0; i < count; i++) {
+            String targetChar = (i % 2 == 0) ? char1 : char2;
+            int attempts = 0;
+            String word;
+            do {
+                word = generateWordWithLetter(targetChar, pool, 2, maxL);
+                attempts++;
+            } while (words.contains(word) && attempts < 30);
+            words.add(word);
+        }
+        Collections.shuffle(words, RNG);
+        return words;
+    }
+
+    /**
+     * Generates 'count' dynamic random words formed strictly from 'pool'
+     * (incorporating most-failed letters if available).
+     */
+    public static List<String> generateRandomWords(List<String> pool, List<String> mostFailedLetters, int count) {
+        List<String> words = new ArrayList<>();
+        int maxL = pool.size() <= 4 ? 3 : 4;
+        for (int i = 0; i < count; i++) {
+            int attempts = 0;
+            String word;
+            do {
+                if (mostFailedLetters != null && !mostFailedLetters.isEmpty() && i < mostFailedLetters.size()) {
+                    word = generateWordWithLetter(mostFailedLetters.get(i), pool, 2, maxL);
+                } else {
+                    word = generateDynamicWord(pool, 2, maxL);
+                }
+                attempts++;
+            } while (words.contains(word) && attempts < 30);
+            words.add(word);
+        }
+        Collections.shuffle(words, RNG);
+        return words;
+    }
+
+    /**
      * Generates an exam word sequence dynamically satisfying:
      * 1. Never static: newly generated on every test run so user cannot memorize.
      * 2. Covers EVERY letter in 'pool' (all previous levels + current) at least once.

@@ -244,7 +244,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:lineSpacingExtra="3dp"
-                            android:text="• O teste inclui todas as letras anteriores pelo menos 1x + 25% extras das letras mais falhadas.\n• Todas as perguntas são apresentadas de forma 100% aleatória.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona a letra errada + 2 letras aleatórias à fila do teste!\n• Tem de passar a etapa de Ouvir e a etapa de Mandar para desbloquear o próximo nível na Árvore."
+                            android:text="• Letras no teste: todas as letras disponíveis × 4 (cada letra aparece 4 vezes, baralhada).\n• 4 palavras com as novas letras deste nível.\n• 4 palavras aleatórias formadas com as letras disponíveis.\n• Perguntas 100% dinâmicas e aleatórias (sem listas estáticas).\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item errado + 2 itens aleatórios à fila do teste!\n• Tem de passar a etapa de Ouvir e a etapa de Mandar para desbloquear o próximo nível."
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
