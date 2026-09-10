@@ -68,8 +68,8 @@
 
             <com.morsego.app.ui.view.MorseTreeView
                 android:id="@+id/morseTreeView"
-                android:layout_width="700dp"
-                android:layout_height="520dp" />
+                android:layout_width="980dp"
+                android:layout_height="600dp" />
         </HorizontalScrollView>
 
         <!-- Selected Node Details Card -->

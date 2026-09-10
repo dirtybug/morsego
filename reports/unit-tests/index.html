@@ -705,7 +705,7 @@
 
             <!-- Live Canvas View -->
             <div style="width: 100%; display: flex; justify-content: center; overflow-x: auto;">
-                <canvas id="simCanvas" width="900" height="460" style="background-color: #06090F; border-radius: 10px; border: 1px solid #1A2438; max-width: 100%; height: auto;"></canvas>
+                <canvas id="simCanvas" width="1180" height="510" style="background-color: #06090F; border-radius: 10px; border: 1px solid #1A2438; max-width: 100%; height: auto;"></canvas>
             </div>
         </div>
 
@@ -1499,43 +1499,64 @@
 
             ctx.clearRect(0, 0, w, h);
 
-            // Nodes hierarchy
-            // Root
-            const root = { id: "START", morse: "", x: w / 2, y: 45, depth: 0, unlocked: true };
+            // Hierarchy with individual, non-overlapping nodes (Every letter has its own circle)
+            const root = { id: "START", morse: "", x: w / 2, y: 42, radius: 22, depth: 0, unlocked: true };
 
             // Depth 1: T (left) and E (right)
-            const nodeT = { id: "T", morse: "-", x: w / 2 - 200, y: 130, parent: root, branch: "—", unlocked: unlockedList.includes("T") };
-            const nodeE = { id: "E", morse: ".", x: w / 2 + 200, y: 130, parent: root, branch: "•", unlocked: unlockedList.includes("E") };
+            const nodeT = { id: "T", morse: "-", x: w / 2 - 275, y: 115, radius: 18, parent: root, branch: "—", unlocked: unlockedList.includes("T") };
+            const nodeE = { id: "E", morse: ".", x: w / 2 + 275, y: 115, radius: 18, parent: root, branch: "•", unlocked: unlockedList.includes("E") };
 
             // Depth 2: M & N under T; A & I under E
-            const nodeM = { id: "M", morse: "--", x: nodeT.x - 100, y: 220, parent: nodeT, branch: "—", unlocked: unlockedList.includes("M") };
-            const nodeN = { id: "N", morse: "-.", x: nodeT.x + 100, y: 220, parent: nodeT, branch: "•", unlocked: unlockedList.includes("N") };
-            const nodeA = { id: "A", morse: ".-", x: nodeE.x - 100, y: 220, parent: nodeE, branch: "—", unlocked: unlockedList.includes("A") };
-            const nodeI = { id: "I", morse: "..", x: nodeE.x + 100, y: 220, parent: nodeE, branch: "•", unlocked: unlockedList.includes("I") };
+            const nodeM = { id: "M", morse: "--", x: nodeT.x - 135, y: 195, radius: 17, parent: nodeT, branch: "—", unlocked: unlockedList.includes("M") };
+            const nodeN = { id: "N", morse: "-.", x: nodeT.x + 135, y: 195, radius: 17, parent: nodeT, branch: "•", unlocked: unlockedList.includes("N") };
+            const nodeA = { id: "A", morse: ".-", x: nodeE.x - 135, y: 195, radius: 17, parent: nodeE, branch: "—", unlocked: unlockedList.includes("A") };
+            const nodeI = { id: "I", morse: "..", x: nodeE.x + 135, y: 195, radius: 17, parent: nodeE, branch: "•", unlocked: unlockedList.includes("I") };
 
             // Depth 3:
-            const nodeO = { id: "O", morse: "---", x: nodeM.x - 50, y: 310, parent: nodeM, branch: "—", unlocked: unlockedList.includes("O") };
-            const nodeG = { id: "G", morse: "--.", x: nodeM.x + 50, y: 310, parent: nodeM, branch: "•", unlocked: unlockedList.includes("G") };
-            const nodeK = { id: "K", morse: "-.-", x: nodeN.x - 50, y: 310, parent: nodeN, branch: "—", unlocked: unlockedList.includes("K") };
-            const nodeD = { id: "D", morse: "-..", x: nodeN.x + 50, y: 310, parent: nodeN, branch: "•", unlocked: unlockedList.includes("D") };
-            const nodeW = { id: "W", morse: ".--", x: nodeA.x - 50, y: 310, parent: nodeA, branch: "—", unlocked: unlockedList.includes("W") };
-            const nodeR = { id: "R", morse: ".-.", x: nodeA.x + 50, y: 310, parent: nodeA, branch: "•", unlocked: unlockedList.includes("R") };
-            const nodeU = { id: "U", morse: "..-", x: nodeI.x - 50, y: 310, parent: nodeI, branch: "—", unlocked: unlockedList.includes("U") };
-            const nodeS = { id: "S", morse: "...", x: nodeI.x + 50, y: 310, parent: nodeI, branch: "•", unlocked: unlockedList.includes("S") };
+            const nodeO = { id: "O", morse: "---", x: nodeM.x - 68, y: 275, radius: 16, parent: nodeM, branch: "—", unlocked: unlockedList.includes("O") };
+            const nodeG = { id: "G", morse: "--.", x: nodeM.x + 68, y: 275, radius: 16, parent: nodeM, branch: "•", unlocked: unlockedList.includes("G") };
+            const nodeK = { id: "K", morse: "-.-", x: nodeN.x - 68, y: 275, radius: 16, parent: nodeN, branch: "—", unlocked: unlockedList.includes("K") };
+            const nodeD = { id: "D", morse: "-..", x: nodeN.x + 68, y: 275, radius: 16, parent: nodeN, branch: "•", unlocked: unlockedList.includes("D") };
+            const nodeW = { id: "W", morse: ".--", x: nodeA.x - 68, y: 275, radius: 16, parent: nodeA, branch: "—", unlocked: unlockedList.includes("W") };
+            const nodeR = { id: "R", morse: ".-.", x: nodeA.x + 68, y: 275, radius: 16, parent: nodeA, branch: "•", unlocked: unlockedList.includes("R") };
+            const nodeU = { id: "U", morse: "..-", x: nodeI.x - 68, y: 275, radius: 16, parent: nodeI, branch: "—", unlocked: unlockedList.includes("U") };
+            const nodeS = { id: "S", morse: "...", x: nodeI.x + 68, y: 275, radius: 16, parent: nodeI, branch: "•", unlocked: unlockedList.includes("S") };
 
-            // Depth 4 (Sample of letters under M, N, A, I)
-            const d4Nodes = [
-                { id: "0/9", morse: "0-9", x: nodeO.x, y: 400, parent: nodeO, branch: "-", unlocked: unlockedList.includes("0") },
-                { id: "Q/Z", morse: "--.", x: nodeG.x, y: 400, parent: nodeG, branch: "-", unlocked: unlockedList.includes("Q") && unlockedList.includes("Z") },
-                { id: "Y/C", morse: "-.-", x: nodeK.x, y: 400, parent: nodeK, branch: "-", unlocked: unlockedList.includes("Y") && unlockedList.includes("C") },
-                { id: "X/B", morse: "-..", x: nodeD.x, y: 400, parent: nodeD, branch: "-", unlocked: unlockedList.includes("X") && unlockedList.includes("B") },
-                { id: "J/P", morse: ".--", x: nodeW.x, y: 400, parent: nodeW, branch: "-", unlocked: unlockedList.includes("J") && unlockedList.includes("P") },
-                { id: "L", morse: ".-.", x: nodeR.x, y: 400, parent: nodeR, branch: "-", unlocked: unlockedList.includes("L") },
-                { id: "F", morse: "..-.", x: nodeU.x, y: 400, parent: nodeU, branch: "-", unlocked: unlockedList.includes("F") },
-                { id: "V/H", morse: "...", x: nodeS.x, y: 400, parent: nodeS, branch: "-", unlocked: unlockedList.includes("V") && unlockedList.includes("H") }
+            // Depth 4: Individual Letters (X, B, C, Y, Z, Q, J, P, L, F, V, H, 0, 9) - NO COMBINED LABELS
+            const node0 = { id: "0", morse: "-----", x: nodeO.x - 34, y: 355, radius: 14, parent: nodeO, branch: "—", unlocked: unlockedList.includes("0") };
+            const node9 = { id: "9", morse: "----.", x: nodeO.x + 34, y: 355, radius: 14, parent: nodeO, branch: "•", unlocked: unlockedList.includes("9") };
+            const nodeQ = { id: "Q", morse: "--.-", x: nodeG.x - 34, y: 355, radius: 14, parent: nodeG, branch: "—", unlocked: unlockedList.includes("Q") };
+            const nodeZ = { id: "Z", morse: "--..", x: nodeG.x + 34, y: 355, radius: 14, parent: nodeG, branch: "•", unlocked: unlockedList.includes("Z") };
+            const nodeY = { id: "Y", morse: "-.--", x: nodeK.x - 34, y: 355, radius: 14, parent: nodeK, branch: "—", unlocked: unlockedList.includes("Y") };
+            const nodeC = { id: "C", morse: "-.-.", x: nodeK.x + 34, y: 355, radius: 14, parent: nodeK, branch: "•", unlocked: unlockedList.includes("C") };
+            // DEDICATED X and B UNDER D
+            const nodeX = { id: "X", morse: "-..-", x: nodeD.x - 34, y: 355, radius: 14, parent: nodeD, branch: "—", unlocked: unlockedList.includes("X") };
+            const nodeB = { id: "B", morse: "-...", x: nodeD.x + 34, y: 355, radius: 14, parent: nodeD, branch: "•", unlocked: unlockedList.includes("B") };
+            const nodeJ = { id: "J", morse: ".---", x: nodeW.x - 34, y: 355, radius: 14, parent: nodeW, branch: "—", unlocked: unlockedList.includes("J") };
+            const nodeP = { id: "P", morse: ".--.", x: nodeW.x + 34, y: 355, radius: 14, parent: nodeW, branch: "•", unlocked: unlockedList.includes("P") };
+            const nodeL = { id: "L", morse: ".-..", x: nodeR.x + 34, y: 355, radius: 14, parent: nodeR, branch: "•", unlocked: unlockedList.includes("L") };
+            const nodeF = { id: "F", morse: "..-.", x: nodeU.x + 34, y: 355, radius: 14, parent: nodeU, branch: "•", unlocked: unlockedList.includes("F") };
+            const nodeV = { id: "V", morse: "...-", x: nodeS.x - 34, y: 355, radius: 14, parent: nodeS, branch: "—", unlocked: unlockedList.includes("V") };
+            const nodeH = { id: "H", morse: "....", x: nodeS.x + 34, y: 355, radius: 14, parent: nodeS, branch: "•", unlocked: unlockedList.includes("H") };
+
+            // Depth 5: Numbers (8, 7, 6, 1, 2, 3, 4, 5) safely spaced in bottom row
+            const node8 = { id: "8", morse: "---..", x: node9.x, y: 440, radius: 13, parent: node9, branch: "—", unlocked: unlockedList.includes("8") };
+            const node7 = { id: "7", morse: "--...", x: nodeZ.x, y: 440, radius: 13, parent: nodeZ, branch: "—", unlocked: unlockedList.includes("7") };
+            const node6 = { id: "6", morse: "-....", x: nodeB.x, y: 440, radius: 13, parent: nodeB, branch: "—", unlocked: unlockedList.includes("6") };
+            const node1 = { id: "1", morse: ".----", x: nodeJ.x, y: 440, radius: 13, parent: nodeJ, branch: "—", unlocked: unlockedList.includes("1") };
+            const node2 = { id: "2", morse: "..---", x: nodeF.x, y: 440, radius: 13, parent: nodeF, branch: "—", unlocked: unlockedList.includes("2") };
+            const node3 = { id: "3", morse: "...--", x: nodeV.x, y: 440, radius: 13, parent: nodeV, branch: "—", unlocked: unlockedList.includes("3") };
+            const node4 = { id: "4", morse: "....-", x: nodeH.x - 18, y: 440, radius: 13, parent: nodeH, branch: "—", unlocked: unlockedList.includes("4") };
+            const node5 = { id: "5", morse: ".....", x: nodeH.x + 18, y: 440, radius: 13, parent: nodeH, branch: "•", unlocked: unlockedList.includes("5") };
+
+            const allNodes = [
+                root,
+                nodeT, nodeE,
+                nodeM, nodeN, nodeA, nodeI,
+                nodeO, nodeG, nodeK, nodeD, nodeW, nodeR, nodeU, nodeS,
+                node0, node9, nodeQ, nodeZ, nodeY, nodeC, nodeX, nodeB, nodeJ, nodeP, nodeL, nodeF, nodeV, nodeH,
+                node8, node7, node6, node1, node2, node3, node4, node5
             ];
-
-            const allNodes = [root, nodeT, nodeE, nodeM, nodeN, nodeA, nodeI, nodeO, nodeG, nodeK, nodeD, nodeW, nodeR, nodeU, nodeS, ...d4Nodes];
 
             // 1. Draw connecting lines
             allNodes.forEach(node => {
@@ -1543,52 +1564,65 @@
                     ctx.beginPath();
                     ctx.moveTo(node.parent.x, node.parent.y);
                     ctx.lineTo(node.x, node.y);
-                    ctx.lineWidth = node.unlocked ? 2.5 : 1.2;
-                    ctx.strokeStyle = node.unlocked ? "#00E676" : "#26354D";
+                    ctx.lineWidth = node.unlocked ? 2.2 : 1.0;
+                    ctx.strokeStyle = node.unlocked ? "#00E676" : "#212A3B";
                     ctx.stroke();
 
-                    // Branch symbol
-                    ctx.font = "bold 12px sans-serif";
+                    // Branch symbol placed beside the line
+                    ctx.font = "bold 11px sans-serif";
                     ctx.fillStyle = node.unlocked ? "#00E676" : "#4A5D78";
                     ctx.textAlign = "center";
-                    ctx.fillText(node.branch, (node.parent.x + node.x) / 2 + (node.branch === "•" ? 10 : -10), (node.parent.y + node.y) / 2);
+                    ctx.textBaseline = "middle";
+                    const midX = (node.parent.x + node.x) / 2 + (node.branch === "•" ? 9 : -9);
+                    const midY = (node.parent.y + node.y) / 2;
+                    ctx.fillText(node.branch, midX, midY);
                 }
             });
 
-            // 2. Draw nodes
+            // 2. Draw node circles and labels
             allNodes.forEach(node => {
-                const radius = node.id === "START" ? 22 : 18;
+                const r = node.radius;
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
 
                 if (node.unlocked) {
                     ctx.shadowColor = "#00E676";
-                    ctx.shadowBlur = 12;
+                    ctx.shadowBlur = 10;
                     ctx.fillStyle = "#00E676";
                     ctx.fill();
                     ctx.shadowBlur = 0;
 
                     ctx.strokeStyle = "#FFFFFF";
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = 1.8;
                     ctx.stroke();
 
-                    ctx.font = "bold 13px monospace";
+                    // Node character centered inside circle
+                    ctx.font = "bold " + (r > 15 ? "13px" : "11px") + " monospace";
                     ctx.fillStyle = "#05080E";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText(node.id, node.x, node.y - (node.morse ? 2 : 0));
+                    ctx.fillText(node.id, node.x, node.y);
                 } else {
-                    ctx.fillStyle = "#121824";
+                    ctx.fillStyle = "#0F1624";
                     ctx.fill();
                     ctx.strokeStyle = "#26354D";
-                    ctx.lineWidth = 1.5;
+                    ctx.lineWidth = 1.2;
                     ctx.stroke();
 
-                    ctx.font = "bold 11px sans-serif";
+                    ctx.font = (r > 15 ? "10px" : "9px") + " sans-serif";
                     ctx.fillStyle = "#5A6E8A";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillText(node.id.length > 2 ? "🔒" : node.id, node.x, node.y);
+                }
+
+                // Morse code drawn safely BELOW the circle (guaranteed no overlap)
+                if (node.morse && node.unlocked) {
+                    ctx.font = "bold 9px monospace";
+                    ctx.fillStyle = "#8B949E";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+                    ctx.fillText(node.morse, node.x, node.y + r + 4);
                 }
             });
         }
