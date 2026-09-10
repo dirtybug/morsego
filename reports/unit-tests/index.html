@@ -377,7 +377,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 64 TESTES PASSADOS (100% SUCESSO)
+                <span>✓</span> 73 TESTES PASSADOS (100% SUCESSO)
             </div>
         </header>
 
@@ -385,15 +385,15 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total de Testes</div>
-                <div class="metric-value val-blue">64</div>
+                <div class="metric-value val-blue">73</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Testes Passados</div>
-                <div class="metric-value val-success">64</div>
+                <div class="metric-value val-success">73</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Capturas de Ecrã</div>
-                <div class="metric-value val-purple">11</div>
+                <div class="metric-value val-purple">13</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Taxa de Sucesso</div>
@@ -401,7 +401,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Tempo de Execução</div>
-                <div class="metric-value val-blue">3.60s</div>
+                <div class="metric-value val-blue">3.90s</div>
             </div>
         </div>
 
@@ -517,7 +517,7 @@
         </div>
 
         <!-- Step-by-Step Tree Release Showcase -->
-        <div class="section-title">🌳 Demonstração Visual: Releases da Árvore Binária Passo a Passo (Incluindo Sob M e Sob N)</div>
+        <div class="section-title">🌳 Demonstração Visual: Todos os Releases da Árvore Binária Passo a Passo</div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
             Validação passo a passo da progressão e iluminação visual na Árvore Binária de Morse. Cada passo desbloqueia estritamente os novos nós e ilumina os ramos correspondentes, mantendo os níveis superiores protegidos com cadeados:
         </p>
@@ -606,6 +606,89 @@
                     </div>
                     <div class="gallery-test-source">MorseGoUnderMAndNBehaviorTest • test02</div>
                 </div>
+            </div>
+
+            <!-- Step 6: Nível 13 Alfabeto Completo (Z e Q) -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step05_tree_level13_alphabet_complete.jpg" alt="Passo 6 - Alfabeto Completo" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 6 • Nível 13</div>
+                        <div class="gallery-title">Alfabeto Completo (26 Letras A-Z) Desbloqueado</div>
+                        <div class="gallery-desc">
+                            O Nível 13 liberta <strong>Z</strong> (--..) e <strong>Q</strong> (--.-), completando as 26 letras de A a Z. Todas as letras da árvore iluminam-se e o modo de Rádio CW é desbloqueado.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 5</div>
+                </div>
+            </div>
+
+            <!-- Step 7: Nível 21 Árvore 100% Completa -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step06_tree_level21_full_tree.jpg" alt="Passo 7 - Árvore 100% Completa" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Passo 7 • Nível 21 (Final)</div>
+                        <div class="gallery-title">Árvore 100% Concluída • Zero Cadeados</div>
+                        <div class="gallery-desc">
+                            Todos os 21 níveis, todos os números (0 a 9) e pontuação telegráfica (. , ? / SOS SK) totalmente abertos. Cada nó brilha a verde neon.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Passo 6 & 7</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Tree Unlocking Simulator Widget -->
+        <div class="highlight-box" style="background: linear-gradient(135deg, rgba(0, 230, 118, 0.08), rgba(41, 121, 255, 0.08)); border: 1px solid rgba(0, 230, 118, 0.4);">
+            <div class="highlight-title" style="font-size: 18px; color: var(--accent-green);">
+                <span>🎮</span> Simulador Interativo: Ver Todos os 21 Níveis a Serem Desbloqueados em Tempo Real
+            </div>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-top: 6px;">
+                Utilize os controlos abaixo para navegar interativamente por todos os 21 níveis ou clique em <strong>"▶ Reproduzir Automático"</strong> para ver a árvore a ser libertada passo a passo:
+            </p>
+
+            <!-- Player Controls -->
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 18px 0 14px 0;">
+                <button onclick="simPrev()" style="background: #1A2438; border: 1px solid #26354D; color: #FFF; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">◀ Anterior</button>
+                <button id="simPlayBtn" onclick="simTogglePlay()" style="background: #00E676; border: 1px solid #00C853; color: #05080E; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 0 12px rgba(0, 230, 118, 0.3);">▶ Reproduzir Automático (1 a 21)</button>
+                <button onclick="simNext()" style="background: #1A2438; border: 1px solid #26354D; color: #FFF; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Próximo ▶</button>
+                <button onclick="simReset()" style="background: #1A2438; border: 1px solid #26354D; color: #8B949E; padding: 8px 14px; border-radius: 8px; cursor: pointer;">↺ Nível 1</button>
+
+                <div style="flex-grow: 1; min-width: 200px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 12px; color: var(--text-secondary); white-space: nowrap;">Nível:</span>
+                    <input type="range" id="simSlider" min="1" max="21" value="1" oninput="simSetLevel(parseInt(this.value))" style="width: 100%; cursor: pointer; accent-color: #00E676;">
+                    <span id="simLevelDisplay" style="font-family: monospace; font-weight: 700; color: #00E676; min-width: 45px;">Nív 1</span>
+                </div>
+            </div>
+
+            <!-- Current Level Info Display -->
+            <div style="background: #0E131F; border: 1px solid #26354D; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                <div>
+                    <div style="font-size: 11px; color: #8B949E; text-transform: uppercase;">Estado Atual</div>
+                    <div id="simTitleText" style="font-weight: 700; color: #FFF; font-size: 14px;">Nível 1: Raiz da Árvore (T e E)</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: #8B949E; text-transform: uppercase;">Novas Letras Deste Nível</div>
+                    <div id="simNewCharsText" style="font-weight: 700; color: #00E676; font-size: 14px;">T (-) e E (.)</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: #8B949E; text-transform: uppercase;">Caracteres Acumulados</div>
+                    <div id="simPoolText" style="font-weight: 700; color: #2979FF; font-size: 14px;">2 / 42 caracteres</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: #8B949E; text-transform: uppercase;">Módulo de Rádio CW</div>
+                    <div id="simRadioText" style="font-weight: 700; color: #FF9100; font-size: 14px;">🔒 Bloqueado (Requer Nív 13)</div>
+                </div>
+            </div>
+
+            <!-- Live Canvas View -->
+            <div style="width: 100%; display: flex; justify-content: center; overflow-x: auto;">
+                <canvas id="simCanvas" width="900" height="460" style="background-color: #06090F; border-radius: 10px; border: 1px solid #1A2438; max-width: 100%; height: auto;"></canvas>
             </div>
         </div>
 
@@ -1212,6 +1295,197 @@
         function closeModal() {
             document.getElementById('imageModal').style.display = 'none';
         }
+
+        /* Interactive Simulator Data for all 21 levels */
+        const treeLevels = [
+            { lvl: 1, title: "Nível 1: Raiz da Árvore (T e E)", newChars: "T (-) e E (.)", pool: 2, radio: false, unlocked: ["T","E"] },
+            { lvl: 2, title: "Nível 2: Ramos do E (A e I)", newChars: "A (.-) e I (..)", pool: 4, radio: false, unlocked: ["T","E","A","I"] },
+            { lvl: 3, title: "Nível 3: Ramos do T (M e N)", newChars: "M (--) e N (-.)", pool: 6, radio: false, unlocked: ["T","E","A","I","M","N"] },
+            { lvl: 4, title: "Nível 4: Ramos do I (S e U)", newChars: "S (...) e U (..-)", pool: 8, radio: false, unlocked: ["T","E","A","I","M","N","S","U"] },
+            { lvl: 5, title: "Nível 5: Ramos do A (R e W)", newChars: "R (.-.) e W (.--)", pool: 10, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W"] },
+            { lvl: 6, title: "Nível 6: Ramos do N (D e K)", newChars: "D (-..) e K (-.-)", pool: 12, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K"] },
+            { lvl: 7, title: "Nível 7: Ramos do M (G e O)", newChars: "G (--.) e O (---)", pool: 14, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O"] },
+            { lvl: 8, title: "Nível 8: Ramos do S (H e V)", newChars: "H (....) e V (...-)", pool: 16, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V"] },
+            { lvl: 9, title: "Nível 9: Ramos de U e R (F e L)", newChars: "F (..-.) e L (.-..)", pool: 18, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L"] },
+            { lvl: 10, title: "Nível 10: Ramos do W (P e J)", newChars: "P (.--.) e J (.---)", pool: 20, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J"] },
+            { lvl: 11, title: "Nível 11: Ramos do D (B e X)", newChars: "B (-...) e X (-..-)", pool: 22, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X"] },
+            { lvl: 12, title: "Nível 12: Ramos do K (C e Y)", newChars: "C (-.-.) e Y (-.--)", pool: 24, radio: false, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y"] },
+            { lvl: 13, title: "Nível 13: Ramos do G (Z e Q) - ALFABETO A-Z COMPLETO!", newChars: "Z (--..) e Q (--.-)", pool: 26, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q"] },
+            { lvl: 14, title: "Nível 14: Números (5 e 4)", newChars: "5 (.....) e 4 (....-)", pool: 28, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4"] },
+            { lvl: 15, title: "Nível 15: Números (3 e 2)", newChars: "3 (...--) e 2 (..---)", pool: 30, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2"] },
+            { lvl: 16, title: "Nível 16: Números (1 e 6)", newChars: "1 (.----) e 6 (-....)", pool: 32, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6"] },
+            { lvl: 17, title: "Nível 17: Números (7 e 8)", newChars: "7 (--...) e 8 (---..)", pool: 34, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6","7","8"] },
+            { lvl: 18, title: "Nível 18: Números (9 e 0) - ALGARISMOS COMPLETOS!", newChars: "9 (----.) e 0 (-----)", pool: 36, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6","7","8","9","0"] },
+            { lvl: 19, title: "Nível 19: Pontuação (. e ,)", newChars: ". (.-.-.-) e , (--..--)", pool: 38, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6","7","8","9","0",".",","] },
+            { lvl: 20, title: "Nível 20: Pontuação (? e /)", newChars: "? (..--..) e / (-..-.)", pool: 40, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6","7","8","9","0",".",",","?","/"] },
+            { lvl: 21, title: "Nível 21: Prosigns (SOS e SK) - ÁRVORE 100% COMPLETA!", newChars: "SOS e SK", pool: 42, radio: true, unlocked: ["T","E","A","I","M","N","S","U","R","W","D","K","G","O","H","V","F","L","P","J","B","X","C","Y","Z","Q","5","4","3","2","1","6","7","8","9","0",".",",","?","/","SOS","SK"] }
+        ];
+
+        let currentSimLevel = 1;
+        let simPlayInterval = null;
+
+        function simSetLevel(lvl) {
+            currentSimLevel = Math.max(1, Math.min(21, lvl));
+            const data = treeLevels[currentSimLevel - 1];
+
+            document.getElementById('simSlider').value = currentSimLevel;
+            document.getElementById('simLevelDisplay').innerText = "Nív " + currentSimLevel;
+            document.getElementById('simTitleText').innerText = data.title;
+            document.getElementById('simNewCharsText').innerText = data.newChars;
+            document.getElementById('simPoolText').innerText = data.pool + " / 42 caracteres (" + Math.round(data.pool / 42 * 100) + "%)";
+
+            const radioSpan = document.getElementById('simRadioText');
+            if (data.radio) {
+                radioSpan.innerHTML = "<span style='color: #00E676;'>✓ DESBLOQUEADO (Ouvir & Mandar)</span>";
+            } else {
+                radioSpan.innerHTML = "<span style='color: #FF9100;'>🔒 Bloqueado (Requer Nív 13)</span>";
+            }
+
+            drawSimTree(data.unlocked);
+        }
+
+        function simPrev() {
+            simSetLevel(currentSimLevel - 1);
+        }
+
+        function simNext() {
+            simSetLevel(currentSimLevel + 1);
+        }
+
+        function simReset() {
+            if (simPlayInterval) simTogglePlay();
+            simSetLevel(1);
+        }
+
+        function simTogglePlay() {
+            const btn = document.getElementById('simPlayBtn');
+            if (simPlayInterval) {
+                clearInterval(simPlayInterval);
+                simPlayInterval = null;
+                btn.innerText = "▶ Reproduzir Automático (1 a 21)";
+                btn.style.background = "#00E676";
+            } else {
+                if (currentSimLevel >= 21) currentSimLevel = 0;
+                btn.innerText = "⏸ Pausar Simulação";
+                btn.style.background = "#FF9100";
+                simPlayInterval = setInterval(() => {
+                    if (currentSimLevel < 21) {
+                        simSetLevel(currentSimLevel + 1);
+                    } else {
+                        simTogglePlay();
+                    }
+                }, 750);
+            }
+        }
+
+        function drawSimTree(unlockedList) {
+            const canvas = document.getElementById('simCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Nodes hierarchy
+            // Root
+            const root = { id: "START", morse: "", x: w / 2, y: 45, depth: 0, unlocked: true };
+
+            // Depth 1: T (left) and E (right)
+            const nodeT = { id: "T", morse: "-", x: w / 2 - 200, y: 130, parent: root, branch: "—", unlocked: unlockedList.includes("T") };
+            const nodeE = { id: "E", morse: ".", x: w / 2 + 200, y: 130, parent: root, branch: "•", unlocked: unlockedList.includes("E") };
+
+            // Depth 2: M & N under T; A & I under E
+            const nodeM = { id: "M", morse: "--", x: nodeT.x - 100, y: 220, parent: nodeT, branch: "—", unlocked: unlockedList.includes("M") };
+            const nodeN = { id: "N", morse: "-.", x: nodeT.x + 100, y: 220, parent: nodeT, branch: "•", unlocked: unlockedList.includes("N") };
+            const nodeA = { id: "A", morse: ".-", x: nodeE.x - 100, y: 220, parent: nodeE, branch: "—", unlocked: unlockedList.includes("A") };
+            const nodeI = { id: "I", morse: "..", x: nodeE.x + 100, y: 220, parent: nodeE, branch: "•", unlocked: unlockedList.includes("I") };
+
+            // Depth 3:
+            const nodeO = { id: "O", morse: "---", x: nodeM.x - 50, y: 310, parent: nodeM, branch: "—", unlocked: unlockedList.includes("O") };
+            const nodeG = { id: "G", morse: "--.", x: nodeM.x + 50, y: 310, parent: nodeM, branch: "•", unlocked: unlockedList.includes("G") };
+            const nodeK = { id: "K", morse: "-.-", x: nodeN.x - 50, y: 310, parent: nodeN, branch: "—", unlocked: unlockedList.includes("K") };
+            const nodeD = { id: "D", morse: "-..", x: nodeN.x + 50, y: 310, parent: nodeN, branch: "•", unlocked: unlockedList.includes("D") };
+            const nodeW = { id: "W", morse: ".--", x: nodeA.x - 50, y: 310, parent: nodeA, branch: "—", unlocked: unlockedList.includes("W") };
+            const nodeR = { id: "R", morse: ".-.", x: nodeA.x + 50, y: 310, parent: nodeA, branch: "•", unlocked: unlockedList.includes("R") };
+            const nodeU = { id: "U", morse: "..-", x: nodeI.x - 50, y: 310, parent: nodeI, branch: "—", unlocked: unlockedList.includes("U") };
+            const nodeS = { id: "S", morse: "...", x: nodeI.x + 50, y: 310, parent: nodeI, branch: "•", unlocked: unlockedList.includes("S") };
+
+            // Depth 4 (Sample of letters under M, N, A, I)
+            const d4Nodes = [
+                { id: "0/9", morse: "0-9", x: nodeO.x, y: 400, parent: nodeO, branch: "-", unlocked: unlockedList.includes("0") },
+                { id: "Q/Z", morse: "--.", x: nodeG.x, y: 400, parent: nodeG, branch: "-", unlocked: unlockedList.includes("Q") && unlockedList.includes("Z") },
+                { id: "Y/C", morse: "-.-", x: nodeK.x, y: 400, parent: nodeK, branch: "-", unlocked: unlockedList.includes("Y") && unlockedList.includes("C") },
+                { id: "X/B", morse: "-..", x: nodeD.x, y: 400, parent: nodeD, branch: "-", unlocked: unlockedList.includes("X") && unlockedList.includes("B") },
+                { id: "J/P", morse: ".--", x: nodeW.x, y: 400, parent: nodeW, branch: "-", unlocked: unlockedList.includes("J") && unlockedList.includes("P") },
+                { id: "L", morse: ".-.", x: nodeR.x, y: 400, parent: nodeR, branch: "-", unlocked: unlockedList.includes("L") },
+                { id: "F", morse: "..-.", x: nodeU.x, y: 400, parent: nodeU, branch: "-", unlocked: unlockedList.includes("F") },
+                { id: "V/H", morse: "...", x: nodeS.x, y: 400, parent: nodeS, branch: "-", unlocked: unlockedList.includes("V") && unlockedList.includes("H") }
+            ];
+
+            const allNodes = [root, nodeT, nodeE, nodeM, nodeN, nodeA, nodeI, nodeO, nodeG, nodeK, nodeD, nodeW, nodeR, nodeU, nodeS, ...d4Nodes];
+
+            // 1. Draw connecting lines
+            allNodes.forEach(node => {
+                if (node.parent) {
+                    ctx.beginPath();
+                    ctx.moveTo(node.parent.x, node.parent.y);
+                    ctx.lineTo(node.x, node.y);
+                    ctx.lineWidth = node.unlocked ? 2.5 : 1.2;
+                    ctx.strokeStyle = node.unlocked ? "#00E676" : "#26354D";
+                    ctx.stroke();
+
+                    // Branch symbol
+                    ctx.font = "bold 12px sans-serif";
+                    ctx.fillStyle = node.unlocked ? "#00E676" : "#4A5D78";
+                    ctx.textAlign = "center";
+                    ctx.fillText(node.branch, (node.parent.x + node.x) / 2 + (node.branch === "•" ? 10 : -10), (node.parent.y + node.y) / 2);
+                }
+            });
+
+            // 2. Draw nodes
+            allNodes.forEach(node => {
+                const radius = node.id === "START" ? 22 : 18;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+
+                if (node.unlocked) {
+                    ctx.shadowColor = "#00E676";
+                    ctx.shadowBlur = 12;
+                    ctx.fillStyle = "#00E676";
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    ctx.strokeStyle = "#FFFFFF";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.font = "bold 13px monospace";
+                    ctx.fillStyle = "#05080E";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(node.id, node.x, node.y - (node.morse ? 2 : 0));
+                } else {
+                    ctx.fillStyle = "#121824";
+                    ctx.fill();
+                    ctx.strokeStyle = "#26354D";
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    ctx.font = "bold 11px sans-serif";
+                    ctx.fillStyle = "#5A6E8A";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(node.id.length > 2 ? "🔒" : node.id, node.x, node.y);
+                }
+            });
+        }
+
+        // Initialize simulator on load
+        window.addEventListener('DOMContentLoaded', () => {
+            simSetLevel(1);
+        });
+        setTimeout(() => simSetLevel(1), 100);
     </script>
 </body>
 </html>

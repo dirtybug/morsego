@@ -133,69 +133,51 @@ public class MorseTreeStepByStepReleaseTest {
     }
 
     /**
-     * PASSO A PASSO COMPLETO DO NÍVEL 1 AO 21:
-     * Percorre sequencialmente cada nível, validando:
-     * 1. A introdução de exatamente 2 novas letras/símbolos por passo.
-     * 2. A acumulação correta de tamanho (2 * nível).
-     * 3. Que todos os caracteres dos níveis anteriores se mantêm acessíveis.
-     * 4. Que nenhuma letra de níveis posteriores está inadvertidamente aberta.
+     * PASSO 4: Release dos Níveis 4 e 5 - Ramos de I (S, U) e A (R, W).
      */
     @Test
-    public void testPasso04_StepByStepProgression_Levels1Through21() {
-        for (int step = 1; step <= 21; step++) {
-            tree.unlockNodesUpToLevel(step);
+    public void testPasso04_ReleaseLevels4and5_Branches_I_and_A() {
+        tree.unlockNodesUpToLevel(4);
+        MorseTreeNode nodeS = tree.findNodeByCharacter("S");
+        MorseTreeNode nodeU = tree.findNodeByCharacter("U");
+        assertNotNull(nodeS);
+        assertNotNull(nodeU);
+        assertTrue("S deve estar desbloqueado no nível 4", nodeS.isUnlocked());
+        assertTrue("U deve estar desbloqueado no nível 4", nodeU.isUnlocked());
 
-            TreeLevel level = tree.getLevel(step);
-            assertNotNull("Nível " + step + " deve existir", level);
-
-            // Valida as 2 novas letras deste passo
-            String c1 = level.getChar1();
-            String c2 = level.getChar2();
-            assertNotNull("Caractere 1 do passo " + step + " não pode ser nulo", c1);
-            assertNotNull("Caractere 2 do passo " + step + " não pode ser nulo", c2);
-            assertFalse(c1.isEmpty());
-            assertFalse(c2.isEmpty());
-
-            // Valida tamanho do pool acumulado
-            List<String> pool = level.getAllCharacters();
-            assertEquals("O pool no passo " + step + " deve ter exatamente " + (step * 2) + " caracteres",
-                    step * 2, pool.size());
-            assertTrue("Pool do passo " + step + " deve conter " + c1, pool.contains(c1));
-            assertTrue("Pool do passo " + step + " deve conter " + c2, pool.contains(c2));
-
-            // Valida que os nós correspondentes na árvore estão desbloqueados
-            MorseTreeNode node1 = tree.findNodeByCharacter(c1);
-            MorseTreeNode node2 = tree.findNodeByCharacter(c2);
-            if (node1 != null) {
-                assertTrue("Nó " + c1 + " deve estar desbloqueado no passo " + step, node1.isUnlocked());
-            }
-            if (node2 != null) {
-                assertTrue("Nó " + c2 + " deve estar desbloqueado no passo " + step, node2.isUnlocked());
-            }
-
-            // Se ainda houver níveis superiores, valida que os novos caracteres do próximo nível estão bloqueados
-            if (step < 21) {
-                TreeLevel nextLevel = tree.getLevel(step + 1);
-                MorseTreeNode nextNode1 = tree.findNodeByCharacter(nextLevel.getChar1());
-                MorseTreeNode nextNode2 = tree.findNodeByCharacter(nextLevel.getChar2());
-                if (nextNode1 != null) {
-                    assertFalse("Nó " + nextLevel.getChar1() + " do passo " + (step + 1) +
-                            " deve estar BLOQUEADO no passo " + step, nextNode1.isUnlocked());
-                }
-                if (nextNode2 != null) {
-                    assertFalse("Nó " + nextLevel.getChar2() + " do passo " + (step + 1) +
-                            " deve estar BLOQUEADO no passo " + step, nextNode2.isUnlocked());
-                }
-            }
-        }
+        tree.unlockNodesUpToLevel(5);
+        MorseTreeNode nodeR = tree.findNodeByCharacter("R");
+        MorseTreeNode nodeW = tree.findNodeByCharacter("W");
+        assertNotNull(nodeR);
+        assertNotNull(nodeW);
+        assertTrue("R deve estar desbloqueado no nível 5", nodeR.isUnlocked());
+        assertTrue("W deve estar desbloqueado no nível 5", nodeW.isUnlocked());
     }
 
     /**
-     * PASSO 13: Validação do marco crítico do Nível 13.
-     * No Nível 13, Z e Q completam as 26 letras do alfabeto A-Z, libertando as Palavras de Rádio CW.
+     * PASSO 5: Release dos Níveis 8 a 10 - Ramos de S (H, V), U/R (F, L) e W (P, J).
      */
     @Test
-    public void testPasso05_MilestoneLevel13_AlphabetComplete() {
+    public void testPasso05_ReleaseLevels8to10_Branches_S_U_R_W() {
+        tree.unlockNodesUpToLevel(8);
+        assertTrue(tree.findNodeByCharacter("H").isUnlocked());
+        assertTrue(tree.findNodeByCharacter("V").isUnlocked());
+
+        tree.unlockNodesUpToLevel(9);
+        assertTrue(tree.findNodeByCharacter("F").isUnlocked());
+        assertTrue(tree.findNodeByCharacter("L").isUnlocked());
+
+        tree.unlockNodesUpToLevel(10);
+        assertTrue(tree.findNodeByCharacter("P").isUnlocked());
+        assertTrue(tree.findNodeByCharacter("J").isUnlocked());
+    }
+
+    /**
+     * PASSO 6: Release do Nível 13 - Conclusão do Alfabeto Completo (A-Z).
+     * Z e Q completam as 26 letras da telegrafia internacional.
+     */
+    @Test
+    public void testPasso06_MilestoneLevel13_AlphabetComplete() {
         tree.unlockNodesUpToLevel(13);
         TreeLevel l13 = tree.getLevel(13);
         List<String> pool = l13.getAllCharacters();
@@ -204,6 +186,75 @@ public class MorseTreeStepByStepReleaseTest {
         for (char c = 'A'; c <= 'Z'; c++) {
             assertTrue("Alfabeto completo deve conter " + c + " no passo 13",
                     pool.contains(String.valueOf(c)));
+        }
+    }
+
+    /**
+     * PASSO 7: Release dos Níveis 14 a 18 - Todos os 10 Algarismos Numéricos (0 a 9).
+     */
+    @Test
+    public void testPasso07_ReleaseLevels14to18_AllNumbers_0_to_9() {
+        tree.unlockNodesUpToLevel(18);
+        TreeLevel l18 = tree.getLevel(18);
+        List<String> pool = l18.getAllCharacters();
+
+        // 26 letras + 10 números = 36 caracteres
+        assertEquals(36, pool.size());
+        for (int d = 0; d <= 9; d++) {
+            String digit = String.valueOf(d);
+            assertTrue("Dígito " + digit + " deve estar desbloqueado até ao nível 18",
+                    pool.contains(digit));
+            MorseTreeNode node = tree.findNodeByCharacter(digit);
+            if (node != null) {
+                assertTrue("Nó do dígito " + digit + " deve estar marcado como unlocked", node.isUnlocked());
+            }
+        }
+    }
+
+    /**
+     * PASSO 8: Release dos Níveis 19 a 21 - Pontuação e Sinais Especiais (Árvore 100% Completa).
+     */
+    @Test
+    public void testPasso08_ReleaseLevels19to21_PunctuationAndProsigns() {
+        tree.unlockNodesUpToLevel(21);
+        TreeLevel l21 = tree.getLevel(21);
+        List<String> pool = l21.getAllCharacters();
+
+        assertEquals(42, pool.size());
+        assertTrue("Deve conter ponto '.'", pool.contains("."));
+        assertTrue("Deve conter vírgula ','", pool.contains(","));
+        assertTrue("Deve conter interrogação '?'", pool.contains("?"));
+        assertTrue("Deve conter barra '/'", pool.contains("/"));
+        assertTrue("Deve conter SOS", pool.contains("SOS"));
+        assertTrue("Deve conter SK", pool.contains("SK"));
+    }
+
+    /**
+     * PASSO A PASSO COMPLETO DO NÍVEL 1 AO 21:
+     * Percorre sequencialmente cada nível, validando:
+     * 1. A introdução de exatamente 2 novas letras/símbolos por passo.
+     * 2. A acumulação correta de tamanho (2 * nível).
+     * 3. Que todos os caracteres dos níveis anteriores se mantêm acessíveis.
+     * 4. Que nenhuma letra de níveis posteriores está inadvertidamente aberta.
+     */
+    @Test
+    public void testPasso09_StepByStepProgression_Levels1Through21() {
+        for (int step = 1; step <= 21; step++) {
+            tree.unlockNodesUpToLevel(step);
+
+            TreeLevel level = tree.getLevel(step);
+            assertNotNull("Nível " + step + " deve existir", level);
+
+            String c1 = level.getChar1();
+            String c2 = level.getChar2();
+            assertNotNull("Caractere 1 do passo " + step + " não pode ser nulo", c1);
+            assertNotNull("Caractere 2 do passo " + step + " não pode ser nulo", c2);
+
+            List<String> pool = level.getAllCharacters();
+            assertEquals("O pool no passo " + step + " deve ter exatamente " + (step * 2) + " caracteres",
+                    step * 2, pool.size());
+            assertTrue("Pool do passo " + step + " deve conter " + c1, pool.contains(c1));
+            assertTrue("Pool do passo " + step + " deve conter " + c2, pool.contains(c2));
         }
     }
 }

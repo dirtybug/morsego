@@ -176,4 +176,33 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
         onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("NÍVEL 21"))));
         ScreenshotHelper.capture("step06_tree_release_level21_full");
     }
+
+    /**
+     * PASSO 7: Varredura Sequencial Completa de Todos os 21 Níveis na UI:
+     * Percorre do Nível 1 ao Nível 21 na Activity em tempo real,
+     * validando que a cada passo o Canvas e os nós da árvore são atualizados
+     * e o conjunto de caracteres acumulados cresce rigorosamente até 42 itens.
+     */
+    @Test
+    public void testPasso07_All21LevelsSequentialSweep_UI() throws InterruptedException {
+        MorseBinaryTree tree = MorseBinaryTree.getInstance();
+
+        for (int lvl = 1; lvl <= 21; lvl++) {
+            updateLevelOnUI(lvl);
+
+            // Valida título do nível no ecrã
+            onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("NÍVEL " + lvl))));
+
+            // Valida que o tamanho do pool acumulado é exatamente lvl * 2
+            Assert.assertEquals(lvl * 2, tree.getLevel(lvl).getAllCharacters().size());
+
+            // Valida nós desbloqueados na árvore
+            Assert.assertTrue(tree.findNodeByCharacter(tree.getLevel(lvl).getChar1()).isUnlocked());
+            Assert.assertTrue(tree.findNodeByCharacter(tree.getLevel(lvl).getChar2()).isUnlocked());
+        }
+
+        // Ao final do 21º passo, captura ecrã de celebração final
+        ScreenshotHelper.capture("step07_all_21_levels_sweep_complete");
+    }
 }
+
