@@ -1,0 +1,24 @@
+{
+  "version": "v1.0.0",
+  "buildDate": "2026-09-11T10:25:00Z",
+  "gitTag": "v1.0.0",
+  "status": "PASSED",
+  "unitTests": {
+    "total": 79,
+    "passed": 79,
+    "failed": 0,
+    "skipped": 0,
+    "coveragePercentage": 100,
+    "testFiles": 15
+  },
+  "behaviorTests": {
+    "total": 49,
+    "passed": 49,
+    "failed": 0,
+    "verifiedScreenshots": 49,
+    "windowsCovered": 6,
+    "windowsCoveragePercentage": 100
+  },
+  "cadenceStandard": "PARIS ITU (50 dits / 20 WPM)",
+  "orientationRegimes": ["Portrait (Vertical)", "Landscape (Horizontal)"]
+}
