@@ -77,9 +77,9 @@ public class MorseBinaryTree {
         addNode(nodeJ, false, "1", ".----");
         addNode(nodeB, true, "6", "-....");
         addNode(nodeZ, true, "7", "--...");
-        addNode(nodeG, false, "8", "---.."); // under ---..
-        addNode(nodeO, true, "9", "----.");
-        addNode(nodeO, false, "0", "-----");
+        addNode(nodeO, true, "8", "---..");
+        MorseTreeNode node9 = addNode(nodeO, false, "9", "----.");
+        addNode(node9, false, "0", "-----");
 
         // Additional symbols & prosigns in lookup map
         registerChar(".", ".-.-.-");

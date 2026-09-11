@@ -1522,9 +1522,9 @@
             const nodeU = { id: "U", morse: "..-", x: nodeI.x - 68, y: 275, radius: 16, parent: nodeI, branch: "—", unlocked: unlockedList.includes("U") };
             const nodeS = { id: "S", morse: "...", x: nodeI.x + 68, y: 275, radius: 16, parent: nodeI, branch: "•", unlocked: unlockedList.includes("S") };
 
-            // Depth 4: Individual Letters (X, B, C, Y, Z, Q, J, P, L, F, V, H, 0, 9) - NO COMBINED LABELS
-            const node0 = { id: "0", morse: "-----", x: nodeO.x - 34, y: 355, radius: 14, parent: nodeO, branch: "—", unlocked: unlockedList.includes("0") };
-            const node9 = { id: "9", morse: "----.", x: nodeO.x + 34, y: 355, radius: 14, parent: nodeO, branch: "•", unlocked: unlockedList.includes("9") };
+            // Depth 4: Individual Letters & Digits - Under O: 9 (Dah) and 8 (Dit)
+            const node9 = { id: "9", morse: "----.", x: nodeO.x - 34, y: 355, radius: 14, parent: nodeO, branch: "—", unlocked: unlockedList.includes("9") };
+            const node8 = { id: "8", morse: "---..", x: nodeO.x + 34, y: 355, radius: 14, parent: nodeO, branch: "•", unlocked: unlockedList.includes("8") };
             const nodeQ = { id: "Q", morse: "--.-", x: nodeG.x - 34, y: 355, radius: 14, parent: nodeG, branch: "—", unlocked: unlockedList.includes("Q") };
             const nodeZ = { id: "Z", morse: "--..", x: nodeG.x + 34, y: 355, radius: 14, parent: nodeG, branch: "•", unlocked: unlockedList.includes("Z") };
             const nodeY = { id: "Y", morse: "-.--", x: nodeK.x - 34, y: 355, radius: 14, parent: nodeK, branch: "—", unlocked: unlockedList.includes("Y") };
@@ -1539,8 +1539,8 @@
             const nodeV = { id: "V", morse: "...-", x: nodeS.x - 34, y: 355, radius: 14, parent: nodeS, branch: "—", unlocked: unlockedList.includes("V") };
             const nodeH = { id: "H", morse: "....", x: nodeS.x + 34, y: 355, radius: 14, parent: nodeS, branch: "•", unlocked: unlockedList.includes("H") };
 
-            // Depth 5: Numbers (8, 7, 6, 1, 2, 3, 4, 5) safely spaced in bottom row
-            const node8 = { id: "8", morse: "---..", x: node9.x, y: 440, radius: 13, parent: node9, branch: "—", unlocked: unlockedList.includes("8") };
+            // Depth 5: Numbers (0, 7, 6, 1, 2, 3, 4, 5) safely spaced in bottom row
+            const node0 = { id: "0", morse: "-----", x: node9.x, y: 440, radius: 13, parent: node9, branch: "—", unlocked: unlockedList.includes("0") };
             const node7 = { id: "7", morse: "--...", x: nodeZ.x, y: 440, radius: 13, parent: nodeZ, branch: "—", unlocked: unlockedList.includes("7") };
             const node6 = { id: "6", morse: "-....", x: nodeB.x, y: 440, radius: 13, parent: nodeB, branch: "—", unlocked: unlockedList.includes("6") };
             const node1 = { id: "1", morse: ".----", x: nodeJ.x, y: 440, radius: 13, parent: nodeJ, branch: "—", unlocked: unlockedList.includes("1") };
