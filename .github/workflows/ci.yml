@@ -1,0 +1,97 @@
+name: MorseGO CI/CD - Test, Build & Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - 'v*'
+      - '*'
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  build-test:
+    name: Test & Build APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest --info --stacktrace
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --info
+
+      - name: Organize Artifacts
+        run: |
+          mkdir -p release-artifacts/apk
+          mkdir -p release-artifacts/reports
+          
+          # Copy generated APK
+          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+            cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/apk/morseGO-debug.apk
+            echo "Copied APK to release-artifacts/apk/morseGO-debug.apk"
+          fi
+          
+          # Copy Unit Test reports
+          mkdir -p release-artifacts/reports/unit-tests
+          if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
+            cp -r app/build/reports/tests/testDebugUnitTest/* release-artifacts/reports/unit-tests/
+          fi
+          
+          # Copy full repository reports and screenshots
+          if [ -d "reports" ]; then
+            cp -r reports/* release-artifacts/reports/
+          fi
+          
+          echo "Artifacts prepared successfully."
+          ls -lh release-artifacts/apk/
+          ls -lh release-artifacts/reports/
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: morseGO-apk
+          path: release-artifacts/apk/morseGO-debug.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload Test Reports & Screenshots Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: morseGO-test-reports
+          path: release-artifacts/reports/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Create GitHub Release (on Tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-artifacts/apk/morseGO-debug.apk
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
