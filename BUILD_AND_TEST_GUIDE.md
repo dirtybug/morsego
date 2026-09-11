@@ -251,7 +251,6 @@ morseGo/
 │   └── behavior_test_49.jpg        # Timing failure test case
 │
 ├── releases/                        # CI/CD Versioned release catalogs
-│   ├── RELEASES.md                 # Complete release catalog
 │   └── v1.0.0/                     # Version folder
 │       ├── morseGO-v1.0.0-release.apk
 │       ├── morseGO-v1.0.0-debug.apk

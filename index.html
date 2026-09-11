@@ -386,15 +386,15 @@
                     <h2 class="card-title">Releases do CI (GitHub)</h2>
                 </div>
                 <p class="card-desc">
-                    Consulte o catálogo histórico de versões, notas de lançamento, manifests JSON e faça download dos APKs compilados pelo pipeline do GitHub Actions.
+                    Consulte os manifestos JSON e faça download dos APKs compilados automaticamente pelo pipeline do GitHub Actions em containers Docker.
                 </p>
             </div>
             <div class="card-actions">
-                <a href="releases/RELEASES.md" class="btn btn-primary">
-                    <span>Catálogo de Releases (RELEASES.md)</span> →
-                </a>
-                <a href="releases/v1.0.0/release-manifest.json" class="btn btn-secondary" target="_blank">
+                <a href="releases/v1.0.0/release-manifest.json" class="btn btn-primary" target="_blank">
                     <span>Manifesto JSON v1.0.0</span> ↗
+                </a>
+                <a href=".github/workflows/ci.yml" class="btn btn-secondary">
+                    <span>Workflow CI/CD (GitHub Actions)</span> →
                 </a>
             </div>
         </div>
@@ -407,15 +407,15 @@
                     <h2 class="card-title">Google Play Store</h2>
                 </div>
                 <p class="card-desc">
-                    Consulte as diretrizes e recursos de marketing oficiais: ícone 512×512, gráfico promocional 1024×500, 7 capturas de ecrã para telemóvel e metadados aprovados.
+                    Consulte os recursos gráficos oficiais para a loja: ícone 512×512, gráfico promocional 1024×500 e 7 capturas de ecrã em alta resolução.
                 </p>
             </div>
             <div class="card-actions">
-                <a href="docs/PLAYSTORE_ASSETS_GUIDE.md" class="btn btn-primary">
-                    <span>Guia Play Store</span> →
-                </a>
-                <a href="docs/playstore/screenshots/playstore_screen_1_binary_tree.png" class="btn btn-secondary" target="_blank">
+                <a href="docs/playstore/screenshots/playstore_screen_1_binary_tree.png" class="btn btn-primary" target="_blank">
                     <span>Ver Capturas de Ecrã</span> ↗
+                </a>
+                <a href="docs/playstore/playstore_feature_graphic_1024x500.png" class="btn btn-secondary" target="_blank">
+                    <span>Gráfico Promocional 1024×500</span> ↗
                 </a>
             </div>
         </div>
@@ -491,9 +491,8 @@
             MorseGO • Telegrafia CW de Alta Precisão • Código Aberto
         </div>
         <div>
-            <a href="releases/RELEASES.md">Releases</a> • 
             <a href="reports/unit-tests/index.html">Relatório de Testes</a> • 
-            <a href="docs/PLAYSTORE_ASSETS_GUIDE.md">Google Play Store</a> • 
+            <a href="BUILD_AND_TEST_GUIDE.md">Guia de Build &amp; Testes</a> • 
             <a href=".github/workflows/ci.yml">Workflow CI/CD</a>
         </div>
     </footer>
