@@ -21,6 +21,9 @@ switch ($Target.ToLower()) {
     "build" {
         docker compose run --rm build-apk
     }
+    "release" {
+        docker compose run --rm build-release
+    }
     "instrumented" {
         docker compose run --rm test-instrumented
     }

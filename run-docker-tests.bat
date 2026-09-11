@@ -13,11 +13,13 @@ if %errorlevel% neq 0 (
 set TARGET=%1
 if "%TARGET%"=="" set TARGET=unit
 
-echo Construindo e executando container para teste: %TARGET%...
+echo Executando container Docker para o alvo: %TARGET%...
 if "%TARGET%"=="unit" (
     docker compose run --rm test-unit
 ) else if "%TARGET%"=="build" (
     docker compose run --rm build-apk
+) else if "%TARGET%"=="release" (
+    docker compose run --rm build-release
 ) else if "%TARGET%"=="instrumented" (
     docker compose run --rm test-instrumented
 ) else if "%TARGET%"=="all" (

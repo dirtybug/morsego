@@ -114,8 +114,37 @@ run-docker-tests.bat instrumented
 ```
 Executa os testes de interface, envio de palavras de rádio (CQ, 73, SOS, QSO) e extrai automaticamente os screenshots para `./screenshots/`.
 
-### 4. Executar Suite Completa:
+### 4. Compilar Release APK (Google Play Store):
+```cmd
+run-docker-tests.bat release
+```
+Compila o APK de produção (`morseGO-release.apk`) em `./build-apks/`.
+
+### 5. Executar Suite Completa (Testes + Compilação):
 ```cmd
 run-docker-tests.bat all
 ```
+
+---
+
+## 🚀 Pipeline de CI/CD Automatizado (GitHub Actions)
+
+O processo de **Release Oficial** é totalmente automatizado via [`.github/workflows/ci.yml`](file:///C:/Users/JúlioAndrade/morseGo/.github/workflows/ci.yml):
+
+1. **Gatilho por Tag:** Basta criar e enviar uma tag de versão:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+2. **Execução Obrigatória de Testes:**
+   - Executa os 79 testes unitários no OpenJDK 17.
+   - Dispara um emulador Android (Pixel 6 / API 30) e corre os 49 testes de comportamento instrumentados, capturando screenshots do ecrã real.
+3. **Build em Docker:**
+   - Constrói o container Docker oficial e gera os APKs (`Release` e `Debug`).
+4. **Publicação do Release:**
+   - Se e apenas se **todos os testes passarem a 100%**, o GitHub Actions:
+     - Organiza os artefatos nas pastas versionadas `releases/v1.0.0/` e `tests/v1.0.0/`.
+     - Gera os checksums `SHA256SUMS.txt` e o `release-manifest.json`.
+     - Publica o GitHub Release oficial com download direto do APK e do arquivo zip dos relatórios.
+   - Se algum teste falhar, o release é automaticamente abortado e nada é publicado.
 
