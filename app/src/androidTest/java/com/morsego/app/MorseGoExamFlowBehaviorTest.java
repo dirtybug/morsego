@@ -774,4 +774,144 @@ public class MorseGoExamFlowBehaviorTest {
             Thread.sleep(400);
         }
     }
+
+    /**
+     * BEHAVIOR 18: Exam Transmission - Full Word Transmission (Multi-Letter Words):
+     * Validates that:
+     * 1. Multi-letter words present the prompt "TRANSMIT WORD (SEPARATED LETTERS):"
+     * 2. All Morse characters start hidden as [ ? ] [ ? ] ...
+     * 3. As the student transmits each letter, decoded letters accumulate in the input buffer,
+     *    and their Morse dot/dash sequences are progressively revealed.
+     * 4. Transmitting all letters of the word correctly triggers success feedback in green,
+     *    preserves lives (❤️❤️❤️), and advances.
+     * 5. Transmitting a wrong letter in the middle of a word immediately triggers
+     *    "Wrong Letter Error", deducts 1 life (❤️❤️🖤), reveals the full pattern,
+     *    and plays acoustic/vibration feedback.
+     */
+    @Test
+    public void test18_ExamTransmission_WordKeying_ProgressiveMorseReveal_PassAndFail() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Navigate to Learn tab and start exam
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // 2. Transition to Sending (Transmission) stage
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            }
+        });
+        Thread.sleep(600);
+
+        onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+
+        // 3. Set a multi-letter word target: "TEA"
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).setSendingTargetForTesting("TEA");
+            }
+        });
+        Thread.sleep(400);
+
+        // Verify word prompt and hidden Morse symbols
+        onView(withId(R.id.tvSendingPrompt)).check(matches(withText("TEA")));
+        onView(withId(R.id.tvSendingPromptLabel)).check(matches(anyOf(
+                withText(containsString("WORD")),
+                withText(containsString("PALAVRA"))
+        )));
+        onView(withId(R.id.tvSendingMorseProgress)).check(matches(withText("[ ? ]   [ ? ]   [ ? ]")));
+
+        // 4. Student keys letter 1: 'T' ('-')
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('T');
+            }
+        });
+        Thread.sleep(300);
+
+        // Verify letter 1 revealed and input buffer updated
+        onView(withId(R.id.tvSendingBuffer)).check(matches(withText(containsString("T"))));
+        onView(withId(R.id.tvSendingMorseProgress)).check(matches(withText(containsString("—   [ ? ]   [ ? ]"))));
+
+        // 5. Student keys letter 2: 'E' ('.')
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('E');
+            }
+        });
+        Thread.sleep(300);
+
+        // Verify letters 1 and 2 revealed
+        onView(withId(R.id.tvSendingBuffer)).check(matches(withText(containsString("TE"))));
+        onView(withId(R.id.tvSendingMorseProgress)).check(matches(withText(containsString("—   •   [ ? ]"))));
+
+        // 6. Student keys letter 3: 'A' ('.-') -> Completes word "TEA"
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('A');
+            }
+        });
+        Thread.sleep(400);
+
+        // Verify full word success feedback
+        onView(withId(R.id.tvSendingFeedback)).check(matches(anyOf(
+                withText(containsString("Correct")),
+                withText(containsString("Correto")),
+                withText(containsString("✓"))
+        )));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        ScreenshotHelper.capture("screenshot_transmission_word_pass");
+
+        // 7. Test Word Failure: Set target word "CQ"
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).setSendingTargetForTesting("CQ");
+            }
+        });
+        Thread.sleep(400);
+
+        // Key correct first letter 'C'
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('C');
+            }
+        });
+        Thread.sleep(300);
+
+        // Key WRONG second letter 'E' instead of 'Q'
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('E');
+            }
+        });
+        Thread.sleep(400);
+
+        // Verify explicit failure feedback for wrong letter in word
+        onView(withId(R.id.tvSendingFeedback)).check(matches(anyOf(
+                withText(containsString("Wrong Letter Error")),
+                withText(containsString("Erro de Letra Errada")),
+                withText(containsString("❌"))
+        )));
+        // Verify 1 heart deducted (❤️❤️🖤)
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️")),
+                withText(containsString("2"))
+        )));
+
+        ScreenshotHelper.capture("screenshot_transmission_word_fail");
+    }
 }

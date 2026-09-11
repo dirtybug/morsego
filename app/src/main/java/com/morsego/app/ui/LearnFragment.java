@@ -869,11 +869,30 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     }
 
     public void simulateTimingFailureForTesting(String reason) {
-        MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation();
-        eval.isGood = false;
-        eval.isTimingFailure = true;
-        eval.feedback = reason != null ? reason : "Pause gap exceeded maximum PARIS cadence threshold";
+        String feedback = reason != null ? reason : "Pause gap exceeded maximum PARIS cadence threshold";
+        MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(false, true, feedback, 2.5f);
         onTimingFailure(eval);
+    }
+
+    public void setSendingTargetForTesting(String target) {
+        this.currentSendingTarget = target;
+        this.currentWordKeyed.setLength(0);
+        this.sendingWaitingForInput = true;
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        boolean isSingleLetter = (target.length() == 1);
+        binding.tvSendingPromptLabel.setText(isPt ?
+                (isSingleLetter ? "TRANSMITA A LETRA:" : "TRANSMITA A PALAVRA (LETRAS SEPARADAS):") :
+                (isSingleLetter ? "TRANSMIT LETTER:" : "TRANSMIT WORD (SEPARATED LETTERS):"));
+        binding.tvSendingPrompt.setText(target);
+        updateSendingMorseProgress();
+    }
+
+    public void simulateKeyCharacterForTesting(char c) {
+        onCharacterDecoded(c);
+    }
+
+    public String getCurrentWordKeyedForTesting() {
+        return currentWordKeyed.toString();
     }
 
     public void showExamResults(boolean passed, String detailMessage) {
