@@ -108,7 +108,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                 if (activity.getSettings().isLevelUnlocked(next)) {
                     loadLevel(next);
                 } else {
-                    Toast.makeText(getContext(), "🔒 Nível bloqueado! Passe o teste deste nível para desbloquear.", Toast.LENGTH_SHORT).show();
+                    boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+                    Toast.makeText(getContext(), isPt ? "🔒 Nível bloqueado! Passe o teste deste nível para desbloquear." : "🔒 Level locked! Pass this level's exam to unlock.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -137,7 +138,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                 if (nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
                     loadLevel(nextLevel);
                 } else {
-                    Toast.makeText(getContext(), "🏆 Parabéns! Concluiu todos os níveis da Árvore de Morse!", Toast.LENGTH_LONG).show();
+                    boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+                    Toast.makeText(getContext(), isPt ? "🏆 Parabéns! Concluiu todos os níveis da Árvore de Morse!" : "🏆 Congratulations! You completed all levels of the Morse Tree!", Toast.LENGTH_LONG).show();
                     loadLevel(currentLevelNumber);
                 }
             } else {
@@ -158,7 +160,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             }
         });
 
-        // Dedicated bottom paddle buttons: DI (• PONTO) and DAH (— TRAÇO)
+        // Dedicated bottom paddle buttons: DIT (•) and DAH (—)
         binding.btnTouchDit.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 activity.getInputManager().setTouchDit(true);
@@ -177,10 +179,34 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             return true;
         });
 
+        applyLocalization();
         loadLevel(currentLevelNumber);
     }
 
+    private void applyLocalization() {
+        if (binding == null) return;
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        binding.tvPaddleHeaderLabel.setText(isPt ?
+                "PÁS DE TRANSMISSÃO (DI / DAH OU MANIPULADOR USB):" :
+                "KEYER PADDLES (DIT / DAH OR USB KEYER):");
+        binding.btnTouchDit.setText(isPt ? "DI (•)\n[ESQ]" : "DIT (•)\n[LEFT]");
+        binding.btnTouchDah.setText(isPt ? "DAH (—)\n[DIR]" : "DAH (—)\n[RIGHT]");
+        binding.btnCancelTest.setText(isPt ? "Cancelar Teste" : "Cancel Exam");
+        binding.btnResetSendingAttempt.setText(isPt ? "🔄 Limpar / Recomeçar Palavra" : "🔄 Clear / Restart Word");
+        binding.tvListeningInstruction.setText(isPt ? "Toque para ouvir novamente" : "Tap to listen again");
+        binding.tvNewLettersLabel.setText(isPt ? "2 NOVOS CARACTERES DESTE NÍVEL:" : "2 NEW CHARACTERS IN THIS LEVEL:");
+        binding.tvPlayChar1Label.setText(isPt ? "Ouvir som 🔊" : "Listen 🔊");
+        binding.tvPlayChar2Label.setText(isPt ? "Ouvir som 🔊" : "Listen 🔊");
+        binding.tvRequirementsTitle.setText(isPt ? "REQUISITOS PARA SUBIR DE NÍVEL:" : "LEVEL ADVANCEMENT REQUIREMENTS:");
+        binding.tvRequirementsDesc.setText(isPt ?
+                "• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete as etapas de Ouvir e Mandar para desbloquear o próximo nível." :
+                "• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic & randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level.");
+        binding.btnStartLevelTest.setText(isPt ? "INICIAR TESTE DO NÍVEL ▶" : "START LEVEL EXAM ▶");
+        binding.btnReviewLevel.setText(isPt ? "Rever Este Nível" : "Review This Level");
+    }
+
     public void loadLevel(int levelNum) {
+        applyLocalization();
         this.currentLevelNumber = levelNum;
         this.currentLevel = MorseBinaryTree.getInstance().getLevel(levelNum);
 
@@ -284,25 +310,31 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
     private void updateLivesUi() {
         if (binding == null) return;
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         int remaining = MAX_ALLOWED_FAILURES - currentStageFailures;
-        StringBuilder hearts = new StringBuilder("Vidas: ");
+        StringBuilder hearts = new StringBuilder(isPt ? "Vidas: " : "Lives: ");
         for (int i = 0; i < MAX_ALLOWED_FAILURES; i++) {
             hearts.append(i < remaining ? "❤️" : "🖤");
         }
-        hearts.append(" (").append(currentStageFailures).append("/").append(MAX_ALLOWED_FAILURES).append(" falhas)");
+        hearts.append(" (").append(currentStageFailures).append("/").append(MAX_ALLOWED_FAILURES).append(isPt ? " falhas)" : " mistakes)");
         binding.tvTestLives.setText(hearts.toString());
         binding.tvTestLives.setTextColor(remaining > 1 ? Color.parseColor("#FFB300") : Color.parseColor("#FF5252"));
 
         int totalLetters = (currentLevel != null) ? currentLevel.getAllCharacters().size() * 4 : 8;
-        String typeStr = (questionsAnsweredInStage < totalLetters) ? "Letras (" + (questionsAnsweredInStage + 1) + "/" + totalLetters + ")" : "Palavras";
-        binding.tvTestProgress.setText("[" + typeStr + "] Restam: " + currentQueue.size() + " na fila | Feitas: " + questionsAnsweredInStage);
+        String typeStr = (questionsAnsweredInStage < totalLetters) ?
+                (isPt ? "Letras (" + (questionsAnsweredInStage + 1) + "/" + totalLetters + ")" : "Characters (" + (questionsAnsweredInStage + 1) + "/" + totalLetters + ")") :
+                (isPt ? "Palavras" : "Words");
+        binding.tvTestProgress.setText("[" + typeStr + "] " +
+                (isPt ? "Restam: " + currentQueue.size() + " na fila | Feitas: " + questionsAnsweredInStage :
+                        "Remaining: " + currentQueue.size() + " in queue | Done: " + questionsAnsweredInStage));
     }
 
-    // --- STAGE 1: LISTENING (OUVIR) ---
+    // --- STAGE 1: LISTENING (OUVIR / RECEIVE) ---
 
     private void startListeningStage() {
         currentStage = TestStage.LISTENING;
-        binding.tvTestPhaseBanner.setText("PARTE 1 DE 2: TESTE DE ESCUTA (OUVIR)");
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        binding.tvTestPhaseBanner.setText(isPt ? "ETAPA 1 DE 2: TESTE DE ESCUTA (OUVIR)" : "STAGE 1 OF 2: LISTENING EXAM (RECEIVE)");
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#00E5FF"));
         binding.layoutStageListening.setVisibility(View.VISIBLE);
         binding.layoutStageSending.setVisibility(View.GONE);
@@ -450,18 +482,21 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
             if (currentStageFailures >= MAX_ALLOWED_FAILURES) {
                 listeningTotalFailures = currentStageFailures;
-                binding.getRoot().postDelayed(() -> showExamResults(false, "Excedeu o limite de 3 falhas no Teste de Escuta."), 1200);
+                boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+                String failMsg = isPt ? "Excedeu o limite de 3 falhas no Teste de Escuta (Ouvir)." : "Exceeded limit of 3 failures in Listening Stage.";
+                binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1200);
             } else {
                 binding.getRoot().postDelayed(this::nextListeningQuestion, 1200);
             }
         }
     }
 
-    // --- STAGE 2: SENDING (MANDAR) ---
+    // --- STAGE 2: SENDING (MANDAR / TRANSMISSION) ---
 
     private void startSendingStage() {
         currentStage = TestStage.SENDING;
-        binding.tvTestPhaseBanner.setText("PARTE 2 DE 2: TESTE DE ENVIO (MANDAR)");
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        binding.tvTestPhaseBanner.setText(isPt ? "ETAPA 2 DE 2: TESTE DE TRANSMISSÃO (MANDAR)" : "STAGE 2 OF 2: TRANSMISSION EXAM (SEND)");
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
         binding.layoutStageSending.setVisibility(View.VISIBLE);
@@ -478,7 +513,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void nextSendingQuestion() {
         if (currentQueue.isEmpty()) {
             sendingTotalFailures = currentStageFailures;
-            showExamResults(true, "Parabéns! Passou no teste de Ouvir e Mandar!");
+            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+            String passMsg = isPt ? "Parabéns! Passou no teste de Ouvir e Mandar!" : "Congratulations! Passed the Listening and Sending Exam!";
+            showExamResults(true, passMsg);
             return;
         }
 

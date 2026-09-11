@@ -128,13 +128,18 @@ public class PracticeFragment extends Fragment {
         enableOptionButtons(false);
         scoreTotal++;
 
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         boolean isCorrect = selected.equalsIgnoreCase(currentAnswer);
         if (isCorrect) {
             scoreCorrect++;
-            binding.tvQuizResult.setText("✓ Correto! A letra transmitida era '" + currentAnswer + "'.");
+            binding.tvQuizResult.setText(isPt ?
+                    "✓ Correto! A letra transmitida era '" + currentAnswer + "'." :
+                    "✓ Correct! The transmitted character was '" + currentAnswer + "'.");
             binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
         } else {
-            binding.tvQuizResult.setText("✗ Incorreto. Escolheu '" + selected + "', mas a letra era '" + currentAnswer + "'.");
+            binding.tvQuizResult.setText(isPt ?
+                    "✗ Incorreto. Escolheu '" + selected + "', mas a letra era '" + currentAnswer + "'." :
+                    "✗ Incorrect. Selected '" + selected + "', but the character was '" + currentAnswer + "'.");
             binding.tvQuizResult.setTextColor(Color.parseColor("#FF5252"));
         }
 
@@ -147,7 +152,9 @@ public class PracticeFragment extends Fragment {
             }
         }
 
-        binding.tvPracticeScore.setText("Pontos: " + scoreCorrect + " / " + scoreTotal);
+        binding.tvPracticeScore.setText(isPt ?
+                "Pontos: " + scoreCorrect + " / " + scoreTotal :
+                "Score: " + scoreCorrect + " / " + scoreTotal);
         binding.tvQuizResult.setVisibility(View.VISIBLE);
         binding.btnNextQuestion.setVisibility(View.VISIBLE);
     }

@@ -175,8 +175,12 @@ public class MorseDecoder {
         long maxWait = (long) (MorseTiming.interCharSpaceMs(wpm) * 2.2f) + 80;
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
+                boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+                String feedback = isPt ?
+                        "Falha: Pausa excessiva entre letras (> máx 2.2x)" :
+                        "Failure: Excessive pause between letters (> max 2.2x)";
                 MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
-                        false, true, "Falha: Pausa excessiva entre letras (> máx 2.2x)", 2.5f);
+                        false, true, feedback, 2.5f);
                 notifyTimingFeedback(eval);
                 notifyTimingFailure(eval);
             }

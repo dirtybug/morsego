@@ -97,10 +97,11 @@
                         android:padding="16dp">
 
                         <TextView
+                            android:id="@+id/tvNewLettersLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="2 NOVAS LETRAS DESTE NÍVEL:"
+                            android:text="2 NEW CHARACTERS IN THIS LEVEL:"
                             android:textColor="@color/morse_cyan"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -145,10 +146,11 @@
                                     android:textSize="20sp" />
 
                                 <TextView
+                                    android:id="@+id/tvPlayChar1Label"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
-                                    android:text="Ouvir som 🔊"
+                                    android:text="Listen 🔊"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
                             </LinearLayout>
@@ -191,10 +193,11 @@
                                     android:textSize="20sp" />
 
                                 <TextView
+                                    android:id="@+id/tvPlayChar2Label"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
-                                    android:text="Ouvir som 🔊"
+                                    android:text="Listen 🔊"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
                             </LinearLayout>
@@ -207,7 +210,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="14dp"
                             android:fontFamily="monospace"
-                            android:text="Letras no teste (anteriores + novas): E, T"
+                            android:text="Characters in test: E, T"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -231,20 +234,22 @@
                         android:padding="16dp">
 
                         <TextView
+                            android:id="@+id/tvRequirementsTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="REQUISITOS PARA SUBIR DE NÍVEL:"
+                            android:text="LEVEL ADVANCEMENT REQUIREMENTS:"
                             android:textColor="@color/morse_amber"
                             android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvRequirementsDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:lineSpacingExtra="3dp"
-                            android:text="• Letras no teste: todas as letras disponíveis × 4 (cada letra aparece 4 vezes, baralhada).\n• 4 palavras com as novas letras deste nível.\n• 4 palavras aleatórias formadas com as letras disponíveis.\n• Perguntas 100% dinâmicas e aleatórias (sem listas estáticas).\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item errado + 2 itens aleatórios à fila do teste!\n• Tem de passar a etapa de Ouvir e a etapa de Mandar para desbloquear o próximo nível."
+                            android:text="• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level."
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -259,7 +264,7 @@
                     android:layout_marginBottom="16dp"
                     android:backgroundTint="@color/morse_amber"
                     android:fontFamily="monospace"
-                    android:text="INICIAR TESTE DO NÍVEL ▶"
+                    android:text="START LEVEL EXAM ▶"
                     android:textColor="@color/radio_dark"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -282,7 +287,7 @@
                     android:fontFamily="monospace"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:text="ETAPA 1 DE 2: TESTE DE ESCUTA (OUVIR)"
+                    android:text="STAGE 1 OF 2: LISTENING EXAM (RECEIVE)"
                     android:textColor="@color/radio_dark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -303,7 +308,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="monospace"
-                        android:text="Vidas: ❤️❤️❤️ (0/3 falhas)"
+                        android:text="Lives: ❤️❤️❤️ (0/3 mistakes)"
                         android:textColor="@color/morse_amber"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -313,7 +318,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:text="Restam: 5 na fila"
+                        android:text="Remaining: 5 in queue"
                         android:textColor="@color/morse_cyan"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -328,13 +333,13 @@
                     android:background="@color/morse_red"
                     android:gravity="center"
                     android:padding="6dp"
-                    android:text="⚠️ Falha! Adicionada a letra errada + 2 aleatórias à fila!"
+                    android:text="⚠️ Mistake! Added target item + 2 random items to queue!"
                     android:textColor="@color/text_primary"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-                <!-- STAGE A: LISTENING (OUVIR) -->
+                <!-- STAGE A: LISTENING (RECEIVE) -->
                 <LinearLayout
                     android:id="@+id/layoutStageListening"
                     android:layout_width="match_parent"
@@ -370,10 +375,11 @@
                                 app:strokeWidth="2dp" />
 
                             <TextView
+                                android:id="@+id/tvListeningInstruction"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="Toque para ouvir novamente"
+                                android:text="Tap to listen again"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -508,7 +514,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:text="A introduzir: —"
+                                android:text="Input: —"
                                 android:textColor="@color/morse_cyan"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -520,7 +526,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:text="Cadência de pausa: —"
+                                android:text="Pause cadence: —"
                                 android:textColor="@color/morse_amber_light"
                                 android:textSize="12sp" />
 
@@ -529,7 +535,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Use os botões DI e DAH abaixo para transmitir"
+                                android:text="Use the DIT and DAH paddles below to transmit"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
@@ -542,7 +548,7 @@
                                 android:layout_marginTop="8dp"
                                 android:paddingLeft="12dp"
                                 android:paddingRight="12dp"
-                                android:text="🔄 Limpar / Recomeçar Palavra"
+                                android:text="🔄 Clear / Restart Word"
                                 android:textColor="@color/morse_cyan"
                                 android:textSize="11sp"
                                 app:strokeColor="@color/morse_cyan" />
@@ -558,7 +564,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
-                    android:text="Cancelar Teste"
+                    android:text="Cancel Exam"
                     android:textColor="@color/text_secondary" />
             </LinearLayout>
 
@@ -592,7 +598,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="🎉 NÍVEL CONCLUÍDO!"
+                            android:text="🎉 LEVEL COMPLETED!"
                             android:textColor="@color/morse_green"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -605,7 +611,7 @@
                             android:fontFamily="monospace"
                             android:gravity="center"
                             android:lineSpacingExtra="4dp"
-                            android:text="Escuta (Ouvir): 5 / 5\nEnvio (Mandar): 5 / 5\nAproveitamento: 100%"
+                            android:text="Stage 1 (Listening): 5 / 5\nStage 2 (Transmission): 5 / 5\nAccuracy: 100%"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp" />
 
@@ -615,7 +621,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:gravity="center"
-                            android:text="Próximo nível desbloqueado na Árvore Binária!"
+                            android:text="Next level unlocked in the Morse Binary Tree!"
                             android:textColor="@color/morse_amber"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -630,7 +636,7 @@
                     android:layout_marginTop="16dp"
                     android:backgroundTint="@color/morse_amber"
                     android:fontFamily="monospace"
-                    android:text="AVANÇAR PARA O PRÓXIMO NÍVEL ▶"
+                    android:text="ADVANCE TO NEXT LEVEL ▶"
                     android:textColor="@color/radio_dark"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -641,7 +647,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="8dp"
-                    android:text="Rever Este Nível"
+                    android:text="Review This Level"
                     android:textColor="@color/text_primary" />
             </LinearLayout>
 
@@ -650,12 +656,13 @@
 
     <!-- ================= DEDICATED BOTTOM PADDLE BUTTONS ================= -->
     <TextView
+        android:id="@+id/tvPaddleHeaderLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="monospace"
-        android:text="PÁS DE ENVIO (DI / DAH OU MANIPULADOR USB):"
+        android:text="KEYER PADDLES (DIT / DAH OR USB KEYER):"
         android:textColor="@color/text_secondary"
         android:textSize="10sp"
         android:textStyle="bold" />
@@ -665,7 +672,7 @@
         android:layout_height="110dp"
         android:orientation="horizontal">
 
-        <!-- Left Button: DI / PONTO -->
+        <!-- Left Button: DIT (•) -->
         <Button
             android:id="@+id/btnTouchDit"
             android:layout_width="0dp"
@@ -675,7 +682,7 @@
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
             android:gravity="center"
-            android:text="DI (•)\nPONTO [ESQ]"
+            android:text="DIT (•)\n[LEFT]"
             android:textColor="@color/morse_amber"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -683,7 +690,7 @@
             app:strokeColor="@color/morse_amber"
             app:strokeWidth="2dp" />
 
-        <!-- Right Button: DAH / TRAÇO -->
+        <!-- Right Button: DAH (—) -->
         <Button
             android:id="@+id/btnTouchDah"
             android:layout_width="0dp"
@@ -693,7 +700,7 @@
             android:backgroundTint="@color/radio_surface"
             android:fontFamily="monospace"
             android:gravity="center"
-            android:text="DAH (—)\nTRAÇO [DIR]"
+            android:text="DAH (—)\n[RIGHT]"
             android:textColor="@color/morse_cyan"
             android:textSize="16sp"
             android:textStyle="bold"

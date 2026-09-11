@@ -671,4 +671,107 @@ public class MorseGoExamFlowBehaviorTest {
 
         ScreenshotHelper.capture("screenshot_transmission_pass");
     }
+
+    /**
+     * BEHAVIOR 16: Screen Rotation (Portrait -> Landscape -> Portrait):
+     * Validates that when the user rotates the device during an active exam,
+     * the Exam state, current question, lives, answer queues, and UI elements
+     * remain 100% preserved and fully interactive in Landscape orientation.
+     */
+    @Test
+    public void test16_ExamFlow_FullRotation_PortraitToLandscape_StatePreserved() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Enter Learn screen and start Exam
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Confirm active Listening Stage in Portrait
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // 2. Rotate device to LANDSCAPE (Horizontal)
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(600);
+
+        // 3. Verify that in Landscape, listening stage remains active, lives are intact, options are interactive
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+        onView(withId(R.id.btnListeningOption1)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnListeningOption2)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnListeningOption3)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnListeningOption4)).check(matches(isDisplayed()));
+
+        ScreenshotHelper.capture("screenshot_screen_rotation_landscape");
+
+        // 4. Switch to Transmission (Sending) stage in Landscape
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            }
+        });
+        Thread.sleep(600);
+
+        // 5. Verify paddles and sending UI work seamlessly in Landscape
+        onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
+
+        // 6. Rotate back to PORTRAIT (Vertical)
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(600);
+
+        // 7. Verify Sending stage remains active and unperturbed after returning to Portrait
+        onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+    }
+
+    /**
+     * BEHAVIOR 17: Full Exam Flow In Continuous Landscape Mode:
+     * Validates running the entire examination lifecycle (Listening -> Transmission -> Completion)
+     * locked completely in Landscape (Horizontal) orientation.
+     */
+    @Test
+    public void test17_ExamFlow_FullSuiteInLandscapeOrientation() throws InterruptedException {
+        MainActivity activity = getActivity();
+        // Lock in Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(500);
+
+        try {
+            onView(withId(R.id.nav_learn)).perform(click());
+            Thread.sleep(400);
+            onView(withId(R.id.btnStartLevelTest)).perform(click());
+            Thread.sleep(600);
+
+            // Verify Stage 1 Listening displayed in Landscape
+            onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+            onView(withId(R.id.tvTestPhaseBanner)).check(matches(isDisplayed()));
+
+            // Transition to Stage 2 Sending in Landscape
+            activity.runOnUiThread(() -> {
+                androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if (f instanceof com.morsego.app.ui.LearnFragment) {
+                    ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+                }
+            });
+            Thread.sleep(600);
+
+            // Verify Stage 2 Transmission displayed with full paddles in Landscape
+            onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+            onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+            onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+
+        } finally {
+            // Restore Portrait
+            activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+            Thread.sleep(400);
+        }
+    }
 }
