@@ -79,6 +79,8 @@ O projeto foi construído inteiramente em **Java** com o framework oficial Andro
 
 ## 🐳 Executar Testes em Container Docker
 
+> 📖 **Guia Completo de Build e Testes (Inglês):** Para detalhes completos sobre todos os pré-requisitos de software (Docker vs. Nativo com OpenJDK 17 e Android SDK), comandos e resolução de problemas, consulte o documento [`BUILD_AND_TEST_GUIDE.md`](file:///C:/Users/JúlioAndrade/morseGo/BUILD_AND_TEST_GUIDE.md).
+
 Para garantir que o código e todos os testes correm num ambiente idêntico, isolado e reprodutível (com OpenJDK 17 e Android SDK 34), o projeto inclui suporte Docker completo:
 
 ### 1. Testes Unitários (Rápido, ~3 segundos):
