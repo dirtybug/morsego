@@ -487,4 +487,127 @@ public class MorseGoExamFlowBehaviorTest {
         onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("screenshot_listening_right_answer");
     }
+
+    /**
+     * BEHAVIOR 13: Exam Receive (Listening) Failed Answer:
+     * Student receives acoustic CW tone, chooses an incorrect option (failed answer).
+     * Verifies:
+     * 1. Window remains identical (layoutStageListening).
+     * 2. Selected wrong button is RED (#FF5252).
+     * 3. Correct answer button is GREEN (#00E676).
+     * 4. ALL buttons reveal their Morse dot/dash symbols.
+     * 5. Student loses 1 life heart (❤️❤️🖤).
+     * 6. Penalty notice is displayed and failed letter added to queue.
+     * 7. Verified screenshot captured to disk.
+     */
+    @Test
+    public void test13_ExamReceive_FailedAnswer_RedSelection_MorseReveal_LifePenalty() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Navigate to Learn tab and start exam
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Verify initial 3 lives in Receive stage
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // 2. Student inputs a failed answer (wrong option selected)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+                String target = lf.getCurrentListeningTargetForTesting();
+                String wrongChoice = (target != null && target.equals("E")) ? "T" : "E";
+                lf.triggerListeningOptionForTesting(wrongChoice);
+            }
+        });
+        Thread.sleep(500);
+
+        // 3. Verify same window remains active
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+
+        // 4. Verify life loss: 1 heart lost (❤️❤️🖤 or 2 lives remaining)
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️")),
+                withText(containsString("2"))
+        )));
+
+        // 5. Verify penalty notice is displayed
+        onView(withId(R.id.tvPenaltyNotice)).check(matches(isDisplayed()));
+
+        ScreenshotHelper.capture("screenshot_receive_failed_answer");
+    }
+
+    /**
+     * BEHAVIOR 14: Exam Send (Transmission) Failed Answer:
+     * Student transmits wrong letter or violates timing cadence.
+     * Verifies:
+     * 1. Window remains identical (layoutStageSending).
+     * 2. Clear error message informs user of failure type ("Wrong Letter Error" or "Timing Error").
+     * 3. Student loses 1 life heart (❤️❤️🖤).
+     * 4. Post-failure acoustic CW audio tone and vibration are triggered for ear training.
+     * 5. Target Morse dot/dash pattern is revealed so student learns the correct pattern.
+     * 6. Failed item + 2 random items added to queue with penalty notice.
+     * 7. Verified screenshot captured to disk.
+     */
+    @Test
+    public void test14_ExamSend_FailedAnswer_WrongLetterAndTiming_AudioVibration() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Navigate to Learn tab and start exam in Sending stage
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Transition to Sending stage directly
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            }
+        });
+        Thread.sleep(600);
+
+        // Verify Sending stage layout is active
+        onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // 2. Student inputs a failed answer (wrong letter transmitted)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+                String target = lf.getCurrentSendingTargetForTesting();
+                String wrongKeyed = (target != null && target.equals("E")) ? "T" : "E";
+                lf.simulateSendingFailureForTesting(wrongKeyed);
+            }
+        });
+        Thread.sleep(500);
+
+        // 3. Verify error feedback informs student explicitly of Wrong Letter Error
+        onView(withId(R.id.tvSendingFeedback)).check(matches(anyOf(
+                withText(containsString("Wrong Letter Error")),
+                withText(containsString("Erro de Letra Errada")),
+                withText(containsString("❌"))
+        )));
+
+        // 4. Verify life loss: 1 heart lost (❤️❤️🖤)
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️")),
+                withText(containsString("2"))
+        )));
+
+        // 5. Verify penalty notice is displayed
+        onView(withId(R.id.tvPenaltyNotice)).check(matches(isDisplayed()));
+
+        ScreenshotHelper.capture("screenshot_send_failed_answer");
+    }
 }

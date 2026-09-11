@@ -815,6 +815,26 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         return testOptionButtons;
     }
 
+    public String getCurrentSendingTargetForTesting() {
+        return currentSendingTarget;
+    }
+
+    public void startSendingStageForTesting() {
+        startSendingStage();
+    }
+
+    public void simulateSendingFailureForTesting(String wrongKeyed) {
+        evaluateSendingResult(wrongKeyed);
+    }
+
+    public void simulateTimingFailureForTesting(String reason) {
+        MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation();
+        eval.isGood = false;
+        eval.isTimingFailure = true;
+        eval.feedback = reason != null ? reason : "Pause gap exceeded maximum PARIS cadence threshold";
+        onTimingFailure(eval);
+    }
+
     public void showExamResults(boolean passed, String detailMessage) {
         currentStage = TestStage.RESULT;
         binding.layoutStudyView.setVisibility(View.GONE);
