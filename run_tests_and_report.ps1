@@ -23,14 +23,25 @@ if ($JavaCmd) {
     Push-Location $ScriptDir
     try {
         .\gradlew.bat testDebugUnitTest --info
+        
+        $AdbCmd = Get-Command adb -ErrorAction SilentlyContinue
+        if ($AdbCmd) {
+            $devices = (adb devices) | Where-Object { $_ -match "\s+device$" }
+            if ($devices) {
+                Write-Host "[OK] Connected Android device/emulator found! Running Behavior Tests..." -ForegroundColor Green
+                .\gradlew.bat connectedDebugAndroidTest --info
+            } else {
+                Write-Host "[INFO] No live ADB device detected. Connect a phone or start an emulator to run on-device behavior tests." -ForegroundColor DarkGray
+            }
+        }
     } finally {
         Pop-Location
     }
 } elseif ($DockerCmd) {
-    Write-Host "[INFO] Running Unit Tests inside Docker Container..." -ForegroundColor Yellow
+    Write-Host "[INFO] Running Full Test Suite (Unit + Behavior) inside Docker Container..." -ForegroundColor Yellow
     Push-Location $ScriptDir
     try {
-        docker compose run --rm test-unit
+        docker compose run --rm test-all
     } finally {
         Pop-Location
     }

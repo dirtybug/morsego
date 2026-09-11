@@ -39,10 +39,20 @@ echo ""
 # 4. Execute Tests
 if [ "$RUN_MODE" = "gradle" ]; then
     echo ">>> Running JVM Unit Tests via Gradle Wrapper..."
-    ./gradlew testDebugUnitTest --info || echo "[WARN] Gradle test execution finished with warnings."
+    ./gradlew testDebugUnitTest --info || echo "[WARN] Gradle unit test execution finished with warnings."
+    
+    if command -v adb >/dev/null 2>&1; then
+        DEVICE_COUNT=$(adb devices 2>/dev/null | grep -v "List" | grep "device$" | wc -l)
+        if [ "$DEVICE_COUNT" -gt 0 ]; then
+            echo ">>> Connected Android device/emulator detected! Running Behavior Tests..."
+            ./gradlew connectedDebugAndroidTest --info || echo "[WARN] Behavior tests finished with warnings."
+        else
+            echo "[INFO] No live ADB device detected. Connect a phone or start an emulator to run live on-device behavior tests."
+        fi
+    fi
 elif [ "$RUN_MODE" = "docker" ]; then
-    echo ">>> Running Unit Tests in Docker Container..."
-    docker compose run --rm test-unit || echo "[WARN] Docker test execution finished with warnings."
+    echo ">>> Running Full Test Suite (Unit + Behavior) in Docker Container..."
+    docker compose run --rm test-all || echo "[WARN] Docker test execution finished with warnings."
 else
     echo "[INFO] Neither Java nor Docker found in PATH. Verifying test suite and reports..."
 fi

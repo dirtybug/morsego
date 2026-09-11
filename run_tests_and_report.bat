@@ -57,9 +57,26 @@ if "%RUN_MODE%"=="gradle" (
     ) else (
         echo [OK] All JVM Unit Tests passed!
     )
+
+    REM Check for connected Android device/emulator for Behavior Tests
+    where adb >nul 2>nul
+    if !errorlevel! equ 0 (
+        echo.
+        echo [RUN] Checking for connected Android device or emulator for Behavior Tests...
+        set ADB_DEVICE_FOUND=
+        for /f "skip=1 tokens=1,2" %%A in ('adb devices 2^>nul') do (
+            if "%%B"=="device" set ADB_DEVICE_FOUND=yes
+        )
+        if defined ADB_DEVICE_FOUND (
+            echo [OK] Live Android device/emulator detected! Running Behavior Tests (connectedDebugAndroidTest)...
+            call gradlew.bat connectedDebugAndroidTest --info
+        ) else (
+            echo [INFO] No live device/emulator detected via ADB. (Connect phone or start emulator to run live on-device behavior tests).
+        )
+    )
 ) else if "%RUN_MODE%"=="docker" (
-    echo [RUN] Running Unit Tests in Docker Container...
-    call docker compose run --rm test-unit
+    echo [RUN] Running Full Test Suite (Unit + Behavior) in Docker Container...
+    call docker compose run --rm test-all
     if !errorlevel! neq 0 (
         echo [WARN] Docker test run finished with warnings or errors.
     ) else (
