@@ -24,6 +24,18 @@ services:
       - .:/workspace
       - gradle-cache:/root/.gradle
     command: ["build"]
+ 
+  # Service to build Release APK for Google Play Store
+  build-release:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-test:latest
+    container_name: morsego-release
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    command: ["release"]
 
   # Service to run Android instrumented tests (connecting to host ADB or emulator)
   test-instrumented:

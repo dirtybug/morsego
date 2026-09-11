@@ -34,6 +34,14 @@ case "$ACTION" in
         echo "✓ APKs built and saved to build-apks/"
         ;;
 
+    release)
+        echo ">>> Building Release APK for Google Play Store..."
+        ./gradlew assembleRelease --info
+        mkdir -p /workspace/build-apks
+        find app/build/outputs/apk/release -name "*.apk" -exec cp {} /workspace/build-apks/morseGO-release.apk \; 2>/dev/null || true
+        echo "✓ Release APK saved to build-apks/morseGO-release.apk"
+        ;;
+
     lint)
         echo ">>> Running Android Lint..."
         ./gradlew lintDebug || true
