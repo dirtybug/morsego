@@ -51,13 +51,21 @@ public class KeyerSettings {
     private static final String KEY_BACKUP_LEVEL = "highest_unlocked_level_backup";
 
     private final SharedPreferences prefs;
+    private final java.util.Map<String, Integer> inMemoryFailures = new java.util.HashMap<>();
+
+    public KeyerSettings() {
+        this.prefs = null;
+    }
 
     public KeyerSettings(Context context) {
-        this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        load();
+        this.prefs = context != null ? context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE) : null;
+        if (this.prefs != null) {
+            load();
+        }
     }
 
     public void load() {
+        if (prefs == null) return;
         this.wpm = prefs.getInt(KEY_WPM, 15);
         this.pitchHz = prefs.getFloat(KEY_PITCH, 700.0f);
         this.reversePaddles = prefs.getBoolean(KEY_REVERSE, false);
@@ -80,6 +88,7 @@ public class KeyerSettings {
     }
 
     public void save() {
+        if (prefs == null) return;
         prefs.edit()
                 .putInt(KEY_WPM, wpm)
                 .putFloat(KEY_PITCH, pitchHz)
@@ -127,10 +136,12 @@ public class KeyerSettings {
 
     public synchronized void setCurrentUnlockedLevel(int level) {
         this.currentUnlockedLevel = Math.max(1, level);
-        prefs.edit()
-                .putInt(KEY_LEVEL, this.currentUnlockedLevel)
-                .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
-                .commit();
+        if (prefs != null) {
+            prefs.edit()
+                    .putInt(KEY_LEVEL, this.currentUnlockedLevel)
+                    .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
+                    .commit();
+        }
     }
 
     public boolean isLevelUnlocked(int level) {
@@ -141,10 +152,12 @@ public class KeyerSettings {
         int current = getCurrentUnlockedLevel();
         if (completedLevel >= current) {
             this.currentUnlockedLevel = completedLevel + 1;
-            prefs.edit()
-                    .putInt(KEY_LEVEL, this.currentUnlockedLevel)
-                    .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
-                    .commit();
+            if (prefs != null) {
+                prefs.edit()
+                        .putInt(KEY_LEVEL, this.currentUnlockedLevel)
+                        .putInt(KEY_BACKUP_LEVEL, this.currentUnlockedLevel)
+                        .commit();
+            }
             return true;
         }
         return false;
@@ -152,14 +165,21 @@ public class KeyerSettings {
 
     public void recordLetterFailure(String letter) {
         if (letter == null || letter.isEmpty()) return;
-        String key = "fail_cnt_" + letter.toUpperCase();
-        int current = prefs.getInt(key, 0);
-        prefs.edit().putInt(key, current + 1).commit();
+        String key = letter.toUpperCase();
+        inMemoryFailures.put(key, inMemoryFailures.getOrDefault(key, 0) + 1);
+        if (prefs != null) {
+            int current = prefs.getInt("fail_cnt_" + key, 0);
+            prefs.edit().putInt("fail_cnt_" + key, current + 1).commit();
+        }
     }
 
     public int getLetterFailureCount(String letter) {
         if (letter == null || letter.isEmpty()) return 0;
-        return prefs.getInt("fail_cnt_" + letter.toUpperCase(), 0);
+        String key = letter.toUpperCase();
+        if (prefs != null) {
+            return prefs.getInt("fail_cnt_" + key, inMemoryFailures.getOrDefault(key, 0));
+        }
+        return inMemoryFailures.getOrDefault(key, 0);
     }
 
     /**

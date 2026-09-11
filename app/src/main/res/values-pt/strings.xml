@@ -47,4 +47,9 @@
     <string name="hw_connected">Manipulador USB Conectado (ASIN B0F666MVG6)</string>
     <string name="hw_disconnected">Pás Táteis Ativas (USB não conectado)</string>
     <string name="hw_reverse_paddles">Inverter Dit/Dah (Canhoto)</string>
+
+    <!-- Silent Mode & Errors -->
+    <string name="silent_mode_warning">🔇 Telemóvel em silêncio: Vibração tátil ativada para sinais de Morse.</string>
+    <string name="error_wrong_letter">❌ Erro de Letra Errada! Transmitiu \'%1$s\', esperado \'%2$s\'.</string>
+    <string name="error_timing">❌ Erro de Tempo! Cadência de pausa fora dos limites: %1$s.</string>
 </resources>

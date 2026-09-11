@@ -92,6 +92,70 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
         // Default start fragment: TreeFragment (Binary Tree view)
         switchFragment(new TreeFragment());
+        checkSilentMode();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkSilentMode();
+    }
+
+    public boolean isDeviceInSilentMode() {
+        try {
+            android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am != null) {
+                int ringerMode = am.getRingerMode();
+                int musicVol = am.getStreamVolume(android.media.AudioManager.STREAM_MUSIC);
+                return ringerMode == android.media.AudioManager.RINGER_MODE_SILENT
+                        || ringerMode == android.media.AudioManager.RINGER_MODE_VIBRATE
+                        || musicVol == 0;
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public void checkSilentMode() {
+        if (binding == null) return;
+        boolean isSilent = isDeviceInSilentMode();
+        binding.bannerSilentMode.setVisibility(isSilent ? View.VISIBLE : View.GONE);
+    }
+
+    public void vibrate(long ms) {
+        if (vibrator == null) return;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(ms);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    public void vibrateMorsePattern(String pattern, int wpm) {
+        if (vibrator == null) return;
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            long dit = MorseTiming.ditDurationMs(wpm);
+            long dah = MorseTiming.dahDurationMs(wpm);
+            long intra = MorseTiming.intraCharSpaceMs(wpm);
+            long inter = MorseTiming.interCharSpaceMs(wpm);
+            try {
+                for (int i = 0; i < pattern.length(); i++) {
+                    char c = pattern.charAt(i);
+                    if (c == '.') {
+                        vibrate(dit);
+                        Thread.sleep(dit + intra);
+                    } else if (c == '-') {
+                        vibrate(dah);
+                        Thread.sleep(dah + intra);
+                    } else if (c == ' ') {
+                        Thread.sleep(inter);
+                    } else if (c == '/') {
+                        Thread.sleep(dit * 7);
+                    }
+                }
+            } catch (InterruptedException ignored) {}
+        });
     }
 
     private void initVibrator() {
@@ -107,13 +171,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     private void triggerHaptic() {
         if (!settings.isHapticsEnabled() || vibrator == null) return;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(15, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(15);
-            }
-        } catch (Exception ignored) {}
+        vibrate(15);
     }
 
     public void updateTopWpm(int wpm) {

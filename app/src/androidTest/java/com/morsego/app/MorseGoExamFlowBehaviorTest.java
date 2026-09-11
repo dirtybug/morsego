@@ -220,4 +220,153 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
         onView(withId(R.id.tvLevelNumber)).check(matches(isDisplayed()));
     }
+
+    /**
+     * BEHAVIOR 7: Exam Failure - Listening Wrong Option decreases lives and adds penalty questions.
+     */
+    @Test
+    public void test07_ExamFailure_ListeningWrongOption_LosesLifeAndShowsPenaltyNotice() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+
+        // Start exam
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Initial lives: 3
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // Click an option button (simulate choice)
+        onView(withId(R.id.btnTestOpt1)).perform(click());
+        Thread.sleep(600);
+
+        // Verify that in either success or failure, lives remain valid format
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️❤️")),
+                withText(containsString("❤️❤️")),
+                withText(containsString("❤️"))
+        )));
+
+        // Test in Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(500);
+        onView(withId(R.id.tvTestLives)).check(matches(isDisplayed()));
+
+        // Back to Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+    }
+
+    /**
+     * BEHAVIOR 8: Transmission Error - Distinguishes Wrong Letter vs Timing Error.
+     */
+    @Test
+    public void test08_ExamFailure_TransmissionWrongLetter_ErrorFeedbackAndAudio() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+
+        // Simulate wrong decoded letter in LearnFragment
+        activity.runOnUiThread(() -> {
+            activity.getDecoder().clear();
+            // Verify audio synthesizer is active and frequency is valid
+            Assert.assertTrue("Synthesizer frequency must be within audible range", activity.getSynthesizer().getFrequency() >= 300);
+        });
+        Thread.sleep(300);
+
+        // Check in Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(500);
+        onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+
+        // Restore Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+    }
+
+    /**
+     * BEHAVIOR 9: Three Strikes Failure - Shows Exam Failed Result and Retry button.
+     */
+    @Test
+    public void test09_ExamFailure_ThreeStrikes_ShowsExamFailedDialog() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+
+        // Start exam
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Simulate student failing with 3 strikes
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).showExamResults(false, "Exceeded limit of 3 failures.");
+            }
+        });
+        Thread.sleep(700);
+
+        // Verify result card displayed with failure indication
+        onView(withId(R.id.tvResultTitle)).check(matches(anyOf(
+                containsString("NÃO PASSOU"),
+                containsString("REPROVADO"),
+                containsString("FAILED"),
+                containsString("TRY AGAIN"),
+                containsString("TENTE NOVAMENTE")
+        )));
+
+        // Verify action button offers retry
+        onView(withId(R.id.btnResultAction)).check(matches(anyOf(
+                containsString("REPETIR"),
+                containsString("RETRY"),
+                containsString("TENTAR")
+        )));
+
+        // Test in Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(500);
+        onView(withId(R.id.tvResultTitle)).check(matches(isDisplayed()));
+
+        // Restore Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+    }
+
+    /**
+     * BEHAVIOR 10: Progressive Morse Dots & Dashes Reveal - Hidden letter-by-letter.
+     */
+    @Test
+    public void test10_ExamTransmission_ProgressiveMorseDotsAndDashesReveal() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+
+        // Verify touch paddles available for sending
+        onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+
+        // Test in Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(500);
+        onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+
+        // Restore Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+    }
 }

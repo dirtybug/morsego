@@ -17,7 +17,7 @@ public class MorseDecoder {
 
     private final KeyerSettings settings;
     private DecoderListener listener;
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler;
 
     private final StringBuilder currentPattern = new StringBuilder();
     private final StringBuilder decodedText = new StringBuilder();
@@ -36,6 +36,34 @@ public class MorseDecoder {
 
     public MorseDecoder(KeyerSettings settings) {
         this.settings = settings;
+        Handler h = null;
+        try {
+            Looper looper = Looper.getMainLooper();
+            if (looper != null) {
+                h = new Handler(looper);
+            }
+        } catch (Exception ignored) {}
+        this.handler = h;
+    }
+
+    private void postToHandler(Runnable r) {
+        if (handler != null) {
+            handler.post(r);
+        } else {
+            r.run();
+        }
+    }
+
+    private void postDelayedToHandler(Runnable r, long delay) {
+        if (handler != null) {
+            handler.postDelayed(r, delay);
+        }
+    }
+
+    private void removeCallbacksFromHandler(Runnable r) {
+        if (handler != null && r != null) {
+            handler.removeCallbacks(r);
+        }
     }
 
     public void setListener(DecoderListener listener) {
@@ -118,7 +146,7 @@ public class MorseDecoder {
         charPauseRunnable = () -> {
             commitCharacter();
         };
-        handler.postDelayed(charPauseRunnable, charPause);
+        postDelayedToHandler(charPauseRunnable, charPause);
 
         wordPauseRunnable = () -> {
             if (decodedText.length() > 0 && decodedText.charAt(decodedText.length() - 1) != ' ') {
@@ -126,16 +154,16 @@ public class MorseDecoder {
                 notifyTextUpdated();
             }
         };
-        handler.postDelayed(wordPauseRunnable, wordPause);
+        postDelayedToHandler(wordPauseRunnable, wordPause);
     }
 
     private void cancelPauseWatchers() {
         if (charPauseRunnable != null) {
-            handler.removeCallbacks(charPauseRunnable);
+            removeCallbacksFromHandler(charPauseRunnable);
             charPauseRunnable = null;
         }
         if (wordPauseRunnable != null) {
-            handler.removeCallbacks(wordPauseRunnable);
+            removeCallbacksFromHandler(wordPauseRunnable);
             wordPauseRunnable = null;
         }
     }
@@ -153,17 +181,17 @@ public class MorseDecoder {
                 notifyTimingFailure(eval);
             }
         };
-        handler.postDelayed(maxLetterPauseRunnable, maxWait);
+        postDelayedToHandler(maxLetterPauseRunnable, maxWait);
     }
 
     private void cancelMaxLetterPauseWatcher() {
         if (maxLetterPauseRunnable != null) {
-            handler.removeCallbacks(maxLetterPauseRunnable);
+            removeCallbacksFromHandler(maxLetterPauseRunnable);
             maxLetterPauseRunnable = null;
         }
     }
 
-    private synchronized void commitCharacter() {
+    public synchronized void commitCharacter() {
         if (currentPattern.length() == 0) return;
 
         lastCharToneStopTime = lastToneStopTime > 0 ? lastToneStopTime : System.currentTimeMillis();
@@ -187,13 +215,13 @@ public class MorseDecoder {
 
     private void notifyTimingFeedback(MorseTiming.PauseEvaluation eval) {
         if (listener != null) {
-            handler.post(() -> listener.onTimingFeedback(eval));
+            postToHandler(() -> listener.onTimingFeedback(eval));
         }
     }
 
     private void notifyTimingFailure(MorseTiming.PauseEvaluation eval) {
         if (listener != null) {
-            handler.post(() -> listener.onTimingFailure(eval));
+            postToHandler(() -> listener.onTimingFailure(eval));
         }
     }
 
@@ -226,14 +254,14 @@ public class MorseDecoder {
     private void notifyPatternChanged() {
         if (listener != null) {
             final String p = currentPattern.toString();
-            handler.post(() -> listener.onPatternChanged(p));
+            postToHandler(() -> listener.onPatternChanged(p));
         }
     }
 
     private void notifyTextUpdated() {
         if (listener != null) {
             final String t = decodedText.toString();
-            handler.post(() -> listener.onTextUpdated(t));
+            postToHandler(() -> listener.onTextUpdated(t));
         }
     }
 }

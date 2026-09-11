@@ -490,6 +490,18 @@
                                 android:textSize="56sp"
                                 android:textStyle="bold" />
 
+                            <!-- Progressive letter-by-letter Morse pattern (hidden until emitted) -->
+                            <TextView
+                                android:id="@+id/tvSendingMorseProgress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="monospace"
+                                android:text="[ ? ]"
+                                android:textColor="@color/morse_amber_light"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
                             <TextView
                                 android:id="@+id/tvSendingBuffer"
                                 android:layout_width="wrap_content"
