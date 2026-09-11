@@ -12,6 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import android.content.pm.ActivityInfo;
+
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -31,12 +33,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Behavior Tests para Palavras Comuns de Rádio CW (CQ, 73, DX, QSL, QTH, RST, SOS, TU).
- * Regras estritas:
- * 1. O teste de palavras de rádio só está disponível APÓS desbloquear todas as letras do alfabeto (Nível >= 13).
- * 2. Dividido estritamente em duas etapas separadas:
- *    - ETAPA 1: OUVIR (Listening) - Áudio dos termos de rádio e descodificação/escolha.
- *    - ETAPA 2: MANDAR (Transmission) - Envio através das pás táteis/físicas com validação rigorosa de tempos mín/máx.
+ * Behavior Tests for Common Ham Radio Words (CQ, 73, DX, QSL, QTH, RST, SOS, TU).
+ * Strict rules:
+ * 1. Radio words test is only unlocked AFTER mastering all 26 alphabet letters (Level >= 13).
+ * 2. Strictly split into two separated stages:
+ *    - STAGE 1: LISTEN - Audio acoustic identification.
+ *    - STAGE 2: TRANSMIT - Paddle sending with rigorous min/max timing evaluation.
+ * 3. Tested across both Portrait and Landscape orientations.
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -84,7 +87,7 @@ public class MorseGoRadioWordsBehaviorTest {
     }
 
     // =========================================================================
-    // 1. VERIFICAÇÃO DE BLOQUEIO: Só disponível após desbloquear todas as 26 letras
+    // 1. LOCK VERIFICATION: Only available after unlocking all 26 alphabet letters
     // =========================================================================
 
     @Test
@@ -99,14 +102,13 @@ public class MorseGoRadioWordsBehaviorTest {
         int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
 
         // Then verify radio words are strictly locked
-        assertFalse("Palavras de rádio devem estar bloqueadas quando faltam letras (nível < 13)",
+        assertFalse("Radio words must be locked when alphabet letters are missing (level < 13)",
                 MorseRadioWords.isUnlocked(currentLevel));
 
         List<String> poolLevel1 = MorseBinaryTree.getInstance().getLevel(1).getAllCharacters();
-        assertFalse("Nível 1 não contém todas as 26 letras",
+        assertFalse("Level 1 does not contain all 26 letters",
                 MorseRadioWords.hasAllLettersUnlocked(poolLevel1));
 
-        // Screenshot da tela com estado inicial
         onView(withId(R.id.nav_tree)).perform(click());
         Thread.sleep(400);
         ScreenshotHelper.capture("01_radio_words_locked_state");
@@ -124,29 +126,27 @@ public class MorseGoRadioWordsBehaviorTest {
         int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
 
         // Then verify radio words are unlocked
-        assertTrue("Palavras de rádio devem estar desbloqueadas quando todas as 26 letras forem alcançadas",
+        assertTrue("Radio words must be unlocked when all 26 letters are reached",
                 MorseRadioWords.isUnlocked(currentLevel));
 
         List<String> poolLevel13 = MorseBinaryTree.getInstance().getLevel(13).getAllCharacters();
-        assertTrue("Nível 13 deve ter todas as 26 letras completas na árvore Morse",
+        assertTrue("Level 13 must have all 26 letters complete in the Morse tree",
                 MorseRadioWords.hasAllLettersUnlocked(poolLevel13));
 
-        // Screenshot do desbloqueio
         ScreenshotHelper.capture("02_radio_words_unlocked_level13");
     }
 
     // =========================================================================
-    // 2. ETAPA SEPARADA 1: OUVIR (Listening / Escuta de Termos de Rádio)
+    // 2. SEPARATE STAGE 1: LISTEN (Acoustic Decoding of Radio Terms)
     // =========================================================================
 
     @Test
-    public void test03_Stage1_Ouvir_RadioWord_CQ() throws InterruptedException {
+    public void test03_Stage1_Listen_RadioWord_CQ() throws InterruptedException {
         AtomicReference<MainActivity> activityRef = new AtomicReference<>();
         activityRule.getScenario().onActivity(activityRef::set);
         MainActivity activity = activityRef.get();
         assertNotNull(activity);
 
-        // Ensure user is qualified with all letters unlocked
         activity.getSettings().setCurrentUnlockedLevel(13);
 
         // Generate listening choices for CQ
@@ -162,11 +162,11 @@ public class MorseGoRadioWordsBehaviorTest {
                 activity.getSynthesizer().playMorsePattern(morseCQ, activity.getSettings().getWpm(), null));
         Thread.sleep(800);
 
-        ScreenshotHelper.capture("03_radio_words_stage1_ouvir_CQ");
+        ScreenshotHelper.capture("03_radio_words_stage1_listen_CQ");
     }
 
     @Test
-    public void test04_Stage1_Ouvir_RadioWord_73_and_SOS() throws InterruptedException {
+    public void test04_Stage1_Listen_RadioWord_73_and_SOS() throws InterruptedException {
         AtomicReference<MainActivity> activityRef = new AtomicReference<>();
         activityRule.getScenario().onActivity(activityRef::set);
         MainActivity activity = activityRef.get();
@@ -187,31 +187,30 @@ public class MorseGoRadioWordsBehaviorTest {
         List<String> choicesSOS = MorseRadioWords.generateListeningChoices("SOS", 4);
         assertTrue(choicesSOS.contains("SOS"));
 
-        ScreenshotHelper.capture("04_radio_words_stage1_ouvir_73_SOS");
+        ScreenshotHelper.capture("04_radio_words_stage1_listen_73_SOS");
     }
 
     // =========================================================================
-    // 3. ETAPA SEPARADA 2: MANDAR (Transmission / Envio com Pás & Cadência)
+    // 3. SEPARATE STAGE 2: TRANSMIT (Keying with Paddles & Cadence)
     // =========================================================================
 
     @Test
-    public void test05_Stage2_Mandar_RadioWord_CQ() throws InterruptedException {
-        // Navigate to Keyer transmission view
+    public void test05_Stage2_Transmit_RadioWord_CQ() throws InterruptedException {
         onView(withId(R.id.nav_keyer)).perform(click());
         Thread.sleep(400);
 
         onView(withId(R.id.btnClearText)).perform(click());
         Thread.sleep(200);
 
-        // Transmit "CQ" with proper inter-element and inter-letter timing
+        // Transmit "CQ" with proper timing
         transmitRadioPhrase("CQ");
 
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("CQ"))));
-        ScreenshotHelper.capture("05_radio_words_stage2_mandar_CQ");
+        ScreenshotHelper.capture("05_radio_words_stage2_transmit_CQ");
     }
 
     @Test
-    public void test06_Stage2_Mandar_RadioWords_DX_QSL_QTH() throws InterruptedException {
+    public void test06_Stage2_Transmit_RadioWords_DX_QSL_QTH() throws InterruptedException {
         onView(withId(R.id.nav_keyer)).perform(click());
         Thread.sleep(400);
 
@@ -227,11 +226,11 @@ public class MorseGoRadioWordsBehaviorTest {
         transmitRadioPhrase("QTH");
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("QTH"))));
 
-        ScreenshotHelper.capture("06_radio_words_stage2_mandar_QTH");
+        ScreenshotHelper.capture("06_radio_words_stage2_transmit_QTH");
     }
 
     @Test
-    public void test07_Stage2_Mandar_FullQSO_CQ_CQ_DX_DE_CT1_73() throws InterruptedException {
+    public void test07_Stage2_Transmit_FullQSO_CQ_CQ_DX_DE_CT1_73() throws InterruptedException {
         onView(withId(R.id.nav_keyer)).perform(click());
         Thread.sleep(400);
 
@@ -239,15 +238,15 @@ public class MorseGoRadioWordsBehaviorTest {
         transmitRadioPhrase("CQ CQ DX DE CT1 73");
 
         onView(withId(R.id.tvDecodedOutput)).check(matches(withText(containsString("CQ CQ DX DE CT1 73"))));
-        ScreenshotHelper.capture("07_radio_words_stage2_mandar_full_qso");
+        ScreenshotHelper.capture("07_radio_words_stage2_transmit_full_qso");
     }
 
     // =========================================================================
-    // 4. VERIFICAÇÃO RIGOROSA DE TEMPOS MÍNIMOS E MÁXIMOS NA TRANSMISSÃO
+    // 4. TIMING CADENCE: Intra-element and Inter-letter pause validation
     // =========================================================================
 
     @Test
-    public void test08_Stage2_Mandar_TimingCadence_FailureEnforcement() throws InterruptedException {
+    public void test08_Stage2_Transmit_TimingCadence_FailureEnforcement() throws InterruptedException {
         int wpm = 18;
         long nominalDit = MorseTiming.ditDurationMs(wpm);
         long nominalLetter = MorseTiming.interCharSpaceMs(wpm);
@@ -258,10 +257,10 @@ public class MorseGoRadioWordsBehaviorTest {
         assertFalse(evalGood.isTimingFailure);
 
         MorseTiming.PauseEvaluation evalFastFail = MorseTiming.evaluateIntraElementPause((long)(nominalDit * 0.35f), wpm);
-        assertTrue("Pausa intra-elemento abaixo de 0.45x deve falhar", evalFastFail.isTimingFailure);
+        assertTrue("Intra-element pause below 0.45x must fail", evalFastFail.isTimingFailure);
 
         MorseTiming.PauseEvaluation evalSlowFail = MorseTiming.evaluateIntraElementPause((long)(nominalDit * 2.5f), wpm);
-        assertTrue("Pausa intra-elemento acima de 2.0x deve falhar", evalSlowFail.isTimingFailure);
+        assertTrue("Intra-element pause above 2.0x must fail", evalSlowFail.isTimingFailure);
 
         // 2. Inter-letter pause test (< 0.60x or > 2.2x is failure)
         MorseTiming.PauseEvaluation evalGoodLetter = MorseTiming.evaluateLetterPause(nominalLetter, wpm);
@@ -269,44 +268,71 @@ public class MorseGoRadioWordsBehaviorTest {
         assertFalse(evalGoodLetter.isTimingFailure);
 
         MorseTiming.PauseEvaluation evalFastLetterFail = MorseTiming.evaluateLetterPause((long)(nominalLetter * 0.45f), wpm);
-        assertTrue("Pausa entre letras abaixo de 0.60x deve falhar", evalFastLetterFail.isTimingFailure);
+        assertTrue("Inter-letter pause below 0.60x must fail", evalFastLetterFail.isTimingFailure);
 
         MorseTiming.PauseEvaluation evalSlowLetterFail = MorseTiming.evaluateLetterPause((long)(nominalLetter * 2.6f), wpm);
-        assertTrue("Pausa entre letras acima de 2.2x deve falhar", evalSlowLetterFail.isTimingFailure);
+        assertTrue("Inter-letter pause above 2.2x must fail", evalSlowLetterFail.isTimingFailure);
 
         ScreenshotHelper.capture("08_radio_words_stage2_timing_failure_rules");
     }
 
     // =========================================================================
-    // 5. VERIFICAÇÃO DAS PILLS SEPARADAS DE OUVIR E ENVIAR
+    // 5. SEPARATED PILLS: LISTEN VS TRANSMIT VERIFICATION
     // =========================================================================
 
     @Test
     public void test09_SeparatedPills_ListeningVsTransmission_Verification() throws InterruptedException {
-        // Given user is in radio words mode
         List<MorseRadioWords.RadioPill> listenPills = MorseRadioWords.getListeningPills();
         List<MorseRadioWords.RadioPill> sendPills = MorseRadioWords.getTransmissionPills();
 
-        // Verify Listening pills section is strictly separated
         assertNotNull(listenPills);
         assertFalse(listenPills.isEmpty());
         for (MorseRadioWords.RadioPill pill : listenPills) {
-            assertEquals("Pill deve pertencer ao modo OUVIR", MorseRadioWords.RadioPill.Mode.OUVIR, pill.mode);
-            assertTrue("Rótulo da pill deve indicar ação de ouvir: " + pill.label, pill.label.startsWith("Ouvir "));
+            assertTrue("Pill must belong to listening mode", pill.mode.isListening());
+            assertTrue("Pill label must indicate listen action: " + pill.label,
+                    pill.label.startsWith("Ouvir ") || pill.label.startsWith("Listen "));
         }
 
-        // Verify Transmission pills section is strictly separated
         assertNotNull(sendPills);
         assertFalse(sendPills.isEmpty());
         for (MorseRadioWords.RadioPill pill : sendPills) {
-            assertEquals("Pill deve pertencer ao modo ENVIAR", MorseRadioWords.RadioPill.Mode.ENVIAR, pill.mode);
-            assertTrue("Rótulo da pill deve indicar ação de envio: " + pill.label, pill.label.startsWith("Enviar "));
+            assertTrue("Pill must belong to transmission mode", pill.mode.isTransmission());
+            assertTrue("Pill label must indicate send action: " + pill.label,
+                    pill.label.startsWith("Enviar ") || pill.label.startsWith("Send "));
         }
 
-        // Navigate to Keyer tab to capture the transmission layout
         onView(withId(R.id.nav_keyer)).perform(click());
         Thread.sleep(400);
 
         ScreenshotHelper.capture("09_radio_words_separated_pills_verified");
+    }
+
+    // =========================================================================
+    // 6. SCREEN ROTATION: PORTRAIT AND LANDSCAPE
+    // =========================================================================
+
+    @Test
+    public void test10_RadioWords_Orientation_PortraitAndLandscape() throws InterruptedException {
+        AtomicReference<MainActivity> activityRef = new AtomicReference<>();
+        activityRule.getScenario().onActivity(activityRef::set);
+        MainActivity activity = activityRef.get();
+        assertNotNull(activity);
+
+        // 1. Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
+
+        // 2. Landscape
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        Thread.sleep(600);
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
+
+        // 3. Restore Portrait
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
     }
 }

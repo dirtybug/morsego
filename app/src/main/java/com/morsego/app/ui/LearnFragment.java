@@ -180,9 +180,11 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
         MainActivity activity = (MainActivity) getActivity();
         boolean isUnlocked = activity != null && activity.getSettings().isLevelUnlocked(levelNum);
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
         int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
-        binding.tvLevelNumber.setText("NÍVEL " + currentLevel.getLevelNumber() + " / " + maxLevels + (isUnlocked ? "" : " 🔒"));
+        String levelPrefix = isPt ? "NÍVEL " : "LEVEL ";
+        binding.tvLevelNumber.setText(levelPrefix + currentLevel.getLevelNumber() + " / " + maxLevels + (isUnlocked ? "" : " 🔒"));
         binding.tvLevelTitle.setText(currentLevel.getTitle());
 
         binding.tvNewChar1.setText(currentLevel.getChar1());
@@ -192,7 +194,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvNewMorse2.setText(currentLevel.getMorse2());
 
         List<String> pool = currentLevel.getAllCharacters();
-        StringBuilder poolSb = new StringBuilder("Letras no teste (" + pool.size() + "): ");
+        String poolPrefix = isPt ? "Letras no teste (" : "Characters in test (";
+        StringBuilder poolSb = new StringBuilder(poolPrefix + pool.size() + "): ");
         for (int i = 0; i < pool.size(); i++) {
             poolSb.append(pool.get(i));
             if (i < pool.size() - 1) poolSb.append(", ");
@@ -583,6 +586,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         List<String> pool = currentLevel.getAllCharacters();
         boolean isWord = failedItem.length() > 1;
 
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         if (isWord) {
             String rand1 = MorseWordGenerator.generateRandomPenaltyItem(pool, true);
             String rand2 = MorseWordGenerator.generateRandomPenaltyItem(pool, true);
@@ -590,7 +594,10 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             currentQueue.add(failedItem);
             currentQueue.add(rand1);
             currentQueue.add(rand2);
-            binding.tvPenaltyNotice.setText("⚠️ Falha! Adicionada a palavra '" + failedItem + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ")!");
+            String notice = isPt ?
+                    "⚠️ Falha! Adicionada a palavra '" + failedItem + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ")!" :
+                    "⚠️ Mistake! Added word '" + failedItem + "' + 2 random words (" + rand1 + ", " + rand2 + ")!";
+            binding.tvPenaltyNotice.setText(notice);
         } else {
             String rand1 = MorseWordGenerator.generateRandomPenaltyItem(pool, false);
             String rand2 = MorseWordGenerator.generateRandomPenaltyItem(pool, false);
@@ -598,7 +605,10 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             currentQueue.add(failedItem);
             currentQueue.add(rand1);
             currentQueue.add(rand2);
-            binding.tvPenaltyNotice.setText("⚠️ Falha! Adicionada a letra '" + failedItem + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ")!");
+            String notice = isPt ?
+                    "⚠️ Falha! Adicionada a letra '" + failedItem + "' + 2 aleatórias (" + rand1 + ", " + rand2 + ")!" :
+                    "⚠️ Mistake! Added character '" + failedItem + "' + 2 random characters (" + rand1 + ", " + rand2 + ")!";
+            binding.tvPenaltyNotice.setText(notice);
         }
 
         Collections.shuffle(currentQueue);
@@ -608,8 +618,10 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     @Override
     public void onPatternChanged(String currentPattern) {
         if (binding != null && currentStage == TestStage.SENDING) {
+            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
             String bufferText = currentWordKeyed.toString() + (currentPattern.isEmpty() ? "" : " [" + currentPattern + "]");
-            binding.tvSendingBuffer.setText("A introduzir: " + (bufferText.isEmpty() ? "—" : bufferText));
+            String prefix = isPt ? "A introduzir: " : "Input: ";
+            binding.tvSendingBuffer.setText(prefix + (bufferText.isEmpty() ? "—" : bufferText));
         }
     }
 
@@ -625,7 +637,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     public void simulateExamPassForTesting() {
         listeningTotalFailures = 0;
         sendingTotalFailures = 0;
-        showExamResults(true, "Aprovado com sucesso em ambas as etapas.");
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        showExamResults(true, isPt ? "Aprovado com sucesso em ambas as etapas." : "Successfully passed both stages.");
     }
 
     public void showExamResults(boolean passed, String detailMessage) {
@@ -634,43 +647,52 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.layoutTestView.setVisibility(View.GONE);
         binding.layoutResultView.setVisibility(View.VISIBLE);
 
-
         MainActivity activity = (MainActivity) getActivity();
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
         if (passed) {
-            binding.tvResultTitle.setText("🎉 NÍVEL " + currentLevelNumber + " CONCLUÍDO!");
+            String resultTitle = isPt ? "🎉 NÍVEL " + currentLevelNumber + " CONCLUÍDO!" : "🎉 LEVEL " + currentLevelNumber + " COMPLETED!";
+            binding.tvResultTitle.setText(resultTitle);
             binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
 
-            String summary = "Etapa 1 (Ouvir): Aprovado (Falhas: " + listeningTotalFailures + "/3)\n" +
-                    "Etapa 2 (Mandar): Aprovado (Falhas: " + sendingTotalFailures + "/3)\n\n" +
-                    "Dominou as letras novas e palavras formadas com o vocabulário deste nível!";
+            String summary = isPt ?
+                    ("Etapa 1 (Ouvir): Aprovado (Falhas: " + listeningTotalFailures + "/3)\n" +
+                            "Etapa 2 (Mandar): Aprovado (Falhas: " + sendingTotalFailures + "/3)\n\n" +
+                            "Dominou as letras novas e palavras formadas com o vocabulário deste nível!") :
+                    ("Stage 1 (Listening): Passed (Mistakes: " + listeningTotalFailures + "/3)\n" +
+                            "Stage 2 (Transmission): Passed (Mistakes: " + sendingTotalFailures + "/3)\n\n" +
+                            "Mastered the new characters and vocabulary of this level!");
             binding.tvResultSummary.setText(summary);
 
             if (activity != null) {
                 boolean newlyUnlocked = activity.getSettings().unlockNextLevel(currentLevelNumber);
                 int nextLevel = currentLevelNumber + 1;
                 if (newlyUnlocked && nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
-                    binding.tvResultUnlockMsg.setText("🔓 Desbloqueou o Nível " + nextLevel + " na Árvore Binária de Morse!");
+                    String unlockMsg = isPt ?
+                            "🔓 Desbloqueou o Nível " + nextLevel + " na Árvore Binária de Morse!" :
+                            "🔓 Unlocked Level " + nextLevel + " in the Morse Binary Tree!";
+                    binding.tvResultUnlockMsg.setText(unlockMsg);
                     binding.tvResultUnlockMsg.setVisibility(View.VISIBLE);
                 } else {
-                    binding.tvResultUnlockMsg.setText("Nível já desbloqueado anteriormente.");
+                    String unlockMsg = isPt ? "Nível já desbloqueado anteriormente." : "Level previously unlocked.";
+                    binding.tvResultUnlockMsg.setText(unlockMsg);
                     binding.tvResultUnlockMsg.setVisibility(View.VISIBLE);
                 }
             }
 
-            binding.btnResultAction.setText("AVANÇAR PARA O PRÓXIMO NÍVEL ▶");
+            binding.btnResultAction.setText(isPt ? "AVANÇAR PARA O PRÓXIMO NÍVEL ▶" : "ADVANCE TO NEXT LEVEL ▶");
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FFB300"));
         } else {
-            binding.tvResultTitle.setText("❌ TESTE FALHADO");
+            binding.tvResultTitle.setText(isPt ? "❌ TESTE FALHADO" : "❌ EXAM FAILED");
             binding.tvResultTitle.setTextColor(Color.parseColor("#FF5252"));
 
-            String summary = detailMessage + "\n\n" +
-                    "Regra: O teste só tolera até 3 falhas no total.\n" +
-                    "Pratique a cadência de pausa e as palavras com maior taxa de erro e tente novamente!";
+            String summary = isPt ?
+                    (detailMessage + "\n\nRegra: O teste só tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!") :
+                    (detailMessage + "\n\nRule: The exam only tolerates up to 3 mistakes total.\nPractice your timing cadence and try again!");
             binding.tvResultSummary.setText(summary);
             binding.tvResultUnlockMsg.setVisibility(View.GONE);
 
-            binding.btnResultAction.setText("REPETIR TESTE 🔄");
+            binding.btnResultAction.setText(isPt ? "REPETIR TESTE 🔄" : "RETRY EXAM 🔄");
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FF5252"));
         }
     }

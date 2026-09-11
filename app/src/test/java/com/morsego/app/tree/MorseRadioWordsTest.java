@@ -77,16 +77,18 @@ public class MorseRadioWordsTest {
                 listenPills.size(), sendPills.size());
         assertTrue("Must have at least 8 radio words in each category", listenPills.size() >= 8);
 
-        // Verify Listening pills have Mode OUVIR and "Ouvir " prefix
+        // Verify Listening pills have listening mode and proper prefix
         for (MorseRadioWords.RadioPill p : listenPills) {
-            assertEquals(MorseRadioWords.RadioPill.Mode.OUVIR, p.mode);
-            assertTrue("Listening pill label must start with 'Ouvir '", p.label.startsWith("Ouvir "));
+            assertTrue("Listening pill must have listening mode", p.mode.isListening());
+            assertTrue("Listening pill label must start with 'Ouvir ' or 'Listen '",
+                    p.label.startsWith("Ouvir ") || p.label.startsWith("Listen "));
         }
 
-        // Verify Transmission pills have Mode ENVIAR and "Enviar " prefix
+        // Verify Transmission pills have transmission mode and proper prefix
         for (MorseRadioWords.RadioPill p : sendPills) {
-            assertEquals(MorseRadioWords.RadioPill.Mode.ENVIAR, p.mode);
-            assertTrue("Transmission pill label must start with 'Enviar '", p.label.startsWith("Enviar "));
+            assertTrue("Transmission pill must have transmission mode", p.mode.isTransmission());
+            assertTrue("Transmission pill label must start with 'Enviar ' or 'Send '",
+                    p.label.startsWith("Enviar ") || p.label.startsWith("Send "));
         }
 
         // Verify they are completely separate instances/lists

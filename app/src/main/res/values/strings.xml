@@ -1,9 +1,50 @@
 <resources>
     <string name="app_name">MorseGO</string>
-    <string name="learn_title">Aprender</string>
-    <string name="practice_title">Praticar</string>
-    <string name="keyer_title">Manipulador</string>
-    <string name="dictionary_title">Dicionário</string>
+    <string name="morsego_motto">MorseGO • Bat Echolocation CW Telegraphy</string>
+
+    <!-- Navigation -->
+    <string name="tree_title">Tree</string>
+    <string name="learn_title">Learn</string>
+    <string name="practice_title">Practice</string>
+    <string name="keyer_title">Keyer</string>
     <string name="hardware_title">Hardware CW</string>
-    <string name="settings_title">Definições</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Tree View -->
+    <string name="tree_header_title">MORSE BINARY TREE</string>
+    <string name="tree_header_subtitle">Level %1$d: %2$s\nLeft = Dah (—) | Right = Dit (•)</string>
+    <string name="tree_instruction">Tap any glowing node to hear its CW code and trace its binary path.</string>
+    <string name="tree_practice_level">Practice This Level ▶</string>
+    <string name="tree_code_label">Code: %s</string>
+    <string name="tree_listen_button">Listen</string>
+
+    <!-- Learn & Exam -->
+    <string name="level_number_format">LEVEL %1$d / %2$d</string>
+    <string name="new_letters_title">2 NEW CHARACTERS IN THIS LEVEL:</string>
+    <string name="level_requirements_title">LEVEL ADVANCEMENT REQUIREMENTS:</string>
+    <string name="level_requirements_desc">• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level.</string>
+    <string name="start_exam_button">START LEVEL EXAM ▶</string>
+    <string name="exam_completed_title">🎉 LEVEL COMPLETED!</string>
+    <string name="exam_unlocked_msg">Unlocked Level %1$d in the Morse Binary Tree!</string>
+    <string name="advance_next_level_button">ADVANCE TO NEXT LEVEL ▶</string>
+    <string name="review_level_button">Review This Level</string>
+    <string name="exam_stage_listening">Stage 1: Listening (Hear &amp; Identify)</string>
+    <string name="exam_stage_transmission">Stage 2: Transmission (Key with Paddles)</string>
+    <string name="exam_lives_label">Lives:</string>
+
+    <!-- Radio Words -->
+    <string name="radio_words_title">Amateur Radio CW Words</string>
+    <string name="radio_words_listen_group">LISTEN (Acoustic Training)</string>
+    <string name="radio_words_send_group">SEND (Paddle Transmission)</string>
+    <string name="radio_listen_prefix">Listen %s</string>
+    <string name="radio_send_prefix">Send %s</string>
+    <string name="radio_words_locked">🔒 Radio Words unlock after mastering the full alphabet (Level 13).</string>
+
+    <!-- Hardware CW -->
+    <string name="hw_paddle_monitor">Paddle Monitor &amp; Calibration</string>
+    <string name="hw_dit">DIT (•)</string>
+    <string name="hw_dah">DAH (—)</string>
+    <string name="hw_connected">USB Keyer Connected (ASIN B0F666MVG6)</string>
+    <string name="hw_disconnected">Touch Paddles Active (USB Keyer not connected)</string>
+    <string name="hw_reverse_paddles">Reverse Dit/Dah (Left-Handed)</string>
 </resources>

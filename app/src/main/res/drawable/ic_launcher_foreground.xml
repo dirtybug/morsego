@@ -5,17 +5,50 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     <group
-        android:scaleX="0.6"
-        android:scaleY="0.6"
-        android:translateX="21.6"
-        android:translateY="21.6">
-        <!-- Dot (Dit) -->
-        <path
-            android:fillColor="#FFB300"
-            android:pathData="M 32,54 m -10,0 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0" />
-        <!-- Dash (Dah) -->
+        android:scaleX="1.6"
+        android:scaleY="1.6"
+        android:translateX="15.6"
+        android:translateY="15.6">
+        <!-- Bat Wings & Body -->
         <path
             android:fillColor="#00E5FF"
-            android:pathData="M 50,44 h 38 c 5.5,0 10,4.5 10,10 c 0,5.5 -4.5,10 -10,10 H 50 c -5.5,0 -10,-4.5 -10,-10 c 0,-5.5 4.5,-10 10,-10 Z" />
+            android:pathData="M 24,14
+                              C 22.5,14 21.5,15.2 21,16.5
+                              L 19,10
+                              L 17,17
+                              C 13,17.5 8,15 4,12
+                              C 5.5,17 8,24 13,27
+                              C 11,28.5 7,30 2,29
+                              C 5,34 11,36 17,34
+                              C 15.5,36.5 13,39 9,41
+                              C 14,42 20,38 23,32
+                              L 24,35
+                              L 25,32
+                              C 28,38 34,42 39,41
+                              C 35,39 32.5,36.5 31,34
+                              C 37,36 43,34 46,29
+                              C 41,30 37,28.5 35,27
+                              C 40,24 42.5,17 44,12
+                              C 40,15 35,17.5 31,17
+                              L 29,10
+                              L 27,16.5
+                              C 26.5,15.2 25.5,14 24,14 Z" />
+        <!-- Bat Eyes -->
+        <path
+            android:fillColor="#FFB300"
+            android:pathData="M 22,18.5 A 1,1 0 1,1 22,20.5 A 1,1 0 1,1 22,18.5 Z" />
+        <path
+            android:fillColor="#FFB300"
+            android:pathData="M 26,18.5 A 1,1 0 1,1 26,20.5 A 1,1 0 1,1 26,18.5 Z" />
+        <!-- Sonar Morse Elements -->
+        <path
+            android:fillColor="#00E676"
+            android:pathData="M 22,6 H 26 C 26.6,6 27,6.4 27,7 C 27,7.6 26.6,8 26,8 H 22 C 21.4,8 21,7.6 21,7 C 21,6.4 21.4,6 22,6 Z" />
+        <path
+            android:fillColor="#00E676"
+            android:pathData="M 17.5,7 A 1,1 0 1,1 17.5,9 A 1,1 0 1,1 17.5,7 Z" />
+        <path
+            android:fillColor="#00E676"
+            android:pathData="M 30.5,7 A 1,1 0 1,1 30.5,9 A 1,1 0 1,1 30.5,7 Z" />
     </group>
 </vector>

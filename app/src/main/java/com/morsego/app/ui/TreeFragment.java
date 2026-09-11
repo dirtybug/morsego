@@ -12,9 +12,13 @@ import androidx.fragment.app.Fragment;
 import com.morsego.app.MainActivity;
 import com.morsego.app.databinding.FragmentTreeBinding;
 import com.morsego.app.tree.MorseBinaryTree;
-import com.morsego.app.tree.MorseTreeNode;
 import com.morsego.app.tree.TreeLevel;
 
+import java.util.Locale;
+
+/**
+ * Fragment that displays the interactive Morse Binary Tree and allows node exploration.
+ */
 public class TreeFragment extends Fragment {
 
     private FragmentTreeBinding binding;
@@ -34,10 +38,7 @@ public class TreeFragment extends Fragment {
 
         MainActivity activity = (MainActivity) requireActivity();
         int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
-        TreeLevel treeLevel = MorseBinaryTree.getInstance().getLevel(currentLevel);
-
-        binding.tvTreeLevelTitle.setText("ÁRVORE BINÁRIA (NÍVEL " + currentLevel + " DE " + MorseBinaryTree.getInstance().getTotalLevels() + ")");
-        binding.tvTreeLevelSub.setText(treeLevel.getTitle() + "\nNovas letras: " + treeLevel.getChar1() + " (" + treeLevel.getMorse1() + ") e " + treeLevel.getChar2() + " (" + treeLevel.getMorse2() + ")");
+        updateTreeHeader(currentLevel);
 
         binding.morseTreeView.setUnlockedLevel(currentLevel);
 
@@ -67,20 +68,35 @@ public class TreeFragment extends Fragment {
         if (binding != null && getActivity() != null) {
             MainActivity activity = (MainActivity) getActivity();
             int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
-            TreeLevel treeLevel = MorseBinaryTree.getInstance().getLevel(currentLevel);
-
-            binding.tvTreeLevelTitle.setText("ÁRVORE BINÁRIA (DESBLOQUEADO ATÉ NÍVEL " + currentLevel + " DE " + MorseBinaryTree.getInstance().getTotalLevels() + ")");
-            binding.tvTreeLevelSub.setText(treeLevel.getTitle() + "\nNovas letras: " + treeLevel.getChar1() + " (" + treeLevel.getMorse1() + ") e " + treeLevel.getChar2() + " (" + treeLevel.getMorse2() + ")");
+            updateTreeHeader(currentLevel);
             binding.morseTreeView.setUnlockedLevel(currentLevel);
         }
     }
 
+    private void updateTreeHeader(int currentLevel) {
+        boolean isPt = Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        int totalLevels = MorseBinaryTree.getInstance().getTotalLevels();
+        TreeLevel treeLevel = MorseBinaryTree.getInstance().getLevel(currentLevel);
+
+        String title = isPt ?
+                "ÁRVORE BINÁRIA (NÍVEL " + currentLevel + " DE " + totalLevels + ")" :
+                "MORSE BINARY TREE (LEVEL " + currentLevel + " OF " + totalLevels + ")";
+        String newCharsLabel = isPt ? "Novas letras: " : "New characters: ";
+        String andLabel = isPt ? " e " : " and ";
+
+        binding.tvTreeLevelTitle.setText(title);
+        binding.tvTreeLevelSub.setText(treeLevel.getTitle() + "\n" + newCharsLabel +
+                treeLevel.getChar1() + " (" + treeLevel.getMorse1() + ")" + andLabel +
+                treeLevel.getChar2() + " (" + treeLevel.getMorse2() + ")");
+    }
+
     private void updateSelectedNode(String character, String morse) {
         this.selectedChar = character;
+        boolean isPt = Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         binding.tvSelectedChar.setText(character);
-        binding.tvSelectedMorse.setText("Código: " + morse);
+        binding.tvSelectedMorse.setText((isPt ? "Código: " : "Code: ") + morse);
 
-        StringBuilder path = new StringBuilder("Raiz");
+        StringBuilder path = new StringBuilder(isPt ? "Raiz" : "Root");
         for (int i = 0; i < morse.length(); i++) {
             path.append(morse.charAt(i) == '.' ? " -> DIT (•)" : " -> DAH (—)");
         }

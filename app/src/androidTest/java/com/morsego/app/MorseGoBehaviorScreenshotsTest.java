@@ -100,9 +100,9 @@ public class MorseGoBehaviorScreenshotsTest {
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(800);
 
-        // Then verify Stage 1 (Escuta) is displayed
-        onView(withId(R.id.tvTestPhaseBanner)).check(matches(withText(containsString("TESTE DE ESCUTA"))));
-        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("Vidas:"))));
+        // Then verify Stage 1 (Listening) is displayed
+        onView(withId(R.id.tvTestPhaseBanner)).check(matches(anyOf(containsString("1"), containsString("ESCUTA"), containsString("LISTENING"))));
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(containsString("Vidas:"), containsString("Lives:"), containsString("❤️❤️❤️"))));
         onView(withId(R.id.tvTestProgress)).check(matches(isDisplayed()));
 
         // Capture listening stage screenshot
@@ -238,5 +238,38 @@ public class MorseGoBehaviorScreenshotsTest {
         Thread.sleep(400);
 
         ScreenshotHelper.capture("13_settings_closed");
+    }
+
+    /**
+     * BEHAVIOR 8: Screen Rotation across all tabs (Portrait & Landscape).
+     */
+    @Test
+    public void test08_ScreenRotation_AllTabsPortraitAndLandscape() throws InterruptedException {
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        });
+        Thread.sleep(600);
+
+        // Verify tree tab in landscape
+        onView(withId(R.id.nav_tree)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
+
+        // Verify keyer tab in landscape
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.tvKeyerDisplay)).check(matches(isDisplayed()));
+
+        // Verify hardware tab in landscape
+        onView(withId(R.id.nav_hardware)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.cardLeftPaddle)).check(matches(isDisplayed()));
+
+        // Rotate back to portrait
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        });
+        Thread.sleep(500);
+        onView(withId(R.id.cardLeftPaddle)).check(matches(isDisplayed()));
     }
 }

@@ -103,9 +103,16 @@ public class MorseTreeView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        // Desired height for 5 layers (Root + 4 child layers: all 26 letters)
-        int desiredHeight = (int) (600 * getResources().getDisplayMetrics().density);
-        setMeasuredDimension(width, resolveSize(desiredHeight, heightMeasureSpec));
+        float density = getResources().getDisplayMetrics().density;
+        int orientation = getResources().getConfiguration().orientation;
+
+        // Adaptive dimensions for Portrait and Landscape orientations
+        int desiredHeight = (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE)
+                ? (int) (520 * density)
+                : (int) (600 * density);
+        int desiredWidth = Math.max(width, (int) (980 * density));
+
+        setMeasuredDimension(desiredWidth, resolveSize(desiredHeight, heightMeasureSpec));
     }
 
     @Override

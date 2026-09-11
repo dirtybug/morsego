@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:text="ÁRVORE BINÁRIA DE MORSE"
+                    android:text="@string/tree_header_title"
                     android:textColor="@color/morse_cyan"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Nível 1: E (.) e T (-)\nEsquerda = Ponto (•) | Direita = Traço (—)"
+                    android:text="@string/tree_header_subtitle"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Toque em qualquer nó dourado para ouvir o som CW e ver o caminho na árvore."
+                    android:text="@string/tree_instruction"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -136,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/morse_amber"
-                    android:text="Ouvir"
+                    android:text="@string/tree_listen_button"
                     android:textColor="@color/radio_dark"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -151,7 +151,7 @@
             android:layout_marginBottom="24dp"
             android:backgroundTint="@color/morse_amber"
             android:fontFamily="monospace"
-            android:text="Praticar Este Nível ▶"
+            android:text="@string/tree_practice_level"
             android:textColor="@color/radio_dark"
             android:textSize="14sp"
             android:textStyle="bold" />

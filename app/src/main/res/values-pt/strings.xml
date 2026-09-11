@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">MorseGO</string>
+    <string name="morsego_motto">MorseGO • O Morcego da Telegrafia CW</string>
+
+    <!-- Navigation -->
+    <string name="tree_title">Árvore</string>
+    <string name="learn_title">Aprender</string>
+    <string name="practice_title">Praticar</string>
+    <string name="keyer_title">Manipulador</string>
+    <string name="hardware_title">Hardware CW</string>
+    <string name="settings_title">Definições</string>
+
+    <!-- Tree View -->
+    <string name="tree_header_title">ÁRVORE BINÁRIA DE MORSE</string>
+    <string name="tree_header_subtitle">Nível %1$d: %2$s\nEsquerda = Traço (—) | Direita = Ponto (•)</string>
+    <string name="tree_instruction">Toque em qualquer nó iluminado para ouvir o som CW e ver o caminho na árvore.</string>
+    <string name="tree_practice_level">Praticar Este Nível ▶</string>
+    <string name="tree_code_label">Código: %s</string>
+    <string name="tree_listen_button">Ouvir</string>
+
+    <!-- Learn & Exam -->
+    <string name="level_number_format">NÍVEL %1$d / %2$d</string>
+    <string name="new_letters_title">2 NOVOS CARACTERES DESTE NÍVEL:</string>
+    <string name="level_requirements_title">REQUISITOS PARA SUBIR DE NÍVEL:</string>
+    <string name="level_requirements_desc">• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete as etapas de Ouvir e Mandar para desbloquear o próximo nível.</string>
+    <string name="start_exam_button">INICIAR TESTE DO NÍVEL ▶</string>
+    <string name="exam_completed_title">🎉 NÍVEL CONCLUÍDO!</string>
+    <string name="exam_unlocked_msg">Desbloqueou o Nível %1$d na Árvore Binária de Morse!</string>
+    <string name="advance_next_level_button">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
+    <string name="review_level_button">Rever Este Nível</string>
+    <string name="exam_stage_listening">Etapa 1: Audição (Ouvir &amp; Identificar)</string>
+    <string name="exam_stage_transmission">Etapa 2: Transmissão (Mandar com Pás)</string>
+    <string name="exam_lives_label">Vidas:</string>
+
+    <!-- Radio Words -->
+    <string name="radio_words_title">Palavras de Rádio CW</string>
+    <string name="radio_words_listen_group">OUVIR (Treino Acústico)</string>
+    <string name="radio_words_send_group">ENVIAR (Transmissão com Pás)</string>
+    <string name="radio_listen_prefix">Ouvir %s</string>
+    <string name="radio_send_prefix">Enviar %s</string>
+    <string name="radio_words_locked">🔒 Palavras de Rádio desbloqueadas após dominar o alfabeto completo (Nível 13).</string>
+
+    <!-- Hardware CW -->
+    <string name="hw_paddle_monitor">Monitorização e Calibração de Pás</string>
+    <string name="hw_dit">DIT (•)</string>
+    <string name="hw_dah">DAH (—)</string>
+    <string name="hw_connected">Manipulador USB Conectado (ASIN B0F666MVG6)</string>
+    <string name="hw_disconnected">Pás Táteis Ativas (USB não conectado)</string>
+    <string name="hw_reverse_paddles">Inverter Dit/Dah (Canhoto)</string>
+</resources>

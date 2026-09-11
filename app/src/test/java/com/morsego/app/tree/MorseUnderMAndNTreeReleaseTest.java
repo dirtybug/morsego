@@ -10,24 +10,27 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Testes Unitários dedicados à validação e libertação dos nós POR BAIXO DO M E DO N:
+ * Dedicated Unit Tests for nodes under M and N in the Morse Binary Tree:
  *
- * Estrutura da Subárvore do T (-):
+ * T-branch subtree structure:
  *           T (-)
  *          /     \
  *       M (--)   N (-.)
  *       /    \   /    \
  *     O(---) G(--.) K(-.-) D(-..)
- *            /   \   /   \   /   \
- *          Q    Z   Y     C X     B
+ *    /  \    /   \   /   \   /   \
+ *   8    9  Q    Z   Y     C X     B
+ *        |
+ *        0
  *
- * Valida:
- * 1. Ramos diretos sob N: D (-..) e K (-.-) no Nível 6.
- * 2. Ramos diretos sob M: G (--.) e O (---) no Nível 7.
- * 3. Descendentes de D (sob N): B (-...) e X (-..-) no Nível 11.
- * 4. Descendentes de K (sob N): C (-.-.) e Y (-.--) no Nível 12.
- * 5. Descendentes de G (sob M): Z (--..) e Q (--.-) no Nível 13.
- * 6. Descendentes de O (sob M): Números 9 e 0 na profundidade 5.
+ * Validates:
+ * 1. Direct branches under N: D (-..) and K (-.-) at Level 6.
+ * 2. Direct branches under M: G (--.) and O (---) at Level 7.
+ * 3. Descendants of D (under N): B (-...) and X (-..-) at Level 11.
+ * 4. Descendants of K (under N): C (-.-.) and Y (-.--) at Level 12.
+ * 5. Descendants of G (under M): Z (--..) and Q (--.-) at Level 13.
+ * 6. Descendants of O (under M): Numbers 8, 9, and 0 in depth 4 and 5.
+ * 7. Isolation and integrity between M and N branches.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MorseUnderMAndNTreeReleaseTest {
@@ -41,43 +44,43 @@ public class MorseUnderMAndNTreeReleaseTest {
     public void setUp() {
         tree = MorseBinaryTree.getInstance();
         MorseTreeNode root = tree.getRoot();
-        assertNotNull("Raiz não pode ser nula", root);
+        assertNotNull("Root must not be null", root);
 
         nodeT = root.getDahChild();
-        assertNotNull("Nó T (-) deve existir sob a raiz", nodeT);
+        assertNotNull("Node T (-) must exist under root", nodeT);
 
         nodeM = nodeT.getDahChild();
         nodeN = nodeT.getDitChild();
-        assertNotNull("Nó M (--) deve existir sob T", nodeM);
-        assertNotNull("Nó N (-.) deve existir sob T", nodeN);
+        assertNotNull("Node M (--) must exist under T", nodeM);
+        assertNotNull("Node N (-.) must exist under T", nodeN);
     }
 
     /**
-     * TESTE 1: Filhos diretos sob N (-.): D (-..) e K (-.-) [NÍVEL 6]
-     * Valida que D é o filho Dit (.) de N e K é o filho Dah (-) de N.
-     * Valida que no Nível 5 estão bloqueados e no Nível 6 passam a desbloqueados.
+     * TEST 1: Direct children under N (-.): D (-..) and K (-.-) [LEVEL 6]
+     * Validates that D is Dit (.) child of N and K is Dah (-) child of N.
+     * Validates that at Level 5 they are locked and at Level 6 they become unlocked.
      */
     @Test
     public void test01_UnderN_DirectChildren_D_and_K_ReleaseLevel6() {
         MorseTreeNode nodeD = nodeN.getDitChild();
         MorseTreeNode nodeK = nodeN.getDahChild();
 
-        assertNotNull("Nó D deve existir sob N como filho DIT", nodeD);
-        assertNotNull("Nó K deve existir sob N como filho DAH", nodeK);
+        assertNotNull("Node D must exist under N as DIT child", nodeD);
+        assertNotNull("Node K must exist under N as DAH child", nodeK);
         assertEquals("D", nodeD.getCharacter());
         assertEquals("-..", nodeD.getMorseCode());
         assertEquals("K", nodeK.getCharacter());
         assertEquals("-.-", nodeK.getMorseCode());
 
-        // No Nível 5, D e K devem estar BLOQUEADOS
+        // At Level 5, D and K must be LOCKED
         tree.unlockNodesUpToLevel(5);
-        assertFalse("D sob N deve estar bloqueado no nível 5", nodeD.isUnlocked());
-        assertFalse("K sob N deve estar bloqueado no nível 5", nodeK.isUnlocked());
+        assertFalse("D under N must be locked at level 5", nodeD.isUnlocked());
+        assertFalse("K under N must be locked at level 5", nodeK.isUnlocked());
 
-        // No Nível 6, D e K são LIBERTADOS
+        // At Level 6, D and K are UNLOCKED
         tree.unlockNodesUpToLevel(6);
-        assertTrue("D sob N deve estar DESBLOQUEADO no nível 6", nodeD.isUnlocked());
-        assertTrue("K sob N deve estar DESBLOQUEADO no nível 6", nodeK.isUnlocked());
+        assertTrue("D under N must be UNLOCKED at level 6", nodeD.isUnlocked());
+        assertTrue("K under N must be UNLOCKED at level 6", nodeK.isUnlocked());
 
         TreeLevel l6 = tree.getLevel(6);
         assertEquals("D", l6.getChar1());
@@ -87,31 +90,31 @@ public class MorseUnderMAndNTreeReleaseTest {
     }
 
     /**
-     * TESTE 2: Filhos diretos sob M (--): G (--.) e O (---) [NÍVEL 7]
-     * Valida que G é o filho Dit (.) de M e O é o filho Dah (-) de M.
-     * Valida que no Nível 6 estão bloqueados e no Nível 7 passam a desbloqueados.
+     * TEST 2: Direct children under M (--): G (--.) and O (---) [LEVEL 7]
+     * Validates that G is Dit (.) child of M and O is Dah (-) child of M.
+     * Validates that at Level 6 they are locked and at Level 7 they become unlocked.
      */
     @Test
     public void test02_UnderM_DirectChildren_G_and_O_ReleaseLevel7() {
         MorseTreeNode nodeG = nodeM.getDitChild();
         MorseTreeNode nodeO = nodeM.getDahChild();
 
-        assertNotNull("Nó G deve existir sob M como filho DIT", nodeG);
-        assertNotNull("Nó O deve existir sob M como filho DAH", nodeO);
+        assertNotNull("Node G must exist under M as DIT child", nodeG);
+        assertNotNull("Node O must exist under M as DAH child", nodeO);
         assertEquals("G", nodeG.getCharacter());
         assertEquals("--.", nodeG.getMorseCode());
         assertEquals("O", nodeO.getCharacter());
         assertEquals("---", nodeO.getMorseCode());
 
-        // No Nível 6, G e O sob M devem estar BLOQUEADOS
+        // At Level 6, G and O under M must be LOCKED
         tree.unlockNodesUpToLevel(6);
-        assertFalse("G sob M deve estar bloqueado no nível 6", nodeG.isUnlocked());
-        assertFalse("O sob M deve estar bloqueado no nível 6", nodeO.isUnlocked());
+        assertFalse("G under M must be locked at level 6", nodeG.isUnlocked());
+        assertFalse("O under M must be locked at level 6", nodeO.isUnlocked());
 
-        // No Nível 7, G e O são LIBERTADOS
+        // At Level 7, G and O are UNLOCKED
         tree.unlockNodesUpToLevel(7);
-        assertTrue("G sob M deve estar DESBLOQUEADO no nível 7", nodeG.isUnlocked());
-        assertTrue("O sob M deve estar DESBLOQUEADO no nível 7", nodeO.isUnlocked());
+        assertTrue("G under M must be UNLOCKED at level 7", nodeG.isUnlocked());
+        assertTrue("O under M must be UNLOCKED at level 7", nodeO.isUnlocked());
 
         TreeLevel l7 = tree.getLevel(7);
         assertEquals("G", l7.getChar1());
@@ -121,9 +124,9 @@ public class MorseUnderMAndNTreeReleaseTest {
     }
 
     /**
-     * TESTE 3: Sub-ramo sob D (que está sob N): B (-...) e X (-..-) [NÍVEL 11]
-     * Valida descendência: T -> N -> D -> B (dit) e X (dah).
-     * Valida bloqueio até ao Nível 10 e libertação no Nível 11.
+     * TEST 3: Sub-branch under D (under N): B (-...) and X (-..-) [LEVEL 11]
+     * Validates descent: T -> N -> D -> B (dit) and X (dah).
+     * Validates locked at Level 10 and unlocked at Level 11.
      */
     @Test
     public void test03_UnderN_SubBranchD_Children_B_and_X_ReleaseLevel11() {
@@ -133,22 +136,22 @@ public class MorseUnderMAndNTreeReleaseTest {
         MorseTreeNode nodeB = nodeD.getDitChild();
         MorseTreeNode nodeX = nodeD.getDahChild();
 
-        assertNotNull("B deve existir sob D (sub-ramo de N)", nodeB);
-        assertNotNull("X deve existir sob D (sub-ramo de N)", nodeX);
+        assertNotNull("B must exist under D (sub-branch of N)", nodeB);
+        assertNotNull("X must exist under D (sub-branch of N)", nodeX);
         assertEquals("B", nodeB.getCharacter());
         assertEquals("-...", nodeB.getMorseCode());
         assertEquals("X", nodeX.getCharacter());
         assertEquals("-..-", nodeX.getMorseCode());
 
-        // No Nível 10, B e X devem estar bloqueados
+        // At Level 10, B and X must be locked
         tree.unlockNodesUpToLevel(10);
-        assertFalse("B sob D (N) deve estar bloqueado no nível 10", nodeB.isUnlocked());
-        assertFalse("X sob D (N) deve estar bloqueado no nível 10", nodeX.isUnlocked());
+        assertFalse("B under D (N) must be locked at level 10", nodeB.isUnlocked());
+        assertFalse("X under D (N) must be locked at level 10", nodeX.isUnlocked());
 
-        // No Nível 11, B e X são libertados
+        // At Level 11, B and X are unlocked
         tree.unlockNodesUpToLevel(11);
-        assertTrue("B sob D (N) deve estar DESBLOQUEADO no nível 11", nodeB.isUnlocked());
-        assertTrue("X sob D (N) deve estar DESBLOQUEADO no nível 11", nodeX.isUnlocked());
+        assertTrue("B under D (N) must be UNLOCKED at level 11", nodeB.isUnlocked());
+        assertTrue("X under D (N) must be UNLOCKED at level 11", nodeX.isUnlocked());
 
         TreeLevel l11 = tree.getLevel(11);
         assertEquals("B", l11.getChar1());
@@ -156,9 +159,9 @@ public class MorseUnderMAndNTreeReleaseTest {
     }
 
     /**
-     * TESTE 4: Sub-ramo sob K (que está sob N): C (-.-.) e Y (-.--) [NÍVEL 12]
-     * Valida descendência: T -> N -> K -> C (dit) e Y (dah).
-     * Valida bloqueio até ao Nível 11 e libertação no Nível 12.
+     * TEST 4: Sub-branch under K (under N): C (-.-.) and Y (-.--) [LEVEL 12]
+     * Validates descent: T -> N -> K -> C (dit) and Y (dah).
+     * Validates locked at Level 11 and unlocked at Level 12.
      */
     @Test
     public void test04_UnderN_SubBranchK_Children_C_and_Y_ReleaseLevel12() {
@@ -168,22 +171,22 @@ public class MorseUnderMAndNTreeReleaseTest {
         MorseTreeNode nodeC = nodeK.getDitChild();
         MorseTreeNode nodeY = nodeK.getDahChild();
 
-        assertNotNull("C deve existir sob K (sub-ramo de N)", nodeC);
-        assertNotNull("Y deve existir sob K (sub-ramo de N)", nodeY);
+        assertNotNull("C must exist under K (sub-branch of N)", nodeC);
+        assertNotNull("Y must exist under K (sub-branch of N)", nodeY);
         assertEquals("C", nodeC.getCharacter());
         assertEquals("-.-.", nodeC.getMorseCode());
         assertEquals("Y", nodeY.getCharacter());
         assertEquals("-.--", nodeY.getMorseCode());
 
-        // No Nível 11, C e Y devem estar bloqueados
+        // At Level 11, C and Y must be locked
         tree.unlockNodesUpToLevel(11);
-        assertFalse("C sob K (N) deve estar bloqueado no nível 11", nodeC.isUnlocked());
-        assertFalse("Y sob K (N) deve estar bloqueado no nível 11", nodeY.isUnlocked());
+        assertFalse("C under K (N) must be locked at level 11", nodeC.isUnlocked());
+        assertFalse("Y under K (N) must be locked at level 11", nodeY.isUnlocked());
 
-        // No Nível 12, C e Y são libertados
+        // At Level 12, C and Y are unlocked
         tree.unlockNodesUpToLevel(12);
-        assertTrue("C sob K (N) deve estar DESBLOQUEADO no nível 12", nodeC.isUnlocked());
-        assertTrue("Y sob K (N) deve estar DESBLOQUEADO no nível 12", nodeY.isUnlocked());
+        assertTrue("C under K (N) must be UNLOCKED at level 12", nodeC.isUnlocked());
+        assertTrue("Y under K (N) must be UNLOCKED at level 12", nodeY.isUnlocked());
 
         TreeLevel l12 = tree.getLevel(12);
         assertEquals("C", l12.getChar1());
@@ -191,9 +194,9 @@ public class MorseUnderMAndNTreeReleaseTest {
     }
 
     /**
-     * TESTE 5: Sub-ramo sob G (que está sob M): Z (--..) e Q (--.-) [NÍVEL 13]
-     * Valida descendência: T -> M -> G -> Z (dit) e Q (dah).
-     * Valida bloqueio até ao Nível 12 e libertação no Nível 13.
+     * TEST 5: Sub-branch under G (under M): Z (--..) and Q (--.-) [LEVEL 13]
+     * Validates descent: T -> M -> G -> Z (dit) and Q (dah).
+     * Validates locked at Level 12 and unlocked at Level 13.
      */
     @Test
     public void test05_UnderM_SubBranchG_Children_Z_and_Q_ReleaseLevel13() {
@@ -203,22 +206,22 @@ public class MorseUnderMAndNTreeReleaseTest {
         MorseTreeNode nodeZ = nodeG.getDitChild();
         MorseTreeNode nodeQ = nodeG.getDahChild();
 
-        assertNotNull("Z deve existir sob G (sub-ramo de M)", nodeZ);
-        assertNotNull("Q deve existir sob G (sub-ramo de M)", nodeQ);
+        assertNotNull("Z must exist under G (sub-branch of M)", nodeZ);
+        assertNotNull("Q must exist under G (sub-branch of M)", nodeQ);
         assertEquals("Z", nodeZ.getCharacter());
         assertEquals("--..", nodeZ.getMorseCode());
         assertEquals("Q", nodeQ.getCharacter());
         assertEquals("--.-", nodeQ.getMorseCode());
 
-        // No Nível 12, Z e Q devem estar bloqueados
+        // At Level 12, Z and Q must be locked
         tree.unlockNodesUpToLevel(12);
-        assertFalse("Z sob G (M) deve estar bloqueado no nível 12", nodeZ.isUnlocked());
-        assertFalse("Q sob G (M) deve estar bloqueado no nível 12", nodeQ.isUnlocked());
+        assertFalse("Z under G (M) must be locked at level 12", nodeZ.isUnlocked());
+        assertFalse("Q under G (M) must be locked at level 12", nodeQ.isUnlocked());
 
-        // No Nível 13, Z e Q são libertados
+        // At Level 13, Z and Q are unlocked
         tree.unlockNodesUpToLevel(13);
-        assertTrue("Z sob G (M) deve estar DESBLOQUEADO no nível 13", nodeZ.isUnlocked());
-        assertTrue("Q sob G (M) deve estar DESBLOQUEADO no nível 13", nodeQ.isUnlocked());
+        assertTrue("Z under G (M) must be UNLOCKED at level 13", nodeZ.isUnlocked());
+        assertTrue("Q under G (M) must be UNLOCKED at level 13", nodeQ.isUnlocked());
 
         TreeLevel l13 = tree.getLevel(13);
         assertEquals("Z", l13.getChar1());
@@ -226,33 +229,51 @@ public class MorseUnderMAndNTreeReleaseTest {
     }
 
     /**
-     * TESTE 6: Sub-ramo sob O (que está sob M): Números 9 (----.) e 0 (-----)
-     * Valida descendência de numeração telegráfica:
-     * START -> T (-) -> M (--) -> O (---) -> 9 / 0
+     * TEST 6: Sub-branch under O (under M): Numbers 8 (---..), 9 (----.) and 0 (-----)
+     * Validates telegraphic numbering descent:
+     * START -> T (-) -> M (--) -> O (---):
+     * - Dit child: 8 (---..)
+     * - Dah child: 9 (----.) -> Dah child: 0 (-----)
      */
     @Test
-    public void test06_UnderM_SubBranchO_Numbers_9_and_0() {
+    public void test06_UnderM_SubBranchO_Numbers_8_9_and_0() {
         MorseTreeNode nodeO = nodeM.getDahChild();
         assertNotNull(nodeO);
 
-        MorseTreeNode node9 = nodeO.getDitChild();
-        MorseTreeNode node0 = nodeO.getDahChild();
+        MorseTreeNode node8 = nodeO.getDitChild();
+        MorseTreeNode node9 = nodeO.getDahChild();
 
-        assertNotNull("9 deve existir sob O (sub-ramo de M)", node9);
-        assertNotNull("0 deve existir sob O (sub-ramo de M)", node0);
+        assertNotNull("8 must exist under O as Dit child", node8);
+        assertNotNull("9 must exist under O as Dah child", node9);
+        assertEquals("8", node8.getCharacter());
+        assertEquals("---..", node8.getMorseCode());
         assertEquals("9", node9.getCharacter());
         assertEquals("----.", node9.getMorseCode());
+
+        MorseTreeNode node0 = node9.getDahChild();
+        assertNotNull("0 must exist under 9 as Dah child", node0);
         assertEquals("0", node0.getCharacter());
         assertEquals("-----", node0.getMorseCode());
+
+        // Verify independent level release: Level 17 unlocks 8 while 9 and 0 remain locked
+        tree.unlockNodesUpToLevel(17);
+        assertTrue("8 must be unlocked at level 17", node8.isUnlocked());
+        assertFalse("9 must remain locked at level 17", node9.isUnlocked());
+        assertFalse("0 must remain locked at level 17", node0.isUnlocked());
+
+        // Level 18 unlocks 9 and 0
+        tree.unlockNodesUpToLevel(18);
+        assertTrue("9 must be unlocked at level 18", node9.isUnlocked());
+        assertTrue("0 must be unlocked at level 18", node0.isUnlocked());
     }
 
     /**
-     * TESTE 7: Isolamento e Integridade M vs N:
-     * Garante que desbloquear ramos de N (D, K) NÃO desbloqueia inadvertidamente ramos de M (G, O).
+     * TEST 7: Isolation and Integrity between Branch M and Branch N:
+     * Ensures unlocking N branches (D, K) does NOT inadvertently unlock M branches (G, O).
      */
     @Test
     public void test07_IsolationBetweenBranchM_and_BranchN() {
-        // No Nível 6: Desbloqueia ramos de N (D e K), mas ramos de M (G e O) DEVEM continuar bloqueados
+        // At Level 6: Unlocks N branches (D and K), but M branches (G and O) MUST remain locked
         tree.unlockNodesUpToLevel(6);
 
         MorseTreeNode nodeD = nodeN.getDitChild();
@@ -260,10 +281,10 @@ public class MorseUnderMAndNTreeReleaseTest {
         MorseTreeNode nodeG = nodeM.getDitChild();
         MorseTreeNode nodeO = nodeM.getDahChild();
 
-        assertTrue("Ramo de N (D) desbloqueado no nível 6", nodeD.isUnlocked());
-        assertTrue("Ramo de N (K) desbloqueado no nível 6", nodeK.isUnlocked());
+        assertTrue("N branch (D) unlocked at level 6", nodeD.isUnlocked());
+        assertTrue("N branch (K) unlocked at level 6", nodeK.isUnlocked());
 
-        assertFalse("Ramo de M (G) DEVE continuar BLOQUEADO no nível 6", nodeG.isUnlocked());
-        assertFalse("Ramo de M (O) DEVE continuar BLOQUEADO no nível 6", nodeO.isUnlocked());
+        assertFalse("M branch (G) MUST remain LOCKED at level 6", nodeG.isUnlocked());
+        assertFalse("M branch (O) MUST remain LOCKED at level 6", nodeO.isUnlocked());
     }
 }
