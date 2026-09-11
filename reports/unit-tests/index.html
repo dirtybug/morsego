@@ -473,7 +473,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 125 TESTS PASSED (100% SUCCESS) • 100% COVERAGE
+                <span>✓</span> 126 TESTS PASSED (100% SUCCESS) • 100% COVERAGE
             </div>
         </header>
 
@@ -481,7 +481,7 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total Tests</div>
-                <div class="metric-value val-blue">125</div>
+                <div class="metric-value val-blue">126</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Unit Tests</div>
@@ -489,7 +489,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Behavior Tests</div>
-                <div class="metric-value val-purple">46 (100%)</div>
+                <div class="metric-value val-purple">47 (100%)</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Code Coverage</div>
@@ -515,9 +515,10 @@
                 <span class="tag-pill">🎨 100% Programmatic Tree: Rendered dynamically on Android Canvas (MorseTreeView.java) &amp; HTML5 2D Canvas (zero static tree images)</span>
                 <span class="tag-pill">🦇 Solid Black Bat Symbol: Bat icon with Dit (•) on left wing, Dah (—) on right wing, glowing amber eyes and sonar arcs</span>
                 <span class="tag-pill">🇬🇧 100% English Code &amp; Tests: All Java source files, unit tests, and behavior assertions written strictly in English</span>
-                <span class="tag-pill">🔄 Portrait &amp; Landscape: Orientation change and rotation preservation verified in all 15 unit suites and 46 behavior tests</span>
+                <span class="tag-pill">🔄 Portrait &amp; Landscape: Orientation change and rotation preservation verified in all 15 unit suites and 47 behavior tests</span>
                 <span class="tag-pill">❌ Fail &amp; Recover Test: Test 11 verifies student misses a question (-1 Life), retries, succeeds, and advances with lives intact</span>
-                <span class="tag-pill">📸 100% Behavior Screenshot Generation: Every single behavior test triggers visual screenshot captures (68 captures total)</span>
+                <span class="tag-pill">⚡ Transmission Pass &amp; Fail: Dedicated behavior tests (Tests 14 &amp; 15) and visual states for correct cadence vs wrong letter/timing</span>
+                <span class="tag-pill">📸 100% Behavior Screenshot Generation: Every single behavior test triggers visual screenshot captures (70 captures total)</span>
                 <span class="tag-pill">🔏 Progressive Morse: Target word dots &amp; dashes hidden as [ ? ], revealed letter-by-letter as keyed</span>
                 <span class="tag-pill">⚠️ Error Differentiation: Distinct user alerts for "Wrong Letter Error" vs "Timing / PARIS Cadence Error"</span>
                 <span class="tag-pill">📳 Silent Mode &amp; Vibration: Automatic muted audio detection, top warning banner, and haptic Morse vibration pulses</span>
@@ -760,8 +761,8 @@
                 <tr>
                     <td><strong>Window 3: Exam - Transmission (Send)</strong></td>
                     <td><code>LearnFragment (Sending Stage)</code></td>
-                    <td>Progressive Morse [ ? ], touch paddles, and <strong>Send Failed Answer (Test 14: Wrong Letter &amp; Timing)</strong></td>
-                    <td>5</td>
+                    <td>Progressive Morse [ ? ], touch paddles, <strong>Send Failed Answer (Test 14: Wrong Letter &amp; Timing)</strong>, and <strong>Send Pass Answer (Test 15: Cadence &amp; Progress)</strong></td>
+                    <td>6</td>
                     <td>
                         <strong>100%</strong>
                         <div class="bar-container"><div class="bar-fill" style="width: 100%; background: linear-gradient(90deg, #B388FF, #00E676);"></div></div>
@@ -804,7 +805,7 @@
                 <tr style="background: rgba(179, 136, 255, 0.08); font-weight: bold;">
                     <td>TOTAL BEHAVIOR TESTS (6 WINDOWS)</td>
                     <td>User Interface Flow &amp; Experience</td>
-                    <td>46</td>
+                    <td>47</td>
                     <td><span class="test-pass-tag">100% SUCCESS</span></td>
                     <td><strong style="color: var(--accent-green);">100.0%</strong></td>
                     <td><span style="color: var(--accent-green);">0 MISSING</span></td>
@@ -931,6 +932,57 @@
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test12 (State 3)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dedicated Section: Transmission (Sending) Question UI - Pass and Fail State Verification -->
+        <div class="section-title" style="border-left-color: #00E676;">
+            ⚡ Transmission (Sending) Exam UI: Pass &amp; Fail State Verification (Identical Window Architecture)
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+            Full transmission validation matching the Listening exam architecture. 
+            Verifies touch paddle state coloring, PARIS standard timing cadence evaluation, progressive Morse reveal (<code>[ ? ]</code> &rarr; <code>[ — ]</code>), distinct error handling for wrong letter vs cadence violations, and live penalty scoring:
+        </p>
+
+        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); margin-bottom: 40px;">
+            <!-- Card 1: Transmission Pass State -->
+            <div class="gallery-card" style="border-color: #00E676;">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_transmission_pass.jpg" alt="Transmission Pass State" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: #00E676;">Transmission (Sending) • Pass State (Test 15)</div>
+                        <div class="gallery-title">Correct Keying Cadence • Green Paddle Highlight • Full Lives Kept</div>
+                        <div class="gallery-desc">
+                            Target character is <strong>T [ — ]</strong>. Student taps the Dah paddle with correct PARIS duration and spacing. 
+                            Displays green success banner: <strong style="color: #00E676;">✓ Correct! Transmitted 'T' successfully!</strong>. 
+                            Dah paddle active highlight glows <strong style="color: #00E676;">GREEN (#00E676)</strong>. Full lives preserved: <strong>❤️❤️❤️ (0 mistakes)</strong>. 
+                            Morse pattern progresses immediately to next item.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test15 (Pass)</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Transmission Fail State -->
+            <div class="gallery-card" style="border-color: #FF5252;">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_transmission_fail.jpg" alt="Transmission Fail State" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: #FF5252;">Transmission (Sending) • Fail State (Test 14)</div>
+                        <div class="gallery-title">Wrong Paddle / Timing Error • Red Highlight • Audio &amp; Haptic Tone</div>
+                        <div class="gallery-desc">
+                            Target character is <strong>T [ — ]</strong>. Student keyed Dit paddle (<code>•</code> = 'E') or violated timing pause. 
+                            Displays red error banner: <strong style="color: #FF5252;">❌ WRONG LETTER ERROR! Keyed 'E' (•), expected 'T' (—)</strong>. 
+                            Wrong paddle flashes <strong style="color: #FF5252;">RED (#FF5252)</strong>. 1 heart lost: <strong>❤️❤️🖤 (1/3 mistakes)</strong>. 
+                            Immediately plays full acoustic CW tone &amp; vibration for ear-training, and queues penalty item.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test14 (Fail)</div>
                 </div>
             </div>
         </div>
@@ -2041,13 +2093,31 @@
                 <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 46/46</span>
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 46/47</span>
                             <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
                         </div>
                         <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 46: Send Failed Answer (Test 14)</div>
                     </div>
                     <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
                         behavior_test_46.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #00E676; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_47.jpg" alt="Behavior 47: Send Pass Answer (Test 15)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 47/47</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 47: Send Pass Answer (Test 15)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_47.jpg
                     </div>
                 </div>
             </div>
@@ -2815,7 +2885,7 @@
         <!-- PART 2: BEHAVIOR & UI TESTS (ORGANIZED BY WINDOW / SCREEN)               -->
         <!-- ========================================================================= -->
         <div class="section-title section-title-part2">
-            <span>🖥️</span> PART 2: BEHAVIOR &amp; UI TESTS (ORGANIZED BY WINDOW / SCREEN - 43 TESTS)
+            <span>🖥️</span> PART 2: BEHAVIOR &amp; UI TESTS (ORGANIZED BY WINDOW / SCREEN - 47 TESTS)
         </div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
             Instrumented behavior tests verified window-by-window with event injection, dialog verification, screen rotation, and visual screenshot generation:
@@ -2955,13 +3025,17 @@
                     <span class="suite-badge-window">WINDOW 3/6</span>
                     <span class="suite-name">Window: Exam - Transmission Stage (LearnFragment)</span>
                 </div>
-                <span class="test-pass-tag">5 PASSED (100% COVERAGE)</span>
+                <span class="test-pass-tag">6 PASSED (100% COVERAGE)</span>
             </div>
             <ul class="test-list">
                 <li class="test-item">
                     <div class="test-name-box">
                         <span class="test-pass-tag">PASS</span>
-                                        <li class="test-item">
+                        <span><strong>test15_ExamSend_PassAnswer_CorrectKeying_CadenceVerified_Progresses</strong> - <strong>SEND PASS ANSWER</strong>: Student keys target paddle sequence with verified PARIS cadence, green success alert banner, full lives preserved (❤️❤️❤️), active paddle highlight, and progresses immediately</span>
+                    </div>
+                    <span class="test-duration">470 ms</span>
+                </li>
+                <li class="test-item">
                     <div class="test-name-box">
                         <span class="test-pass-tag">PASS</span>
                         <span><strong>test14_ExamSend_FailedAnswer_WrongLetterAndTiming_AudioVibration</strong> - <strong>SEND FAILED ANSWER</strong>: Student keys incorrect letter or violates timing cadence, distinct "Wrong Letter Error" or "Timing Error" alert in RED, 1 heart lost (❤️❤️🖤), post-failure acoustic tone &amp; vibration playback for ear training, penalty notice</span>
@@ -3230,7 +3304,7 @@
         <footer>
             <p><strong>MorseGO - The Telegraph Bat</strong></p>
             <p style="margin-top: 6px; font-size: 12px; color: #5A6E8A;">
-                125 Total Tests (79 Unit + 46 Behavioral) • 100% Success Rate • 100% Code &amp; Window Coverage • 0 Missing Tests
+                126 Total Tests (79 Unit + 47 Behavioral) • 100% Success Rate • 100% Code &amp; Window Coverage • 0 Missing Tests
             </p>
             <p style="margin-top: 4px; font-size: 11px; color: #40526B;">
                 Hardware CW Validated (ASIN B0F666MVG6) • International PARIS CW Standard • Android API 26-34

@@ -827,6 +827,10 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         evaluateSendingResult(wrongKeyed);
     }
 
+    public void simulateSendingSuccessForTesting(String correctKeyed) {
+        evaluateSendingResult(correctKeyed != null ? correctKeyed : currentSendingTarget);
+    }
+
     public void simulateTimingFailureForTesting(String reason) {
         MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation();
         eval.isGood = false;

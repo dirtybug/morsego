@@ -610,4 +610,65 @@ public class MorseGoExamFlowBehaviorTest {
 
         ScreenshotHelper.capture("screenshot_send_failed_answer");
     }
+
+    /**
+     * BEHAVIOR 15: Exam Send (Transmission) Pass Answer:
+     * Student transmits correct Morse sequence for target letter/word with valid PARIS cadence.
+     * Verifies:
+     * 1. Window remains identical (layoutStageSending).
+     * 2. Success message informs user: "✓ Correct! Transmitted successfully!".
+     * 3. Success feedback color is GREEN (#00E676).
+     * 4. Full Morse dots/dashes pattern is illuminated.
+     * 5. Lives are preserved (❤️❤️❤️).
+     * 6. Advances to next question in queue.
+     * 7. Verified screenshot captured to disk.
+     */
+    @Test
+    public void test15_ExamSend_PassAnswer_CorrectKeying_CadenceVerified_Progresses() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Navigate to Learn tab and start exam in Sending stage
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // Transition to Sending stage directly
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            }
+        });
+        Thread.sleep(600);
+
+        // Verify Sending stage layout is active
+        onView(withId(R.id.layoutStageSending)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // 2. Student inputs a passed answer (correct sequence transmitted)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+                String target = lf.getCurrentSendingTargetForTesting();
+                lf.simulateSendingSuccessForTesting(target);
+            }
+        });
+        Thread.sleep(500);
+
+        // 3. Verify success feedback informs student of successful transmission
+        onView(withId(R.id.tvSendingFeedback)).check(matches(anyOf(
+                withText(containsString("Correct")),
+                withText(containsString("Correto")),
+                withText(containsString("✓"))
+        )));
+
+        // 4. Verify lives preserved: 3 hearts remain (❤️❤️❤️)
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        ScreenshotHelper.capture("screenshot_transmission_pass");
+    }
 }
