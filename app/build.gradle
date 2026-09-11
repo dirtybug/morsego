@@ -10,8 +10,29 @@ android {
         applicationId "com.morsego.app"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0.0"
+        def appVersionName = project.hasProperty('versionName') ? project.property('versionName').toString() : (System.getenv("APP_VERSION_NAME") ?: "1.0.0")
+        if (appVersionName.startsWith("v")) {
+            appVersionName = appVersionName.substring(1)
+        }
+
+        def defaultCode = 1
+        try {
+            def parts = appVersionName.split('\\.')
+            if (parts.length >= 3) {
+                defaultCode = (parts[0].toInteger() * 10000) + (parts[1].toInteger() * 100) + parts[2].toInteger()
+            } else if (parts.length == 2) {
+                defaultCode = (parts[0].toInteger() * 10000) + (parts[1].toInteger() * 100)
+            } else if (parts.length == 1 && parts[0].isInteger()) {
+                defaultCode = parts[0].toInteger()
+            }
+        } catch (Exception ignored) {
+            defaultCode = 1
+        }
+
+        def appVersionCode = project.hasProperty('versionCode') ? project.property('versionCode').toString().toInteger() : (System.getenv("APP_VERSION_CODE") ? System.getenv("APP_VERSION_CODE").toInteger() : defaultCode)
+
+        versionCode appVersionCode
+        versionName appVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

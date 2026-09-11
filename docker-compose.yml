@@ -20,6 +20,9 @@ services:
       dockerfile: Dockerfile
     image: morsego-test:latest
     container_name: morsego-build
+    environment:
+      - APP_VERSION_NAME
+      - APP_VERSION_CODE
     volumes:
       - .:/workspace
       - gradle-cache:/root/.gradle
@@ -32,6 +35,9 @@ services:
       dockerfile: Dockerfile
     image: morsego-test:latest
     container_name: morsego-release
+    environment:
+      - APP_VERSION_NAME
+      - APP_VERSION_CODE
     volumes:
       - .:/workspace
       - gradle-cache:/root/.gradle
@@ -58,6 +64,9 @@ services:
       dockerfile: Dockerfile
     image: morsego-test:latest
     container_name: morsego-all-tests
+    environment:
+      - APP_VERSION_NAME
+      - APP_VERSION_CODE
     volumes:
       - .:/workspace
       - gradle-cache:/root/.gradle

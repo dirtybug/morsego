@@ -27,16 +27,16 @@ case "$ACTION" in
         ;;
 
     build|assemble)
-        echo ">>> Building Debug and AndroidTest APKs..."
-        ./gradlew assembleDebug assembleDebugAndroidTest --info
+        echo ">>> Building Debug and AndroidTest APKs (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
+        ./gradlew assembleDebug assembleDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
         mkdir -p /workspace/build-apks
         find app/build/outputs/apk -name "*.apk" -exec cp {} /workspace/build-apks/ \; 2>/dev/null || true
         echo "✓ APKs built and saved to build-apks/"
         ;;
 
     release)
-        echo ">>> Building Release APK for Google Play Store..."
-        ./gradlew assembleRelease --info
+        echo ">>> Building Release APK for Google Play Store (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
+        ./gradlew assembleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
         mkdir -p /workspace/build-apks
         find app/build/outputs/apk/release -name "*.apk" -exec cp {} /workspace/build-apks/morseGO-release.apk \; 2>/dev/null || true
         echo "✓ Release APK saved to build-apks/morseGO-release.apk"
