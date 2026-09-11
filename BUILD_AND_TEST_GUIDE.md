@@ -233,35 +233,21 @@ After running builds and tests, the following directory layout is produced:
 
 ```
 morseGo/
-├── build-apks/                      # Output APK binaries (via Docker)
-│   ├── morseGO-debug.apk           # Debug testing APK
-│   └── morseGO-release.apk         # Production Release APK
-│
-├── reports/                         # Test execution reports
-│   ├── unit-tests/                 # 79 Unit tests report
-│   │   ├── index.html              # Main HTML test dashboard
-│   │   └── com.morsego.app.*.html  # Class-by-class results
-│   ├── instrumented/               # 49 Instrumented tests report
-│   │   └── index.html              # Connected device test results
-│   └── lint/                       # Android lint code quality reports
-│
-├── screenshots/                     # Visual proof screenshots
-│   ├── behavior_test_01.jpg        # Tree traversal screenshots
-│   ├── behavior_test_48.jpg        # Word transmission success (CQ, 73)
-│   └── behavior_test_49.jpg        # Timing failure test case
-│
-├── releases/                        # CI/CD Versioned release catalogs
-│   └── v1.0.0/                     # Version folder
-│       ├── morseGO-v1.0.0-release.apk
-│       ├── morseGO-v1.0.0-debug.apk
-│       ├── SHA256SUMS.txt
-│       └── release-manifest.json
-│
-└── tests/                           # CI/CD Versioned test suites
-    └── v1.0.0/
-        ├── index.html              # Test report archive
-        ├── test-summary.json       # Machine-readable metrics
-        └── morseGO-test-suite-v1.0.0.zip
+└── release/                         # Single consolidated release directory
+    └── v1.0.0/                      # Version folder
+        ├── morseGO-v1.0.0-release.apk   # Production Release APK (for Google Play Store)
+        ├── morseGO-v1.0.0-debug.apk     # Debug testing APK
+        ├── reports/                     # Test execution reports
+        │   ├── index.html               # Main HTML test dashboard
+        │   ├── unit-tests/              # 79 Unit tests report
+        │   └── instrumented/            # 49 Instrumented tests report
+        ├── screenshots/                 # Visual proof screenshots (49 tests)
+        │   ├── behavior_test_01.jpg     # Tree traversal screenshots
+        │   ├── behavior_test_48.jpg     # Word transmission success (CQ, 73)
+        │   └── behavior_test_49.jpg     # Timing failure test case
+        ├── SHA256SUMS.txt               # Cryptographic hashes
+        ├── release-manifest.json        # Machine-readable release & Store metadata
+        └── test-summary.json            # Machine-readable test metrics
 ```
 
 ---

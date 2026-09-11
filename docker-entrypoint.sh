@@ -5,8 +5,14 @@ echo "====================================================="
 echo "               MorseGO Test Runner                   "
 echo "====================================================="
 
-mkdir -p /workspace/reports
-mkdir -p /workspace/screenshots
+VERSION_TAG="${APP_VERSION_NAME:-1.0.0}"
+if [[ "$VERSION_TAG" != v* ]]; then
+    VERSION_TAG="v${VERSION_TAG}"
+fi
+RELEASE_DIR="/workspace/release/${VERSION_TAG}"
+mkdir -p "$RELEASE_DIR/reports/unit-tests"
+mkdir -p "$RELEASE_DIR/reports/instrumented"
+mkdir -p "$RELEASE_DIR/screenshots"
 
 ACTION="${1:-unit}"
 
@@ -15,13 +21,13 @@ export GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx2048m -
 case "$ACTION" in
     unit|test)
         echo ">>> Running Unit Tests (com.morsego.app: MorseBinaryTree, MorseTiming, MorseWordGenerator)..."
-        ./gradlew test --info --stacktrace
+        ./gradlew test -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info --stacktrace
         echo ""
-        echo ">>> Copying unit test reports to /workspace/reports/unit-tests..."
-        mkdir -p /workspace/reports/unit-tests
+        echo ">>> Copying unit test reports to $RELEASE_DIR/reports/unit-tests..."
         if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
-            cp -r app/build/reports/tests/testDebugUnitTest/* /workspace/reports/unit-tests/
-            echo "✓ Unit test report saved to reports/unit-tests/index.html"
+            cp -r app/build/reports/tests/testDebugUnitTest/* "$RELEASE_DIR/reports/unit-tests/"
+            cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
+            echo "✓ Unit test report saved to release/${VERSION_TAG}/reports/index.html"
         fi
         echo "✓ All unit tests passed successfully!"
         ;;
@@ -29,26 +35,25 @@ case "$ACTION" in
     build|assemble)
         echo ">>> Building Debug and AndroidTest APKs (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
         ./gradlew assembleDebug assembleDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
-        mkdir -p /workspace/build-apks
-        find app/build/outputs/apk -name "*.apk" -exec cp {} /workspace/build-apks/ \; 2>/dev/null || true
-        echo "✓ APKs built and saved to build-apks/"
+        find app/build/outputs/apk/debug -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-${VERSION_TAG}-debug.apk" \; 2>/dev/null || true
+        echo "✓ Debug APK saved to release/${VERSION_TAG}/morseGO-${VERSION_TAG}-debug.apk"
         ;;
 
     release)
         echo ">>> Building Release APK for Google Play Store (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
         ./gradlew assembleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
-        mkdir -p /workspace/build-apks
-        find app/build/outputs/apk/release -name "*.apk" -exec cp {} /workspace/build-apks/morseGO-release.apk \; 2>/dev/null || true
-        echo "✓ Release APK saved to build-apks/morseGO-release.apk"
+        find app/build/outputs/apk/release -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-${VERSION_TAG}-release.apk" \; 2>/dev/null || true
+        (cd "$RELEASE_DIR" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
+        echo "✓ Release APK saved to release/${VERSION_TAG}/morseGO-${VERSION_TAG}-release.apk"
         ;;
 
     lint)
         echo ">>> Running Android Lint..."
         ./gradlew lintDebug || true
-        mkdir -p /workspace/reports/lint
+        mkdir -p "$RELEASE_DIR/reports/lint"
         if [ -d "app/build/reports" ]; then
-            find app/build/reports -name "lint-results*" -exec cp {} /workspace/reports/lint/ \; 2>/dev/null || true
-            echo "✓ Lint reports saved to reports/lint/"
+            find app/build/reports -name "lint-results*" -exec cp {} "$RELEASE_DIR/reports/lint/" \; 2>/dev/null || true
+            echo "✓ Lint reports saved to release/${VERSION_TAG}/reports/lint/"
         fi
         ;;
 
@@ -72,31 +77,30 @@ case "$ACTION" in
         fi
 
         echo ">>> Running Connected Android Instrumented Tests (Behavior, Radio Words, Screenshots)..."
-        ./gradlew connectedDebugAndroidTest --info
+        ./gradlew connectedDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
 
         echo ">>> Collecting behavior test screenshots from device..."
         # Pull screenshots saved by ScreenshotHelper in /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/
-        adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots /workspace/screenshots/ 2>/dev/null || true
+        adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "$RELEASE_DIR/screenshots/" 2>/dev/null || true
 
-        mkdir -p /workspace/reports/instrumented
         if [ -d "app/build/reports/androidTests/connected" ]; then
-            cp -r app/build/reports/androidTests/connected/* /workspace/reports/instrumented/
-            echo "✓ Instrumented test report saved to reports/instrumented/index.html"
+            cp -r app/build/reports/androidTests/connected/* "$RELEASE_DIR/reports/instrumented/"
+            echo "✓ Instrumented test report saved to release/${VERSION_TAG}/reports/instrumented/index.html"
         fi
         ;;
 
     all)
-        echo ">>> Running Full Test Suite (Unit Tests + Build + Lint)..."
+        echo ">>> Running Full Test Suite (Unit Tests + Build + Release)..."
         $0 unit
         $0 build
-        $0 lint
+        $0 release
         DEVICE_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l)
         if [ "$DEVICE_COUNT" -gt 0 ]; then
             $0 connected
         else
             echo "ℹ️ Note: Skipping connected tests because no ADB device is connected."
         fi
-        echo "✓ Full suite finished!"
+        echo "✓ Full suite finished! All artifacts saved to release/${VERSION_TAG}/"
         ;;
 
     *)

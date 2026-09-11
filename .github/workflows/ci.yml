@@ -89,9 +89,9 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
           script: |
             ./gradlew connectedDebugAndroidTest -PversionName="${{ env.APP_VERSION_NAME }}" -PversionCode="${{ env.APP_VERSION_CODE }}" --info --stacktrace
-            # Pull screenshots captured on emulator during behavior tests
-            mkdir -p reports/screenshots/device_runs
-            adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. reports/screenshots/device_runs/ 2>/dev/null || true
+            # Pull screenshots captured on emulator during behavior tests directly to release folder
+            mkdir -p "release/${{ env.VERSION }}/screenshots"
+            adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "release/${{ env.VERSION }}/screenshots/" 2>/dev/null || true
 
       - name: Build Docker Container & Run Tests in Docker
         run: |
@@ -106,37 +106,41 @@ jobs:
           echo ">>> Building Debug APK in Docker..."
           APP_VERSION_NAME="${{ env.APP_VERSION_NAME }}" APP_VERSION_CODE="${{ env.APP_VERSION_CODE }}" docker compose run --rm build-apk
 
-      - name: Organize Versioned Releases and Tests
+      - name: Organize Consolidated Release Package
         run: |
           VERSION="${{ env.VERSION }}"
-          echo "Processing Release & Test artifacts for Version: ${VERSION}"
+          echo "Organizing consolidated release for Version: ${VERSION}"
           echo "Android Store Version Name: ${{ env.APP_VERSION_NAME }}, Code: ${{ env.APP_VERSION_CODE }}"
 
-          # 1. Create version-specific folders
-          mkdir -p "releases/${VERSION}"
-          mkdir -p "tests/${VERSION}/unit-tests"
-          mkdir -p "tests/${VERSION}/behavior-tests"
-          mkdir -p "tests/${VERSION}/screenshots"
-          mkdir -p "release-artifacts/playstore"
+          RELEASE_DIR="release/${VERSION}"
+          mkdir -p "${RELEASE_DIR}/reports/unit-tests"
+          mkdir -p "${RELEASE_DIR}/reports/behavior-tests"
+          mkdir -p "${RELEASE_DIR}/screenshots"
 
-          # 2. Copy APKs to versioned release folder
-          if [ -f "build-apks/morseGO-release.apk" ]; then
-            cp "build-apks/morseGO-release.apk" "releases/${VERSION}/morseGO-${VERSION}-release.apk"
-          elif [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
-            cp "app/build/outputs/apk/release/app-release-unsigned.apk" "releases/${VERSION}/morseGO-${VERSION}-release.apk"
+          # 1. Ensure APKs are in the release folder
+          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ ! -f "${RELEASE_DIR}/morseGO-${VERSION}-release.apk" ]; then
+            cp "app/build/outputs/apk/release/app-release-unsigned.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
           fi
 
-          if [ -f "build-apks/morseGO-debug.apk" ]; then
-            cp "build-apks/morseGO-debug.apk" "releases/${VERSION}/morseGO-${VERSION}-debug.apk"
-          elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
-            cp "app/build/outputs/apk/debug/app-debug.apk" "releases/${VERSION}/morseGO-${VERSION}-debug.apk"
+          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ] && [ ! -f "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk" ]; then
+            cp "app/build/outputs/apk/debug/app-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
           fi
 
-          # Generate SHA256 checksums
-          (cd "releases/${VERSION}" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
+          # 2. Copy test reports into release/reports
+          if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
+            cp -r app/build/reports/tests/testDebugUnitTest/* "${RELEASE_DIR}/reports/unit-tests/"
+            cp "${RELEASE_DIR}/reports/unit-tests/index.html" "${RELEASE_DIR}/reports/index.html" 2>/dev/null || true
+          fi
 
-          # Create release manifest with Android Store metadata
-          cat <<EOF > "releases/${VERSION}/release-manifest.json"
+          if [ -d "app/build/reports/androidTests/connected" ]; then
+            cp -r app/build/reports/androidTests/connected/* "${RELEASE_DIR}/reports/behavior-tests/"
+          fi
+
+          # 3. Generate SHA256 checksums
+          (cd "${RELEASE_DIR}" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
+
+          # 4. Create release manifest with Android Store metadata
+          cat <<EOF > "${RELEASE_DIR}/release-manifest.json"
           {
             "version": "${VERSION}",
             "androidStore": {
@@ -149,29 +153,14 @@ jobs:
               "releaseApk": "morseGO-${VERSION}-release.apk",
               "debugApk": "morseGO-${VERSION}-debug.apk",
               "checksums": "SHA256SUMS.txt"
-            }
+            },
+            "reports": "reports/index.html",
+            "screenshots": "screenshots/"
           }
           EOF
 
-          # 4. Copy test reports into versioned test folder
-          if [ -f "reports/unit-tests/index.html" ]; then
-            cp "reports/unit-tests/index.html" "tests/${VERSION}/index.html"
-          fi
-
-          if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
-            cp -r app/build/reports/tests/testDebugUnitTest/* "tests/${VERSION}/unit-tests/"
-          fi
-
-          if [ -d "app/build/reports/androidTests/connected" ]; then
-            cp -r app/build/reports/androidTests/connected/* "tests/${VERSION}/behavior-tests/"
-          fi
-
-          if [ -d "reports/screenshots" ]; then
-            cp -r reports/screenshots/* "tests/${VERSION}/screenshots/"
-          fi
-
-          # Create test summary JSON
-          cat <<EOF > "tests/${VERSION}/test-summary.json"
+          # 5. Create test summary JSON
+          cat <<EOF > "${RELEASE_DIR}/test-summary.json"
           {
             "version": "${VERSION}",
             "androidStore": {
@@ -186,44 +175,23 @@ jobs:
           }
           EOF
 
-          # Package zipped test bundle
-          (cd "tests/${VERSION}" && zip -r "morseGO-test-suite-${VERSION}.zip" . -x "*.zip" 2>/dev/null || true)
+          # 6. Remove any legacy root folders if created
+          rm -rf reports tests releases build-apks screenshots
 
-          # 5. Copy Play Store assets
-          if [ -d "docs/playstore" ]; then
-            cp -r docs/playstore/* "release-artifacts/playstore/"
-          fi
+          echo "=== CONSOLIDATED RELEASE FOLDER: ${RELEASE_DIR} ==="
+          ls -lh "${RELEASE_DIR}/"
+          ls -lh "${RELEASE_DIR}/reports/"
+          ls -lh "${RELEASE_DIR}/screenshots/"
 
-          echo "=== RELEASE FOLDER: releases/${VERSION} ==="
-          ls -lh "releases/${VERSION}/"
-          echo "=== TESTS FOLDER: tests/${VERSION} ==="
-          ls -lh "tests/${VERSION}/"
-
-      - name: Upload Versioned Releases Artifact
+      - name: Upload Consolidated Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morseGO-releases-${{ env.VERSION }}
-          path: releases/${{ env.VERSION }}/*
+          name: morseGO-release-${{ env.VERSION }}
+          path: release/${{ env.VERSION }}/**
           retention-days: 60
           if-no-files-found: error
 
-      - name: Upload Versioned Tests Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: morseGO-tests-${{ env.VERSION }}
-          path: tests/${{ env.VERSION }}/*
-          retention-days: 60
-          if-no-files-found: error
-
-      - name: Upload Play Store Assets Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: morseGO-playstore-assets
-          path: release-artifacts/playstore/
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Create GitHub Release with Versioned Folders (on Tag push)
+      - name: Create GitHub Release (on Tag push)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
@@ -236,8 +204,7 @@ jobs:
             - **Git Commit:** `${{ github.sha }}`
             - **Test Suite Status:** 100% Passed (79 Unit Tests + 49 Behavior Tests)
           files: |
-            releases/${{ env.VERSION }}/*
-            tests/${{ env.VERSION }}/morseGO-test-suite-${{ env.VERSION }}.zip
+            release/${{ env.VERSION }}/**
           generate_release_notes: true
           draft: false
           prerelease: false
