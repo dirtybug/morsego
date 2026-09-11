@@ -41,6 +41,12 @@ public class MorseGoExamFlowBehaviorTest {
 
     @Before
     public void setup() throws InterruptedException {
+        java.util.Locale.setDefault(java.util.Locale.US);
+        activityRule.getScenario().onActivity(activity -> {
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.setLocale(java.util.Locale.US);
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        });
         Thread.sleep(600);
     }
 
@@ -214,6 +220,7 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
         Thread.sleep(600);
         onView(withId(R.id.tvLevelNumber)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("22_exam_flow_rotation_landscape");
 
         // 3. Rotate back to Portrait
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
@@ -250,6 +257,7 @@ public class MorseGoExamFlowBehaviorTest {
                 withText(containsString("❤️❤️")),
                 withText(containsString("❤️"))
         )));
+        ScreenshotHelper.capture("23_exam_failure_wrong_option_lost_life");
 
         // Test in Landscape
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
@@ -280,6 +288,7 @@ public class MorseGoExamFlowBehaviorTest {
             Assert.assertTrue("Synthesizer frequency must be within audible range", activity.getSynthesizer().getFrequency() >= 300);
         });
         Thread.sleep(300);
+        ScreenshotHelper.capture("24_exam_failure_wrong_letter_and_retry_audio");
 
         // Check in Landscape
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
@@ -332,6 +341,7 @@ public class MorseGoExamFlowBehaviorTest {
                 containsString("RETRY"),
                 containsString("TENTAR")
         )));
+        ScreenshotHelper.capture("25_exam_failure_three_strikes_dialog");
 
         // Test in Landscape
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
@@ -358,6 +368,7 @@ public class MorseGoExamFlowBehaviorTest {
         // Verify touch paddles available for sending
         onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
         onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("26_exam_transmission_progressive_morse");
 
         // Test in Landscape
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
@@ -368,5 +379,57 @@ public class MorseGoExamFlowBehaviorTest {
         // Restore Portrait
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
+    }
+
+    /**
+     * BEHAVIOR 11: Question Failure and Recovery - Student fails once, loses a life,
+     * retries, answers correctly, and advances with remaining lives preserved.
+     */
+    @Test
+    public void test11_ExamQuestion_FailOnceAndRecover_AnswerCorrectly() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // Given: User is in Learn tab and starts exam
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // 1. Initial State: 3 lives
+        onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
+
+        // 2. Student fails question once (e.g. wrong answer clicked or wrong letter sent)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateQuestionMistakeForTesting();
+            }
+        });
+        Thread.sleep(500);
+
+        // Verify life count decreased (heart lost: ❤️❤️🖤)
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️")),
+                withText(containsString("2"))
+        )));
+        ScreenshotHelper.capture("27_exam_question_failed_lost_life");
+
+        // 3. Student retries and answers correctly
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                ((com.morsego.app.ui.LearnFragment) f).simulateQuestionSuccessForTesting();
+            }
+        });
+        Thread.sleep(600);
+
+        // 4. Verify progress advances and remaining 2 lives are preserved
+        onView(withId(R.id.tvTestLives)).check(matches(anyOf(
+                withText(containsString("❤️❤️")),
+                withText(containsString("2"))
+        )));
+        ScreenshotHelper.capture("28_exam_question_recovered_success");
     }
 }

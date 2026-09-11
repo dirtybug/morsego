@@ -35,6 +35,12 @@ public class MorseGoBehaviorScreenshotsTest {
 
     @Before
     public void setup() throws InterruptedException {
+        java.util.Locale.setDefault(java.util.Locale.US);
+        activityRule.getScenario().onActivity(activity -> {
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.setLocale(java.util.Locale.US);
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        });
         Thread.sleep(600); // Allow initial fragment inflation and layout
     }
 

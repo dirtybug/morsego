@@ -44,6 +44,12 @@ public class MorseGoUnderMAndNBehaviorTest {
 
     @Before
     public void setup() throws InterruptedException {
+        java.util.Locale.setDefault(java.util.Locale.US);
+        activityRule.getScenario().onActivity(activity -> {
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.setLocale(java.util.Locale.US);
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        });
         Thread.sleep(500);
         onView(withId(R.id.nav_tree)).perform(click());
         Thread.sleep(400);
@@ -174,6 +180,7 @@ public class MorseGoUnderMAndNBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
         Thread.sleep(600);
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("step_under_m_and_n_landscape_rotation");
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         MorseTreeNode nodeM = tree.findNodeByCharacter("M");

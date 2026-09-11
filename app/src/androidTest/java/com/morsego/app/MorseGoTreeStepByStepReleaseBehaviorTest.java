@@ -37,7 +37,13 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
 
     @Before
     public void setUp() {
+        java.util.Locale.setDefault(java.util.Locale.US);
         scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.onActivity(activity -> {
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.setLocale(java.util.Locale.US);
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        });
     }
 
     private void updateLevelOnUI(int level) throws InterruptedException {
@@ -225,6 +231,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
         // Verify tree view and state remain active and displayed in landscape
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
         onView(withId(R.id.tvTreeLevelTitle)).check(matches(containsString("11")));
+        ScreenshotHelper.capture("step09_tree_landscape_rotation");
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         MorseTreeNode nodeD = tree.getRoot().getDahChild().getDitChild().getDitChild();

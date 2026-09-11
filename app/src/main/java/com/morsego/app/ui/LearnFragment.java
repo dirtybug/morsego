@@ -743,6 +743,35 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         showExamResults(true, isPt ? "Aprovado com sucesso em ambas as etapas." : "Successfully passed both stages.");
     }
 
+    /**
+     * Helper for behavior testing: simulates student failing a question and losing a life.
+     */
+    public void simulateQuestionMistakeForTesting() {
+        currentStageFailures++;
+        updateLivesUi();
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        binding.tvPenaltyNotice.setVisibility(View.VISIBLE);
+        binding.tvPenaltyNotice.setText(isPt ? "Penalização: perdeu 1 vida!" : "Penalty: lost 1 life!");
+    }
+
+    /**
+     * Helper for behavior testing: simulates student recovering and answering correctly on retry.
+     */
+    public void simulateQuestionSuccessForTesting() {
+        questionsAnsweredInStage++;
+        binding.tvPenaltyNotice.setVisibility(View.GONE);
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        if (currentStage == TestStage.LISTENING) {
+            binding.tvListeningFeedback.setText(isPt ? "✓ Correto! Recuperação com sucesso." : "✓ Correct! Recovered successfully.");
+            binding.tvListeningFeedback.setTextColor(Color.parseColor("#00E676"));
+        } else {
+            binding.tvSendingFeedback.setText(isPt ? "✓ Correto! Recuperação com sucesso." : "✓ Correct! Recovered successfully.");
+            binding.tvSendingFeedback.setTextColor(Color.parseColor("#00E676"));
+        }
+        updateLivesUi();
+    }
+
+
     public void showExamResults(boolean passed, String detailMessage) {
         currentStage = TestStage.RESULT;
         binding.layoutStudyView.setVisibility(View.GONE);

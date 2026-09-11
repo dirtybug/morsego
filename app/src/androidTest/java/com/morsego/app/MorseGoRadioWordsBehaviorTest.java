@@ -52,6 +52,12 @@ public class MorseGoRadioWordsBehaviorTest {
 
     @Before
     public void setup() throws InterruptedException {
+        java.util.Locale.setDefault(java.util.Locale.US);
+        activityRule.getScenario().onActivity(activity -> {
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.setLocale(java.util.Locale.US);
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        });
         Thread.sleep(600);
     }
 
@@ -329,6 +335,7 @@ public class MorseGoRadioWordsBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
         Thread.sleep(600);
         onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("10_radio_words_orientation_landscape");
 
         // 3. Restore Portrait
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
