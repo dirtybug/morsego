@@ -15,4 +15,6 @@
 local.properties
 app/build/
 scratch/
-
+build-apks/
+*.apk
+*.aab

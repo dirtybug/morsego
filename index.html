@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MorseGO • Central Hub - Releases &amp; Test Reports</title>
+    <style>
+        :root {
+            --bg-primary: #0D1117;
+            --bg-secondary: #161B22;
+            --bg-card: #131B2A;
+            --border-subtle: #26354D;
+            --border-highlight: #30363D;
+            --text-main: #E6EDF3;
+            --text-secondary: #8B949E;
+            --accent-green: #00E676;
+            --accent-green-bg: rgba(0, 230, 118, 0.12);
+            --accent-amber: #FFB300;
+            --accent-amber-bg: rgba(255, 179, 0, 0.12);
+            --accent-blue: #2979FF;
+            --accent-blue-bg: rgba(41, 121, 255, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        /* Top Header */
+        header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-title {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: var(--accent-green);
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .badges-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+
+        .badge-green {
+            background: var(--accent-green-bg);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .badge-blue {
+            background: var(--accent-blue-bg);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .badge-amber {
+            background: var(--accent-amber-bg);
+            border-color: var(--accent-amber);
+            color: var(--accent-amber);
+        }
+
+        /* Notice Banner */
+        .ci-notice {
+            background: linear-gradient(90deg, rgba(41, 121, 255, 0.15), rgba(0, 230, 118, 0.15));
+            border: 1px solid var(--accent-blue);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ci-notice-icon {
+            font-size: 26px;
+        }
+
+        .ci-notice-text {
+            font-size: 13px;
+            color: #C9D1D9;
+        }
+
+        .ci-notice-text strong {
+            color: #FFF;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-green);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: #05080E;
+        }
+
+        .btn-primary:hover {
+            background: #00C853;
+        }
+
+        .btn-secondary {
+            background: #1C2638;
+            border: 1px solid var(--border-subtle);
+            color: #E6EDF3;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #FFF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table */
+        .table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #182236;
+            color: #8B949E;
+            padding: 14px 18px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #1C2638;
+            color: #C9D1D9;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tag-pill {
+            display: inline-block;
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--accent-green);
+            background: var(--accent-green-bg);
+            border: 1px solid var(--accent-green);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <div class="brand-box">
+            <svg width="44" height="44" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="48" fill="#101826" stroke="#00E676" stroke-width="2.5" />
+                <path d="M 32,16 C 42,10 58,10 68,16" stroke="#2979FF" stroke-width="2" stroke-linecap="round" fill="none" />
+                <path d="M 38,20 C 45,16 55,16 62,20" stroke="#00E676" stroke-width="1.8" stroke-linecap="round" fill="none" />
+                <path d="M 50,28 C 47,28 45,30 44,32 L 40,20 L 36,33 C 28,34 18,29 8,24 C 11,34 16,48 26,54 C 22,57 14,60 4,58 C 10,68 22,72 34,68 C 31,73 26,78 18,82 C 28,84 40,76 46,64 L 50,70 L 54,64 C 60,76 72,84 82,82 C 74,78 69,73 66,68 C 78,72 90,68 96,58 C 86,60 78,57 74,54 C 84,48 89,34 92,24 C 82,29 72,34 64,33 L 60,20 L 56,32 C 55,30 53,28 50,28 Z" fill="#000000" stroke="#384968" stroke-width="1.2" />
+                <circle cx="46" cy="38" r="2.5" fill="#FFB300" />
+                <circle cx="54" cy="38" r="2.5" fill="#FFB300" />
+                <!-- Left Wing: DOT • (Dit) -->
+                <circle cx="27" cy="45" r="4.8" fill="#00E676" stroke="#FFFFFF" stroke-width="1.0" />
+                <!-- Right Wing: DASH — (Dah) -->
+                <rect x="62" y="42" width="15" height="6" rx="3" fill="#00E676" stroke="#FFFFFF" stroke-width="1.0" />
+            </svg>
+            <div>
+                <div class="brand-title">MorseGO</div>
+                <div class="brand-subtitle">Telegrafia CW • Método da Árvore Binária &amp; Cadência PARIS 20 WPM</div>
+            </div>
+        </div>
+        <div class="badges-row">
+            <span class="badge badge-green">✓ 128 Testes (100% Cobertura)</span>
+            <span class="badge badge-blue">⚙️ CI/CD Docker Ativo</span>
+            <span class="badge badge-amber">🏷️ Versão v1.0.0</span>
+        </div>
+    </header>
+
+    <!-- CI/CD Note -->
+    <div class="ci-notice">
+        <div class="ci-notice-icon">🤖</div>
+        <div class="ci-notice-text">
+            <strong>Automação de CI/CD pelo GitHub Actions:</strong> Os ficheiros de release APK e pacotes de testes são gerados e validados automaticamente nos servidores do GitHub com cada <code>push</code> de <code>tag</code> (ex: <code>git tag v1.0.0 &amp;&amp; git push --tags</code>), garantindo 100% de reproducibilidade em containers Docker.
+        </div>
+    </div>
+
+    <!-- Quick Links Cards -->
+    <div class="cards-grid">
+        
+        <!-- Card 1: Test Reports -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-icon">📊</span>
+                    <h2 class="card-title">Relatório de Testes</h2>
+                </div>
+                <p class="card-desc">
+                    Aceda ao dashboard interativo com os <strong>79 testes unitários da JVM</strong> (organizados por ficheiro de código) e os <strong>49 testes de comportamento Android</strong> com capturas de ecrã completas.
+                </p>
+            </div>
+            <div class="card-actions">
+                <a href="reports/unit-tests/index.html" class="btn btn-primary" target="_blank">
+                    <span>Abrir Relatório Interativo</span> ↗
+                </a>
+                <a href="tests/v1.0.0/index.html" class="btn btn-secondary">
+                    <span>Ver Relatório da v1.0.0</span> →
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 2: Releases & CI -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-icon">🚀</span>
+                    <h2 class="card-title">Releases do CI (GitHub)</h2>
+                </div>
+                <p class="card-desc">
+                    Consulte o catálogo histórico de versões, notas de lançamento, manifests JSON e faça download dos APKs compilados pelo pipeline do GitHub Actions.
+                </p>
+            </div>
+            <div class="card-actions">
+                <a href="releases/RELEASES.md" class="btn btn-primary">
+                    <span>Catálogo de Releases (RELEASES.md)</span> →
+                </a>
+                <a href="releases/v1.0.0/release-manifest.json" class="btn btn-secondary" target="_blank">
+                    <span>Manifesto JSON v1.0.0</span> ↗
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 3: Google Play Store -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-icon">🛒</span>
+                    <h2 class="card-title">Google Play Store</h2>
+                </div>
+                <p class="card-desc">
+                    Consulte as diretrizes e recursos de marketing oficiais: ícone 512×512, gráfico promocional 1024×500, 7 capturas de ecrã para telemóvel e metadados aprovados.
+                </p>
+            </div>
+            <div class="card-actions">
+                <a href="docs/PLAYSTORE_ASSETS_GUIDE.md" class="btn btn-primary">
+                    <span>Guia de Publicação Play Store</span> →
+                </a>
+                <a href="docs/playstore/screenshots/playstore_screen_1_binary_tree.png" class="btn btn-secondary" target="_blank">
+                    <span>Ver Capturas de Ecrã</span> ↗
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Releases Table -->
+    <div class="section-title">
+        <span>📦</span> Histórico de Releases &amp; Testes (Criados pelo CI)
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Versão (Tag)</th>
+                    <th>Data</th>
+                    <th>Ambiente de Build</th>
+                    <th>Suite de Testes</th>
+                    <th>Ficheiros de Release</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="tag-pill">v1.0.0</span></td>
+                    <td>2026-09-11</td>
+                    <td>Docker (JDK 17 + Android SDK 34)</td>
+                    <td>
+                        <a href="tests/v1.0.0/index.html" style="color: var(--accent-blue); font-weight: 700; text-decoration: none;">
+                            79 Unit + 49 Behavior (100%)
+                        </a>
+                    </td>
+                    <td>
+                        <code>morseGO-v1.0.0-release.apk</code><br>
+                        <code>morseGO-v1.0.0-debug.apk</code><br>
+                        <code>SHA256SUMS.txt</code>
+                    </td>
+                    <td>
+                        <span class="status-pill">
+                            <span>●</span> Produzido no CI
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            MorseGO • Telegrafia CW de Alta Precisão • Código Aberto
+        </div>
+        <div>
+            <a href="releases/RELEASES.md">Releases</a> • 
+            <a href="reports/unit-tests/index.html">Relatório de Testes</a> • 
+            <a href="docs/PLAYSTORE_ASSETS_GUIDE.md">Google Play Store</a> • 
+            <a href=".github/workflows/ci.yml">Workflow CI/CD</a>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>
