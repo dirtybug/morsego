@@ -29,9 +29,31 @@ public class ScreenshotHelper {
 
         // Try capturing via UiAutomation (captures full system-rendered screen)
         try {
-            bitmap = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+            if (InstrumentationRegistry.getInstrumentation().getUiAutomation() != null) {
+                bitmap = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+            }
         } catch (Exception e) {
             Log.w(TAG, "UiAutomation.takeScreenshot failed: " + e.getMessage());
+        }
+
+        // Fallback to active activity decor view if UiAutomation returned null
+        if (bitmap == null) {
+            try {
+                final Activity[] activeActivity = new Activity[1];
+                InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                    java.util.Collection<Activity> activities =
+                            androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                                    .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED);
+                    if (!activities.isEmpty()) {
+                        activeActivity[0] = activities.iterator().next();
+                    }
+                });
+                if (activeActivity[0] != null) {
+                    return captureActivityView(activeActivity[0], name);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Activity fallback failed: " + e.getMessage());
+            }
         }
 
         if (bitmap == null) {
@@ -56,7 +78,12 @@ public class ScreenshotHelper {
             fos.flush();
             fos.close();
 
-            Log.i(TAG, "SCREENSHOT CAPTURED: " + outputFile.getAbsolutePath());
+            // Verify the screenshot file was successfully created on disk and has content
+            if (!outputFile.exists() || outputFile.length() == 0) {
+                throw new IllegalStateException("Screenshot file was not generated: " + outputFile.getAbsolutePath());
+            }
+
+            Log.i(TAG, "SCREENSHOT CAPTURED AND VERIFIED (" + outputFile.length() + " bytes): " + outputFile.getAbsolutePath());
         } catch (Exception e) {
             Log.e(TAG, "Error saving screenshot: " + e.getMessage(), e);
         }
@@ -99,7 +126,12 @@ public class ScreenshotHelper {
             fos.flush();
             fos.close();
 
-            Log.i(TAG, "SCREENSHOT (VIEW) CAPTURED: " + outputFile.getAbsolutePath());
+            // Verify the screenshot file was successfully created on disk and has content
+            if (!outputFile.exists() || outputFile.length() == 0) {
+                throw new IllegalStateException("View screenshot file was not generated: " + outputFile.getAbsolutePath());
+            }
+
+            Log.i(TAG, "SCREENSHOT (VIEW) CAPTURED AND VERIFIED (" + outputFile.length() + " bytes): " + outputFile.getAbsolutePath());
             return outputFile;
         } catch (Exception e) {
             Log.e(TAG, "Error saving view screenshot: " + e.getMessage(), e);

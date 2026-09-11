@@ -89,7 +89,11 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         testOptionButtons.add(binding.btnTestOpt4);
 
         for (Button btn : testOptionButtons) {
-            btn.setOnClickListener(v -> handleListeningOptionClicked(btn.getText().toString()));
+            btn.setOnClickListener(v -> {
+                Object tag = btn.getTag();
+                String val = (tag instanceof String) ? (String) tag : btn.getText().toString();
+                handleListeningOptionClicked(val);
+            });
         }
 
         binding.btnPrevLevel.setOnClickListener(v -> {
@@ -348,9 +352,12 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         for (int i = 0; i < testOptionButtons.size(); i++) {
             Button btn = testOptionButtons.get(i);
             if (i < options.size()) {
+                String opt = options.get(i);
                 btn.setVisibility(View.VISIBLE);
-                btn.setText(options.get(i));
+                btn.setTag(opt);
+                btn.setText(opt);
                 btn.setBackgroundColor(Color.parseColor("#21262D"));
+                btn.setTextColor(Color.WHITE);
                 btn.setEnabled(true);
             } else {
                 btn.setVisibility(View.GONE);
@@ -358,6 +365,21 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         }
 
         playCurrentListeningAudio();
+    }
+
+    private String formatOptionWithMorse(String text) {
+        if (text == null) return "";
+        StringBuilder sb = new StringBuilder(text);
+        sb.append("  [ ");
+        for (int i = 0; i < text.length(); i++) {
+            if (i > 0) sb.append(" ");
+            String m = MorseBinaryTree.getInstance().getMorse(String.valueOf(text.charAt(i)));
+            if (m != null) {
+                sb.append(m.replace("-", "—").replace(".", "•"));
+            }
+        }
+        sb.append(" ]");
+        return sb.toString();
     }
 
     private void playCurrentListeningAudio() {
@@ -381,6 +403,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void handleListeningOptionClicked(String selected) {
         for (Button btn : testOptionButtons) {
             btn.setEnabled(false);
+            Object tag = btn.getTag();
+            String opt = (tag instanceof String) ? (String) tag : btn.getText().toString();
+            btn.setText(formatOptionWithMorse(opt));
         }
 
         questionsAnsweredInStage++;
@@ -389,11 +414,14 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         if (isCorrect) {
             binding.tvPenaltyNotice.setVisibility(View.GONE);
             for (Button btn : testOptionButtons) {
-                if (btn.getText().toString().equalsIgnoreCase(currentListeningTarget)) {
+                Object tag = btn.getTag();
+                String opt = (tag instanceof String) ? (String) tag : "";
+                if (opt.equalsIgnoreCase(currentListeningTarget)) {
                     btn.setBackgroundColor(Color.parseColor("#00E676"));
+                    btn.setTextColor(Color.parseColor("#05080E"));
                 }
             }
-            binding.getRoot().postDelayed(this::nextListeningQuestion, 700);
+            binding.getRoot().postDelayed(this::nextListeningQuestion, 800);
         } else {
             // FAILED!
             currentStageFailures++;
@@ -407,10 +435,14 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             applyFailurePenalty(currentListeningTarget);
 
             for (Button btn : testOptionButtons) {
-                if (btn.getText().toString().equalsIgnoreCase(currentListeningTarget)) {
+                Object tag = btn.getTag();
+                String opt = (tag instanceof String) ? (String) tag : "";
+                if (opt.equalsIgnoreCase(currentListeningTarget)) {
                     btn.setBackgroundColor(Color.parseColor("#00E676"));
-                } else if (btn.getText().toString().equalsIgnoreCase(selected)) {
+                    btn.setTextColor(Color.parseColor("#05080E"));
+                } else if (opt.equalsIgnoreCase(selected)) {
                     btn.setBackgroundColor(Color.parseColor("#FF5252"));
+                    btn.setTextColor(Color.WHITE);
                 }
             }
 
@@ -771,6 +803,17 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         updateLivesUi();
     }
 
+    public void triggerListeningOptionForTesting(String selected) {
+        handleListeningOptionClicked(selected);
+    }
+
+    public String getCurrentListeningTargetForTesting() {
+        return currentListeningTarget;
+    }
+
+    public List<Button> getTestOptionButtonsForTesting() {
+        return testOptionButtons;
+    }
 
     public void showExamResults(boolean passed, String detailMessage) {
         currentStage = TestStage.RESULT;

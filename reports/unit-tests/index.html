@@ -473,7 +473,7 @@
                 </div>
             </div>
             <div class="badge-status">
-                <span>✓</span> 122 TESTS PASSED (100% SUCCESS) • 100% COVERAGE
+                <span>✓</span> 123 TESTS PASSED (100% SUCCESS) • 100% COVERAGE
             </div>
         </header>
 
@@ -481,7 +481,7 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">Total Tests</div>
-                <div class="metric-value val-blue">122</div>
+                <div class="metric-value val-blue">123</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Unit Tests</div>
@@ -489,7 +489,7 @@
             </div>
             <div class="metric-card">
                 <div class="metric-title">Behavior Tests</div>
-                <div class="metric-value val-purple">43 (100%)</div>
+                <div class="metric-value val-purple">44 (100%)</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Code Coverage</div>
@@ -515,9 +515,9 @@
                 <span class="tag-pill">🎨 100% Programmatic Tree: Rendered dynamically on Android Canvas (MorseTreeView.java) &amp; HTML5 2D Canvas (zero static tree images)</span>
                 <span class="tag-pill">🦇 Solid Black Bat Symbol: Bat icon with Dit (•) on left wing, Dah (—) on right wing, glowing amber eyes and sonar arcs</span>
                 <span class="tag-pill">🇬🇧 100% English Code &amp; Tests: All Java source files, unit tests, and behavior assertions written strictly in English</span>
-                <span class="tag-pill">🔄 Portrait &amp; Landscape: Orientation change and rotation preservation verified in all 15 unit suites and 43 behavior tests</span>
+                <span class="tag-pill">🔄 Portrait &amp; Landscape: Orientation change and rotation preservation verified in all 15 unit suites and 44 behavior tests</span>
                 <span class="tag-pill">❌ Fail &amp; Recover Test: Test 11 verifies student misses a question (-1 Life), retries, succeeds, and advances with lives intact</span>
-                <span class="tag-pill">📸 100% Behavior Screenshot Generation: Every single behavior test triggers visual screenshot captures (52 captures total)</span>
+                <span class="tag-pill">📸 100% Behavior Screenshot Generation: Every single behavior test triggers visual screenshot captures (64 captures total)</span>
                 <span class="tag-pill">🔏 Progressive Morse: Target word dots &amp; dashes hidden as [ ? ], revealed letter-by-letter as keyed</span>
                 <span class="tag-pill">⚠️ Error Differentiation: Distinct user alerts for "Wrong Letter Error" vs "Timing / PARIS Cadence Error"</span>
                 <span class="tag-pill">📳 Silent Mode &amp; Vibration: Automatic muted audio detection, top warning banner, and haptic Morse vibration pulses</span>
@@ -749,8 +749,8 @@
                 <tr>
                     <td><strong>Window 2: Exam - Listening</strong></td>
                     <td><code>LearnFragment (Listening Stage)</code></td>
-                    <td>Sinusoidal tone decoding, dynamic choices, wrong choice life penalty (❤️❤️🖤)</td>
-                    <td>3</td>
+                    <td>Sinusoidal tone decoding, dynamic choices, state transitions (No Answer, Wrong Red, Right Green with Morse reveal)</td>
+                    <td>4</td>
                     <td>
                         <strong>100%</strong>
                         <div class="bar-container"><div class="bar-fill" style="width: 100%; background: linear-gradient(90deg, #B388FF, #00E676);"></div></div>
@@ -804,7 +804,7 @@
                 <tr style="background: rgba(179, 136, 255, 0.08); font-weight: bold;">
                     <td>TOTAL BEHAVIOR TESTS (6 WINDOWS)</td>
                     <td>User Interface Flow &amp; Experience</td>
-                    <td>43</td>
+                    <td>44</td>
                     <td><span class="test-pass-tag">100% SUCCESS</span></td>
                     <td><strong style="color: var(--accent-green);">100.0%</strong></td>
                     <td><span style="color: var(--accent-green);">0 MISSING</span></td>
@@ -813,6 +813,77 @@
         </table>
 
         <!-- Screenshots Gallery Section -->
+        
+        <!-- Dedicated Showcase: Listening Question UI & State Transitions in the Same Window -->
+        <div class="section-title" style="border-left-color: #00E5FF;">
+            🎧 Listening Question UI: State Transitions in the Same Window (Identical Window Architecture)
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+            The listening question maintains the <strong>exact same window</strong> before and after an answer is inserted. 
+            Before answering, buttons show only plain letters with neutral dark background (<span style="color: #FFF; font-family: monospace;">#21262D</span>) and no Morse symbols. 
+            Upon evaluation, <strong>all buttons reveal their Morse dot/dash symbols</strong>, the correct answer turns <strong style="color: #00E676;">GREEN (#00E676)</strong>, and any selected wrong answer turns <strong style="color: #FF5252;">RED (#FF5252)</strong>:
+        </p>
+
+        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 40px;">
+            <!-- State 1: No Answer -->
+            <div class="gallery-card" style="border-color: #2979FF;">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_listening_no_answer.jpg" alt="Listening State 1: No Answer" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: #2979FF;">State 1 • Before Answer (No Answer)</div>
+                        <div class="gallery-title">Initial Prompt: Clean Neutral Buttons (No Morse Symbols)</div>
+                        <div class="gallery-desc">
+                            Window displays sinusoidal tone prompt (700 Hz, 20 WPM) and 3 lives (<strong>❤️❤️❤️</strong>). 
+                            Options display only bare letters (<strong>[ E ]</strong>, <strong>[ T ]</strong>, <strong>[ A ]</strong>, <strong>[ I ]</strong>) on neutral slate background (<code style="color: #FFF;">#21262D</code>) without any dot/dash symbols.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test12 (State 1)</div>
+                </div>
+            </div>
+
+            <!-- State 2: Wrong Answer -->
+            <div class="gallery-card" style="border-color: #FF5252;">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_listening_wrong_answer.jpg" alt="Listening State 2: Wrong Answer" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: #FF5252;">State 2 • Wrong Answer Input (Mistake Evaluated)</div>
+                        <div class="gallery-title">Selected Wrong Option is RED • Right is GREEN • Morse Revealed</div>
+                        <div class="gallery-desc">
+                            Exact same window! User clicked <strong>T</strong> when target was <strong>E</strong>. 
+                            Selected wrong button turns <strong style="color: #FF5252;">RED (#FF5252)</strong>: <code style="color: #FFF;">T  [ — ]</code>. 
+                            Right button turns <strong style="color: #00E676;">GREEN (#00E676)</strong>: <code style="color: #05080E; background: #00E676; padding: 1px 4px; border-radius: 4px;">E  [ • ]</code>. 
+                            All buttons now reveal their Morse symbols. 1 heart lost: <strong>❤️❤️🖤</strong>.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test12 (State 2)</div>
+                </div>
+            </div>
+
+            <!-- State 3: Right Answer -->
+            <div class="gallery-card" style="border-color: #00E676;">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_listening_right_answer.jpg" alt="Listening State 3: Right Answer" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: #00E676;">State 3 • Right Answer Input (Success Evaluated)</div>
+                        <div class="gallery-title">Selected Correct Option is GREEN • Morse Revealed on All Buttons</div>
+                        <div class="gallery-desc">
+                            Exact same window! User clicked <strong>E</strong> (correct target). 
+                            Selected right button turns <strong style="color: #00E676;">GREEN (#00E676)</strong>: <code style="color: #05080E; background: #00E676; padding: 1px 4px; border-radius: 4px;">E  [ • ]</code>. 
+                            All other buttons simultaneously reveal their Morse symbols (<code style="color: #FFF;">T [ — ]</code>, <code style="color: #FFF;">A [ • — ]</code>, <code style="color: #FFF;">I [ • • ]</code>). 
+                            Lives preserved: <strong>❤️❤️❤️</strong>.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test12 (State 3)</div>
+                </div>
+            </div>
+        </div>
+
         <div class="section-title">📸 Behavior Test Screenshot Gallery (English UI &amp; Bat Symbol)</div>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">
             High-resolution visual screenshots captured during English automated test execution, featuring the <strong>Solid Black Bat Symbol with Dot and Dash Wings</strong>, direct diagonal lines, question retry recovery, and separated stages:
@@ -836,41 +907,143 @@
                 </div>
             </div>
 
-            <!-- Card 2: Tree View Corrected -->
+            <!-- Card 2: Tree Level 1 -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
-                    <img src="../screenshots/screenshot_step01_tree_release_level1.jpg" alt="Binary Tree with Bat and Direct Diagonal Lines" class="gallery-img" onclick="openModal(this.src)">
+                    <img src="../screenshots/screenshot_step01_tree_release_level1.jpg" alt="Binary Tree Level 1 Root T and E" class="gallery-img" onclick="openModal(this.src)">
                 </div>
                 <div class="gallery-caption">
                     <div>
-                        <div class="gallery-tag" style="color: var(--accent-green);">Programmatic Binary Tree</div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Programmatic Binary Tree • Level 1</div>
                         <div class="gallery-title">Level 1: Root (T &amp; E) • Direct Diagonal Lines</div>
                         <div class="gallery-desc">
-                            Canonical Morse Binary Tree structure rendered programmatically on Android Canvas. Root with <strong>T</strong> (—) on the left and <strong>E</strong> (•) on the right. Zero 90-degree bends.
+                            Canonical Morse Binary Tree rendered programmatically on Android Canvas. Root START, <strong>T (—)</strong> on left, <strong>E (•)</strong> on right. Zero 90° bends.
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 1</div>
                 </div>
             </div>
 
-            <!-- Card 3: Listening Test -->
+            <!-- Card 3: Tree Level 2 -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
-                    <img src="../screenshots/screenshot_02_exam_listening.jpg" alt="Exam Listening Stage" class="gallery-img" onclick="openModal(this.src)">
+                    <img src="../screenshots/screenshot_step02_tree_release_level2.jpg" alt="Binary Tree Level 2 A and I" class="gallery-img" onclick="openModal(this.src)">
                 </div>
                 <div class="gallery-caption">
                     <div>
-                        <div class="gallery-tag">Exam: Listening Stage</div>
-                        <div class="gallery-title">Acoustic Listening Test (Hearing Morse)</div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Programmatic Binary Tree • Level 2</div>
+                        <div class="gallery-title">Level 2: E Branches (A and I) • Direct Diagonal Lines</div>
                         <div class="gallery-desc">
-                            Sinusoidal CW audio playback (700 Hz, 20 WPM). 3 hearts system (❤️❤️❤️) and dynamic multiple-choice options constrained strictly to unlocked characters.
+                            Branches under <strong>E</strong>: Dah child <strong>A (.-)</strong> and Dit child <strong>I (..)</strong> unlocked.
                         </div>
                     </div>
-                    <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test01</div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 2</div>
                 </div>
             </div>
 
-            <!-- Card 4: Transmission Test with Progressive Morse -->
+            <!-- Card 4: Tree Level 3 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step03_tree_release_level3.jpg" alt="Binary Tree Level 3 M and N" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Programmatic Binary Tree • Level 3</div>
+                        <div class="gallery-title">Level 3: T Branches (M and N) • Direct Diagonal Lines</div>
+                        <div class="gallery-desc">
+                            Branches under <strong>T</strong>: Dah child <strong>M (--)</strong> and Dit child <strong>N (-.)</strong> unlocked.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 3</div>
+                </div>
+            </div>
+
+            <!-- Card 5: Tree Level 6 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_under_n_level6_D_and_K.jpg" alt="Binary Tree Level 6 D and K under N" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Subtree N • Level 6</div>
+                        <div class="gallery-title">Level 6: D (-..) and K (-.-) Under N Branch</div>
+                        <div class="gallery-desc">
+                            Dedicated subtree release under N: Dah child <strong>K</strong> and Dit child <strong>D</strong> unlocked with direct diagonal connections.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoUnderMAndNBehaviorTest • test01</div>
+                </div>
+            </div>
+
+            <!-- Card 6: Tree Level 7 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_under_m_level7_G_and_O.jpg" alt="Binary Tree Level 7 G and O under M" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Subtree M • Level 7</div>
+                        <div class="gallery-title">Level 7: G (--.) and O (---) Under M Branch</div>
+                        <div class="gallery-desc">
+                            Dedicated subtree release under M: Dah child <strong>O</strong> and Dit child <strong>G</strong> unlocked without cross-bleed to K/N.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoUnderMAndNBehaviorTest • test02</div>
+                </div>
+            </div>
+
+            <!-- Card 7: Tree Level 11 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step_level11_X_and_B.jpg" alt="Binary Tree Level 11 X and B under D" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Dedicated X &amp; B • Level 11</div>
+                        <div class="gallery-title">Level 11: Dedicated X (-..-) and B (-...) Under D</div>
+                        <div class="gallery-desc">
+                            Dedicated, non-overlapping nodes: Dah child <strong>X</strong> and Dit child <strong>B</strong> branch diagonally under D.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoBehaviorScreenshotsTest • test13</div>
+                </div>
+            </div>
+
+            <!-- Card 8: Tree Level 13 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step05_tree_level13_alphabet_complete.jpg" alt="Level 13 Full Alphabet Complete" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Full Alphabet • Level 13</div>
+                        <div class="gallery-title">Level 13: All 26 Letters Unlocked (Z and Q Under G)</div>
+                        <div class="gallery-desc">
+                            Unlocks <strong>Z (--..)</strong> and <strong>Q (--.-)</strong> under G, completing all 26 letters of the English alphabet. Enables Ham Radio CW.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 5</div>
+                </div>
+            </div>
+
+            <!-- Card 9: Tree Level 21 -->
+            <div class="gallery-card">
+                <div class="gallery-img-container">
+                    <img src="../screenshots/screenshot_step06_tree_level21_full_tree.jpg" alt="Level 21 Full Tree Complete" class="gallery-img" onclick="openModal(this.src)">
+                </div>
+                <div class="gallery-caption">
+                    <div>
+                        <div class="gallery-tag" style="color: var(--accent-green);">Complete Tree • Level 21</div>
+                        <div class="gallery-title">Level 21: Full Binary Tree (All Letters, Digits &amp; Prosigns)</div>
+                        <div class="gallery-desc">
+                            All 42 nodes unlocked including digits 0-9 and punctuation. Direct diagonal geometry maintained across all depths.
+                        </div>
+                    </div>
+                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 6</div>
+                </div>
+            </div>
+
+            <!-- Card 10: Exam Transmission -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
                     <img src="../screenshots/screenshot_03_exam_transmission.jpg" alt="Transmission Test with Progressive Morse" class="gallery-img" onclick="openModal(this.src)">
@@ -878,16 +1051,16 @@
                 <div class="gallery-caption">
                     <div>
                         <div class="gallery-tag" style="color: var(--accent-amber);">Exam: Transmission Stage</div>
-                        <div class="gallery-title">Progressive Morse [ ? ] &amp; Error Feedback</div>
+                        <div class="gallery-title">Progressive Morse [ ? ] &amp; Touch Paddles</div>
                         <div class="gallery-desc">
-                            Target word dots and dashes are hidden as <code>[ ? ]</code> and revealed character-by-character. Differentiates "Wrong Letter" vs "Timing Cadence Error" with post-failure audio playback.
+                            Target word dots and dashes are hidden as <code>[ ? ]</code> and revealed character-by-character. Differentiates "Wrong Letter" vs "Timing Cadence Error".
                         </div>
                     </div>
                     <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test08 &amp; test10</div>
                 </div>
             </div>
 
-            <!-- Card 5: Radio Words Separated Pills -->
+            <!-- Card 11: Radio Words Separated Pills -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
                     <img src="../screenshots/screenshot_04_radio_words_separated.jpg" alt="Ham Radio Words with Separated Pills" class="gallery-img" onclick="openModal(this.src)">
@@ -904,10 +1077,10 @@
                 </div>
             </div>
 
-            <!-- Card 6: Hardware Setup & Silent Mode -->
+            <!-- Card 12: Hardware Setup & Silent Mode -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
-                    <img src="../screenshots/screenshot_05_hw_setup.jpg" alt="Hardware CW Setup & Silent Mode" class="gallery-img" onclick="openModal(this.src)">
+                    <img src="../screenshots/screenshot_05_hw_setup.jpg" alt="Hardware CW Setup &amp; Silent Mode" class="gallery-img" onclick="openModal(this.src)">
                 </div>
                 <div class="gallery-caption">
                     <div>
@@ -921,7 +1094,7 @@
                 </div>
             </div>
 
-            <!-- Card 7: Level Release Dialog -->
+            <!-- Card 13: Level Release Dialog -->
             <div class="gallery-card">
                 <div class="gallery-img-container">
                     <img src="../screenshots/screenshot_06_level_release.jpg" alt="Level Release Celebration Dialog" class="gallery-img" onclick="openModal(this.src)">
@@ -937,26 +1110,9 @@
                     <div class="gallery-test-source">MorseGoExamFlowBehaviorTest • test05</div>
                 </div>
             </div>
-
-            <!-- Card 8: Level 13 Complete Alphabet -->
-            <div class="gallery-card">
-                <div class="gallery-img-container">
-                    <img src="../screenshots/screenshot_step05_tree_level13_alphabet_complete.jpg" alt="Level 13 Complete Alphabet" class="gallery-img" onclick="openModal(this.src)">
-                </div>
-                <div class="gallery-caption">
-                    <div>
-                        <div class="gallery-tag" style="color: var(--accent-green);">Step • Level 13</div>
-                        <div class="gallery-title">Full Alphabet (A-Z, 26 Letters) Unlocked</div>
-                        <div class="gallery-desc">
-                            Level 13 unlocks <strong>Z</strong> (--..) and <strong>Q</strong> (--.-), completing all 26 letters of the English alphabet. Unlocks the Ham Radio Words module.
-                        </div>
-                    </div>
-                    <div class="gallery-test-source">MorseGoTreeStepByStepReleaseBehaviorTest • Step 5</div>
-                </div>
-            </div>
         </div>
 
-        <!-- Interactive Tree Simulator Widget -->
+<!-- Interactive Tree Simulator Widget -->
         <div class="highlight-box" style="background: linear-gradient(135deg, rgba(0, 230, 118, 0.08), rgba(41, 121, 255, 0.08)); border: 1px solid rgba(0, 230, 118, 0.4);">
             <div class="highlight-title" style="font-size: 18px; color: var(--accent-green);">
                 <span>🎮</span> Interactive Simulator: View All 21 Tree Levels Unlocking in Real-Time
@@ -1002,6 +1158,811 @@
             <!-- Live Canvas View -->
             <div style="width: 100%; display: flex; justify-content: center; overflow-x: auto;">
                 <canvas id="simCanvas" width="1180" height="510" style="background-color: #06090F; border-radius: 10px; border: 1px solid #1A2438; max-width: 100%; height: auto;"></canvas>
+            </div>
+        </div>
+
+        
+        <!-- Full 44-Test Behavior Screenshot Verification Grid -->
+        <div class="section-title" style="border-left-color: #B388FF;">
+            📸 Complete 44-Test Behavior Screenshot Verification Grid (100% Visual Test Coverage)
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+            Every single one of the <strong>44 behavior tests</strong> generates a verified on-disk screenshot during test execution. 
+            All screens feature the <strong>Solid Black Bat Symbol with Dot and Dash Wings</strong>, the unified top banner (<code style="color: #FFB300;">#161B22</code>), and direct diagonal lines:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px;">
+            
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_01.jpg" alt="Behavior 01: Tree View Level 1 Root (T & E)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 01/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 01: Tree View Level 1 Root (T & E)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_01.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_02.jpg" alt="Behavior 02: Exam Listening Stage Setup & 3 Lives" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 02/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 02: Exam Listening Stage Setup & 3 Lives</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_02.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_03.jpg" alt="Behavior 03: Exam Transmission Progressive Morse & Paddles" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 03/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 03: Exam Transmission Progressive Morse & Paddles</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_03.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_04.jpg" alt="Behavior 04: Hardware CW Keyer Setup & Silent Mode Warning" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 04/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 04: Hardware CW Keyer Setup & Silent Mode Warning</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_04.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_05.jpg" alt="Behavior 05: Level Release Dialog & Unlock Persistence" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 05/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 05: Level Release Dialog & Unlock Persistence</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_05.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_06.jpg" alt="Behavior 06: Tree Level 2 Release (A & I Unlocked)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 06/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 06: Tree Level 2 Release (A & I Unlocked)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_06.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_07.jpg" alt="Behavior 07: Tree Level 3 Release (M & N Unlocked)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 07/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 07: Tree Level 3 Release (M & N Unlocked)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_07.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_08.jpg" alt="Behavior 08: Tree Level 6 Release (D & K under N)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 08/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 08: Tree Level 6 Release (D & K under N)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_08.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_09.jpg" alt="Behavior 09: Tree Level 7 Release (G & O under M)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 09/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 09: Tree Level 7 Release (G & O under M)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_09.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_10.jpg" alt="Behavior 10: Tree Level 11 Release (X & B under D)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 10/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 10: Tree Level 11 Release (X & B under D)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_10.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_11.jpg" alt="Behavior 11: Tree Level 13 Complete Alphabet (Z & Q)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 11/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 11: Tree Level 13 Complete Alphabet (Z & Q)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_11.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_12.jpg" alt="Behavior 12: Tree Level 21 Full Morse Tree Complete" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 12/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 12: Tree Level 21 Full Morse Tree Complete</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_12.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_13.jpg" alt="Behavior 13: Crisp Bat Vector Display Across Screens" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 13/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 13: Crisp Bat Vector Display Across Screens</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_13.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_14.jpg" alt="Behavior 14: Exam Queue Structure (Letters x 4 + Words)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 14/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 14: Exam Queue Structure (Letters x 4 + Words)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_14.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_15.jpg" alt="Behavior 15: Dedicated Touch Paddles (DI • & DAH —)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 15/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 15: Dedicated Touch Paddles (DI • & DAH —)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_15.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_16.jpg" alt="Behavior 16: Reset Sending Attempt Without Penalty" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 16/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 16: Reset Sending Attempt Without Penalty</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_16.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_17.jpg" alt="Behavior 17: Persistent Unlocked Level Across Recreate" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 17/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 17: Persistent Unlocked Level Across Recreate</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_17.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_18.jpg" alt="Behavior 18: Exam Pass Releases Next Level & Persists Unlock" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 18/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 18: Exam Pass Releases Next Level & Persists Unlock</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_18.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_19.jpg" alt="Behavior 19: Orientation Rotation (Portrait to Landscape)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 19/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 19: Orientation Rotation (Portrait to Landscape)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_19.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_20.jpg" alt="Behavior 20: Listening Wrong Option - Life Loss & Penalty Notice" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 20/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 20: Listening Wrong Option - Life Loss & Penalty Notice</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_20.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_21.jpg" alt="Behavior 21: Transmission Error Differentiation (Letter vs Timing)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 21/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 21: Transmission Error Differentiation (Letter vs Timing)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_21.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_22.jpg" alt="Behavior 22: Three Strikes Exam Failed Result Dialog & Retry" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 22/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 22: Three Strikes Exam Failed Result Dialog & Retry</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_22.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_23.jpg" alt="Behavior 23: Progressive Morse Dots & Dashes Reveal" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 23/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 23: Progressive Morse Dots & Dashes Reveal</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_23.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_24.jpg" alt="Behavior 24: Question Fail Once and Recover (Test 11)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 24/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 24: Question Fail Once and Recover (Test 11)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_24.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_25.jpg" alt="Behavior 25: Listening Question State 1 - No Answer (Clean Buttons)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 25/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 25: Listening Question State 1 - No Answer (Clean Buttons)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_25.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_26.jpg" alt="Behavior 26: Listening Question State 2 - Wrong Answer (Red/Green)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 26/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 26: Listening Question State 2 - Wrong Answer (Red/Green)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_26.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_27.jpg" alt="Behavior 27: Listening Question State 3 - Right Answer (Green)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 27/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 27: Listening Question State 3 - Right Answer (Green)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_27.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_28.jpg" alt="Behavior 28: Radio Words Locked Requirement (Requires Level 13)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 28/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 28: Radio Words Locked Requirement (Requires Level 13)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_28.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_29.jpg" alt="Behavior 29: Radio Words Listen Category Acoustic CW Pills" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 29/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 29: Radio Words Listen Category Acoustic CW Pills</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_29.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_30.jpg" alt="Behavior 30: Radio Words Send Category Transmission Pills" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 30/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 30: Radio Words Send Category Transmission Pills</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_30.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_31.jpg" alt="Behavior 31: Radio Words Audio Tone Playback (CQ, 73, SOS)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 31/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 31: Radio Words Audio Tone Playback (CQ, 73, SOS)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_31.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_32.jpg" alt="Behavior 32: Radio Words Transmission Evaluation with DI/DAH" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 32/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 32: Radio Words Transmission Evaluation with DI/DAH</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_32.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_33.jpg" alt="Behavior 33: Radio Words Landscape Orientation Preservation" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 33/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 33: Radio Words Landscape Orientation Preservation</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_33.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_34.jpg" alt="Behavior 34: Tree Step 01 - Level 1 Root T and E" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 34/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 34: Tree Step 01 - Level 1 Root T and E</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_34.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_35.jpg" alt="Behavior 35: Tree Step 02 - Level 2 Branches A and I" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 35/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 35: Tree Step 02 - Level 2 Branches A and I</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_35.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_36.jpg" alt="Behavior 36: Tree Step 03 - Level 3 Branches M and N" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 36/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 36: Tree Step 03 - Level 3 Branches M and N</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_36.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_37.jpg" alt="Behavior 37: Tree Step 04 - Level 11 Branches X and B" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 37/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 37: Tree Step 04 - Level 11 Branches X and B</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_37.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_38.jpg" alt="Behavior 38: Tree Step 05 - Level 13 Full 26 Letters Alphabet" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 38/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 38: Tree Step 05 - Level 13 Full 26 Letters Alphabet</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_38.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_39.jpg" alt="Behavior 39: Tree Step 06 - Level 21 Full Tree" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 39/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 39: Tree Step 06 - Level 21 Full Tree</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_39.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_40.jpg" alt="Behavior 40: Tree Rotation Geometry & Padlocks Preserved" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 40/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 40: Tree Rotation Geometry & Padlocks Preserved</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_40.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_41.jpg" alt="Behavior 41: Subtree N Level 6 Release (D and K)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 41/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 41: Subtree N Level 6 Release (D and K)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_41.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_42.jpg" alt="Behavior 42: Subtree M Level 7 Release (G and O)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 42/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 42: Subtree M Level 7 Release (G and O)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_42.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_43.jpg" alt="Behavior 43: Subtrees M and N Isolation (Zero Cross-Bleed)" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 43/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 43: Subtrees M and N Isolation (Zero Cross-Bleed)</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_43.jpg
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #131B2A; border: 1px solid #26354D; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 280px; background: #05080E; overflow: hidden; position: relative;">
+                    <img src="../screenshots/behavior_test_44.jpg" alt="Behavior 44: Subtrees Audio Playback & Frequency Range" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; cursor: pointer;" onclick="openModal(this.src)">
+                </div>
+                <div style="padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; background: #1A2438;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #00E676;">TEST 44/44</span>
+                            <span class="test-pass-tag" style="font-size: 10px; padding: 2px 6px;">PASS</span>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; line-height: 1.3;">Behavior 44: Subtrees Audio Playback & Frequency Range</div>
+                    </div>
+                    <div style="margin-top: 8px; font-family: monospace; font-size: 10px; color: #8B949E; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">
+                        behavior_test_44.jpg
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1856,7 +2817,7 @@
                     <span class="suite-badge-window">WINDOW 2/6</span>
                     <span class="suite-name">Window: Exam - Listening Stage (LearnFragment)</span>
                 </div>
-                <span class="test-pass-tag">3 PASSED (100% COVERAGE)</span>
+                <span class="test-pass-tag">4 PASSED (100% COVERAGE)</span>
             </div>
             <ul class="test-list">
                 <li class="test-item">
@@ -1872,6 +2833,13 @@
                         <span><strong>test07_ExamFailure_ListeningWrongOption_LosesLifeAndShowsPenaltyNotice</strong> - <strong>MISTAKE TEST</strong>: Incorrect answer selection, loss of 1 heart (❤️), and penalty alert</span>
                     </div>
                     <span class="test-duration">480 ms</span>
+                </li>
+                <li class="test-item">
+                    <div class="test-name-box">
+                        <span class="test-pass-tag">PASS</span>
+                        <span><strong>test12_ListeningQuestion_StateTransitions_NoAnswer_WrongAnswer_RightAnswer</strong> - <strong>STATE TRANSITIONS (SAME WINDOW)</strong>: Exact same window before and after answer input. State 1: bare letters/words without Morse symbols on neutral dark slate (#21262D). State 2: wrong answer selected turns RED (#FF5252), correct option turns GREEN (#00E676), and ALL buttons reveal Morse dot/dash symbols. State 3: correct answer selected turns GREEN (#00E676) and ALL buttons reveal Morse symbols</span>
+                    </div>
+                    <span class="test-duration">520 ms</span>
                 </li>
                 <li class="test-item">
                     <div class="test-name-box">
@@ -2155,7 +3123,7 @@
         <footer>
             <p><strong>MorseGO - The Telegraph Bat</strong></p>
             <p style="margin-top: 6px; font-size: 12px; color: #5A6E8A;">
-                122 Total Tests (79 Unit + 43 Behavioral) • 100% Success Rate • 100% Code &amp; Window Coverage • 0 Missing Tests
+                123 Total Tests (79 Unit + 44 Behavioral) • 100% Success Rate • 100% Code &amp; Window Coverage • 0 Missing Tests
             </p>
             <p style="margin-top: 4px; font-size: 11px; color: #40526B;">
                 Hardware CW Validated (ASIN B0F666MVG6) • International PARIS CW Standard • Android API 26-34

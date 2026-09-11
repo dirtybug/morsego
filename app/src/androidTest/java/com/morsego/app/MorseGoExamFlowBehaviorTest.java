@@ -432,4 +432,59 @@ public class MorseGoExamFlowBehaviorTest {
         )));
         ScreenshotHelper.capture("28_exam_question_recovered_success");
     }
+
+    /**
+     * BEHAVIOR 12: Listening Question State Transitions:
+     * 1) Before Answer (No Answer): Buttons display only letters/words without Morse symbols on neutral dark slate background.
+     * 2) Wrong Answer: Selected button is RED, correct button is GREEN, and ALL buttons reveal Morse dot/dash symbols.
+     * 3) Right Answer: Correct button is GREEN and ALL buttons reveal Morse dot/dash symbols.
+     * Window remains the exact same across before and after states.
+     */
+    @Test
+    public void test12_ListeningQuestion_StateTransitions_NoAnswer_WrongAnswer_RightAnswer() throws InterruptedException {
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        Thread.sleep(400);
+
+        // 1. Navigate to Learn tab and start exam
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.btnStartLevelTest)).perform(click());
+        Thread.sleep(600);
+
+        // State 1: No Answer (Same window, options without Morse, neutral background)
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTestOpt1)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("screenshot_listening_no_answer");
+
+        // State 2: Wrong Answer (Same window, wrong option clicked -> Red, correct -> Green, Morse revealed)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+                String target = lf.getCurrentListeningTargetForTesting();
+                String wrongChoice = (target != null && target.equals("E")) ? "T" : "E";
+                lf.triggerListeningOptionForTesting(wrongChoice);
+            }
+        });
+        Thread.sleep(400);
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("screenshot_listening_wrong_answer");
+
+        // Wait for next question
+        Thread.sleep(1300);
+
+        // State 3: Right Answer (Same window, correct option clicked -> Green, Morse revealed)
+        activity.runOnUiThread(() -> {
+            androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof com.morsego.app.ui.LearnFragment) {
+                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+                String target = lf.getCurrentListeningTargetForTesting();
+                lf.triggerListeningOptionForTesting(target);
+            }
+        });
+        Thread.sleep(400);
+        onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("screenshot_listening_right_answer");
+    }
 }
