@@ -39,7 +39,7 @@ public class HardwareFragment extends Fragment {
         binding.switchReversePaddles.setChecked(activity.getSettings().isReversePaddles());
         updateReverseLabels(activity.getSettings().isReversePaddles());
 
-        binding.switchReversePaddles.setOnCheckedChangeWidgetListener((buttonView, isChecked) -> {
+        binding.switchReversePaddles.setOnCheckedChangeListener((buttonView, isChecked) -> {
             activity.getSettings().setReversePaddles(isChecked);
             updateReverseLabels(isChecked);
         });

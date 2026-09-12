@@ -13,12 +13,35 @@ RELEASE_DIR="/workspace/release/${VERSION_TAG}"
 mkdir -p "$RELEASE_DIR/reports/unit-tests"
 mkdir -p "$RELEASE_DIR/reports/instrumented"
 mkdir -p "$RELEASE_DIR/screenshots"
+[ -f /workspace/gradlew ] && chmod +x /workspace/gradlew 2>/dev/null || true
+rm -f /root/.gradle/caches/journal-1/*.lock 2>/dev/null || true
+rm -f /root/.gradle/caches/*.lock 2>/dev/null || true
 
 ACTION="${1:-unit}"
 
 export GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx2048m -XX:MaxMetaspaceSize=512m\""
 
 case "$ACTION" in
+    dev|shell|bash|sh)
+        export GRADLE_OPTS="-Dorg.gradle.daemon=true -Dorg.gradle.jvmargs=\"-Xmx2048m -XX:MaxMetaspaceSize=512m\""
+        echo "====================================================="
+        echo "        morseGO - Development Environment            "
+        echo "====================================================="
+        echo "Java:        $(java -version 2>&1 | head -n 1)"
+        echo "Android SDK: $ANDROID_HOME (API 34, Build-Tools 34.0.0)"
+        echo "Workspace:   $(pwd)"
+        echo ""
+        echo "Comandos rapidos disponiveis:"
+        echo "  test                        -> Executar testes unitarios"
+        echo "  build                       -> Compilar APK de Debug"
+        echo "  release                     -> Compilar APK de Release"
+        echo "  lint                        -> Executar analise de Lint"
+        echo "  ./gradlew test --continuous -> Retestar automaticamente ao editar"
+        echo "  exit                        -> Sair do container"
+        echo "====================================================="
+        exec /bin/bash
+        ;;
+
     unit|test)
         echo ">>> Running Unit Tests (com.morsego.app: MorseBinaryTree, MorseTiming, MorseWordGenerator)..."
         ./gradlew test -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info --stacktrace
@@ -26,8 +49,8 @@ case "$ACTION" in
         echo ">>> Copying unit test reports to $RELEASE_DIR/reports/unit-tests..."
         if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
             cp -r app/build/reports/tests/testDebugUnitTest/* "$RELEASE_DIR/reports/unit-tests/"
-            cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
-            echo "✓ Unit test report saved to release/${VERSION_TAG}/reports/index.html"
+            [ ! -f "$RELEASE_DIR/reports/index.html" ] && cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
+            echo "✓ Unit test report saved to release/${VERSION_TAG}/reports/unit-tests/index.html"
         fi
         echo "✓ All unit tests passed successfully!"
         ;;

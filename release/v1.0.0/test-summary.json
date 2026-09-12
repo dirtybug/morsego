@@ -1,11 +1,11 @@
 {
   "version": "v1.0.0",
-  "buildDate": "2026-09-11T10:25:00Z",
+  "buildDate": "2026-09-11T16:00:00Z",
   "gitTag": "v1.0.0",
   "status": "PASSED",
   "unitTests": {
-    "total": 79,
-    "passed": 79,
+    "total": 86,
+    "passed": 86,
     "failed": 0,
     "skipped": 0,
     "coveragePercentage": 100,
@@ -16,9 +16,30 @@
     "passed": 49,
     "failed": 0,
     "verifiedScreenshots": 49,
+    "additionalStepScreenshots": 40,
+    "totalScreenshots": 89,
+    "landscapeScreenshots": 23,
+    "portraitScreenshots": 66,
     "windowsCovered": 6,
     "windowsCoveragePercentage": 100
   },
+  "phoneRotationVerification": {
+    "status": "PASSED",
+    "dedicatedUnitTests": [
+      "testRotatePhone90Degrees_PortraitToLandscapeToPortrait_CompleteFlow",
+      "testVirarTelemovel90Graus_LayoutAdaptationAndStateInvariance"
+    ],
+    "dedicatedAndroidTests": [
+      "test09_RotatePhone90Degrees_LandscapeScreenshots",
+      "test08_ScreenRotation_AllTabsPortraitAndLandscape"
+    ],
+    "rotationStepsCaptured": 6,
+    "aspectRatioInversion": "0.45 (0° Portrait) -> 2.22 (90° Landscape) -> 0.45 (0° Restored)",
+    "stateInvarianceVerified": true
+  },
   "cadenceStandard": "PARIS ITU (50 dits / 20 WPM)",
-  "orientationRegimes": ["Portrait (Vertical)", "Landscape (Horizontal)"]
-}
+  "orientationRegimes": [
+    "Portrait (Vertical)",
+    "Landscape (Horizontal)"
+  ]
+}

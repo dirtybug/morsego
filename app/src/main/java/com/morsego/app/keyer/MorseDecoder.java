@@ -101,16 +101,6 @@ public class MorseDecoder {
     }
 
     public synchronized void onElementReceived(char element) {
-        long now = System.currentTimeMillis();
-        if (lastToneStopTime > 0 && currentPattern.length() > 0) {
-            long pause = now - lastToneStopTime;
-            MorseTiming.PauseEvaluation eval = MorseTiming.evaluateIntraElementPause(pause, settings.getWpm());
-            notifyTimingFeedback(eval);
-            if (eval.isTimingFailure) {
-                notifyTimingFailure(eval);
-            }
-        }
-
         currentPattern.append(element);
         notifyPatternChanged();
         restartPauseWatchers();
@@ -140,8 +130,8 @@ public class MorseDecoder {
         cancelPauseWatchers();
 
         int wpm = settings.getWpm();
-        long charPause = MorseTiming.interCharSpaceMs(wpm);
-        long wordPause = MorseTiming.wordSpaceMs(wpm);
+        long charPause = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 1.6f), 450L);
+        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm), charPause + 300L);
 
         charPauseRunnable = () -> {
             commitCharacter();
@@ -171,16 +161,16 @@ public class MorseDecoder {
     private void scheduleMaxLetterPauseWatcher() {
         cancelMaxLetterPauseWatcher();
         int wpm = settings.getWpm();
-        // 2.2x inter-character pause is the maximum allowed pause before failure
-        long maxWait = (long) (MorseTiming.interCharSpaceMs(wpm) * 2.2f) + 80;
+        // Generous tolerance: 3.2x inter-character pause with a minimum floor of 1200ms
+        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 3.2f) + 100L, 1200L);
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
                 boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
                 String feedback = isPt ?
-                        "Falha: Pausa excessiva entre letras (> máx 2.2x)" :
-                        "Failure: Excessive pause between letters (> max 2.2x)";
+                        "Falha: Pausa excessiva entre letras (> máx 3.2x)" :
+                        "Failure: Excessive pause between letters (> max 3.2x)";
                 MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
-                        false, true, feedback, 2.5f);
+                        false, true, feedback, 3.3f);
                 notifyTimingFeedback(eval);
                 notifyTimingFailure(eval);
             }

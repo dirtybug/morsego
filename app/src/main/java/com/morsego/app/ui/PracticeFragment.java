@@ -59,17 +59,31 @@ public class PracticeFragment extends Fragment {
             setupNewQuestion();
         });
 
+        applyLocalization();
         setupNewQuestion();
+    }
+
+    private void applyLocalization() {
+        if (binding == null) return;
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        binding.tvPracticeHeaderTitle.setText(isPt ? "TREINO DE ESCUTA EM CW" : "CW LISTENING TRAINING");
+        binding.tvPracticeTapPrompt.setText(isPt ? "Toque para ouvir o sinal Morse" : "Tap to listen to Morse signal");
+        binding.btnNextQuestion.setText(isPt ? "Próxima Pergunta ▶" : "Next Question ▶");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        applyLocalization();
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null && binding != null) {
             int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
             TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
-            binding.tvPracticeUnlockedInfo.setText("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + level.getAllCharacters().size() + " caracteres");
+            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+            String info = isPt ?
+                    ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + level.getAllCharacters().size() + " caracteres") :
+                    ("Testing unlocked characters in tree (Level " + currentLevel + "): " + level.getAllCharacters().size() + " characters");
+            binding.tvPracticeUnlockedInfo.setText(info);
         }
     }
 
@@ -81,7 +95,11 @@ public class PracticeFragment extends Fragment {
         TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
         List<String> pool = new ArrayList<>(level.getAllCharacters());
 
-        binding.tvPracticeUnlockedInfo.setText("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + pool.size() + " caracteres");
+        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        String info = isPt ?
+                ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + pool.size() + " caracteres") :
+                ("Testing unlocked characters in tree (Level " + currentLevel + "): " + pool.size() + " characters");
+        binding.tvPracticeUnlockedInfo.setText(info);
 
         // Pick random answer from pool
         Collections.shuffle(pool);

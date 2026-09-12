@@ -3,12 +3,19 @@
     <string name="morsego_motto">MorseGO • Bat Echolocation CW Telegraphy</string>
 
     <!-- Navigation -->
-    <string name="tree_title">Tree</string>
-    <string name="learn_title">Learn</string>
-    <string name="practice_title">Practice</string>
+    <string name="send_title">Send</string>
+    <string name="listen_title">Listen</string>
+    <string name="receive_title">Listen</string>
+    <string name="tree_title">Morse Tree</string>
+    <string name="learn_title">Send</string>
+    <string name="practice_title">Listen</string>
     <string name="keyer_title">Keyer</string>
-    <string name="hardware_title">Hardware CW</string>
+    <string name="hardware_title">USB</string>
     <string name="settings_title">Settings</string>
+
+    <string name="cw_listening_practice_title">CW LISTENING TRAINING</string>
+    <string name="practice_tap_to_listen">Tap to listen to Morse signal</string>
+    <string name="practice_next_question">Next Question ▶</string>
 
     <!-- Tree View -->
     <string name="tree_header_title">MORSE BINARY TREE</string>
@@ -17,6 +24,9 @@
     <string name="tree_practice_level">Practice This Level ▶</string>
     <string name="tree_code_label">Code: %s</string>
     <string name="tree_listen_button">Listen</string>
+    <string name="tree_interactive_title">INTERACTIVE TREE</string>
+    <string name="tree_zoom_reset">Reset</string>
+    <string name="tree_zoom_hint">🔍 Pinch to zoom • Drag to pan • Double-tap to toggle</string>
 
     <!-- Learn & Exam -->
     <string name="level_number_format">LEVEL %1$d / %2$d</string>

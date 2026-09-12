@@ -183,18 +183,30 @@ public class KeyerInputManager {
      * On-screen touch buttons
      */
     public void setTouchDit(boolean pressed) {
-        boolean target = !settings.isReversePaddles() ? pressed : isDahPressed;
-        if (isDitPressed != target) {
-            isDitPressed = target;
-            if (listener != null) listener.onDitStateChanged(target);
+        if (!settings.isReversePaddles()) {
+            if (isDitPressed != pressed) {
+                isDitPressed = pressed;
+                if (listener != null) listener.onDitStateChanged(pressed);
+            }
+        } else {
+            if (isDahPressed != pressed) {
+                isDahPressed = pressed;
+                if (listener != null) listener.onDahStateChanged(pressed);
+            }
         }
     }
 
     public void setTouchDah(boolean pressed) {
-        boolean target = !settings.isReversePaddles() ? pressed : isDitPressed;
-        if (isDahPressed != target) {
-            isDahPressed = target;
-            if (listener != null) listener.onDahStateChanged(target);
+        if (!settings.isReversePaddles()) {
+            if (isDahPressed != pressed) {
+                isDahPressed = pressed;
+                if (listener != null) listener.onDahStateChanged(pressed);
+            }
+        } else {
+            if (isDitPressed != pressed) {
+                isDitPressed = pressed;
+                if (listener != null) listener.onDitStateChanged(pressed);
+            }
         }
     }
 

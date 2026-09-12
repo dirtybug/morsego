@@ -336,13 +336,13 @@
             </svg>
             <div>
                 <div class="brand-title">MorseGO</div>
-                <div class="brand-subtitle">Telegrafia CW • Método da Árvore Binária &amp; Cadência PARIS 20 WPM</div>
+                <div class="brand-subtitle">CW Telegraphy • Binary Tree Method &amp; PARIS Cadence 20 WPM</div>
             </div>
         </div>
         <div class="badges-row">
-            <span class="badge badge-green">✓ 128 Testes (100% Cobertura)</span>
-            <span class="badge badge-blue">⚙️ CI/CD Docker Ativo</span>
-            <span class="badge badge-amber">🏷️ Versão v1.0.0</span>
+            <span class="badge badge-green">✓ 135 Tests (86 Unit + 49 Behavior)</span>
+            <span class="badge badge-blue">🔄 Landscape &amp; Portrait Support</span>
+            <span class="badge badge-amber">🏷️ Release v1.0.0</span>
         </div>
     </header>
 
@@ -350,7 +350,7 @@
     <div class="ci-notice">
         <div class="ci-notice-icon">🤖</div>
         <div class="ci-notice-text">
-            <strong>Automação de CI/CD pelo GitHub Actions:</strong> Os ficheiros de release APK e pacotes de testes são gerados e validados automaticamente nos servidores do GitHub com cada <code>push</code> de <code>tag</code> (ex: <code>git tag v1.0.0 &amp;&amp; git push --tags</code>), garantindo 100% de reproducibilidade em containers Docker.
+            <strong>Automated GitHub Actions CI/CD:</strong> Release APK packages and test suites are automatically compiled and verified on GitHub runners with every tag push (e.g., <code>git tag v1.0.0 &amp;&amp; git push --tags</code>), ensuring 100% reproducibility in hermetic Docker containers.
         </div>
     </div>
 
@@ -362,18 +362,18 @@
             <div>
                 <div class="card-header">
                     <span class="card-icon">📊</span>
-                    <h2 class="card-title">Relatório de Testes</h2>
+                    <h2 class="card-title">Test Reports &amp; Screenshots</h2>
                 </div>
                 <p class="card-desc">
-                    Aceda ao dashboard interativo com os <strong>79 testes unitários da JVM</strong> (organizados por ficheiro de código) e os <strong>49 testes de comportamento Android</strong> com capturas de ecrã completas.
+                    Access the interactive dashboard featuring all <strong>86 JVM unit tests</strong> (organized by package and class) and the <strong>visual gallery of 49 Android behavior tests</strong> with <strong>89 live device screenshots (including 23 landscape & 90° phone rotation verification)</strong> (portrait and landscape verification).
                 </p>
             </div>
             <div class="card-actions">
-                <a href="release/v1.0.0/reports/index.html" class="btn btn-primary" target="_blank">
-                    <span>Abrir Relatório Interativo</span> ↗
+                <a href="release/v1.0.0/reports/behavior-tests/index.html" class="btn btn-primary" target="_blank">
+                    <span>Behavior Tests Gallery (49)</span> 📷
                 </a>
                 <a href="release/v1.0.0/reports/index.html" class="btn btn-secondary">
-                    <span>Ver Relatório da v1.0.0</span> →
+                    <span>Master Test Dashboard</span> →
                 </a>
             </div>
         </div>
@@ -383,18 +383,18 @@
             <div>
                 <div class="card-header">
                     <span class="card-icon">🚀</span>
-                    <h2 class="card-title">Releases do CI (GitHub)</h2>
+                    <h2 class="card-title">CI Releases (GitHub)</h2>
                 </div>
                 <p class="card-desc">
-                    Consulte os manifestos JSON e faça download dos APKs compilados automaticamente pelo pipeline do GitHub Actions em containers Docker.
+                    Inspect machine-readable JSON manifests and download production APK binaries built automatically by the GitHub Actions pipeline inside Docker containers.
                 </p>
             </div>
             <div class="card-actions">
                 <a href="release/v1.0.0/release-manifest.json" class="btn btn-primary" target="_blank">
-                    <span>Manifesto JSON v1.0.0</span> ↗
+                    <span>JSON Manifest v1.0.0</span> ↗
                 </a>
                 <a href=".github/workflows/ci.yml" class="btn btn-secondary">
-                    <span>Workflow CI/CD (GitHub Actions)</span> →
+                    <span>CI/CD Workflow (GitHub Actions)</span> →
                 </a>
             </div>
         </div>
@@ -407,15 +407,15 @@
                     <h2 class="card-title">Google Play Store</h2>
                 </div>
                 <p class="card-desc">
-                    Consulte os recursos gráficos oficiais para a loja: ícone 512×512, gráfico promocional 1024×500 e 7 capturas de ecrã em alta resolução.
+                    Explore official graphics prepared for the store release: 512×512 hi-res icon, 1024×500 feature graphic banner, and 7 device screenshots.
                 </p>
             </div>
             <div class="card-actions">
                 <a href="docs/playstore/screenshots/playstore_screen_1_binary_tree.png" class="btn btn-primary" target="_blank">
-                    <span>Ver Capturas de Ecrã</span> ↗
+                    <span>View Store Screenshots</span> ↗
                 </a>
                 <a href="docs/playstore/playstore_feature_graphic_1024x500.png" class="btn btn-secondary" target="_blank">
-                    <span>Gráfico Promocional 1024×500</span> ↗
+                    <span>Feature Graphic (1024×500)</span> ↗
                 </a>
             </div>
         </div>
@@ -425,39 +425,61 @@
             <div>
                 <div class="card-header">
                     <span class="card-icon">🛠️</span>
-                    <h2 class="card-title">Manual de Build &amp; Testes</h2>
+                    <h2 class="card-title">Build &amp; Test Guide</h2>
                 </div>
                 <p class="card-desc">
-                    Instruções completas em inglês para compilação local (Docker vs. Nativo com JDK 17 e Android SDK), comandos de execução, resolução de problemas e CI/CD.
+                    Complete instructions for building locally (Docker containers vs. Native OpenJDK 17 and Android SDK 34), test execution commands, troubleshooting, and CI/CD setup.
                 </p>
             </div>
             <div class="card-actions">
                 <a href="BUILD_AND_TEST_GUIDE.md" class="btn btn-primary">
-                    <span>Ler Guia de Compilação</span> →
+                    <span>Read Build Guide</span> →
                 </a>
                 <a href="README.md" class="btn btn-secondary">
-                    <span>README do Projeto</span> →
+                    <span>Project README</span> →
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 5: Android Studio GUI in Docker -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-icon">🖥️</span>
+                    <h2 class="card-title">Android Studio GUI (Docker)</h2>
+                </div>
+                <p class="card-desc">
+                    Launch the full <strong>Android Studio IDE with graphical user interface</strong> in Docker via <code>run-docker-android-studio.bat</code>. Automatically pre-loads the <strong>morseGo</strong> project and provides instant in-browser web access (noVNC on port 6080) and VNC (port 5900).
+                </p>
+            </div>
+            <div class="card-actions">
+                <a href="http://localhost:6080/vnc.html?autoconnect=true&resize=remote" class="btn btn-primary" target="_blank">
+                    <span>Open Web GUI (Port 6080)</span> ↗
+                </a>
+                <a href="BUILD_AND_TEST_GUIDE.md#7-run-android-studio-ide-with-full-gui-in-docker-web-novnc--vnc" class="btn btn-secondary">
+                    <span>Setup &amp; Usage Instructions</span> →
                 </a>
             </div>
         </div>
 
     </div>
 
+
     <!-- Releases Table -->
     <div class="section-title">
-        <span>📦</span> Histórico de Releases &amp; Testes (Criados pelo CI)
+        <span>📦</span> Release &amp; Test Execution History (Automated CI Builds)
     </div>
 
     <div class="table-wrap">
         <table>
             <thead>
                 <tr>
-                    <th>Versão (Tag)</th>
-                    <th>Data</th>
-                    <th>Ambiente de Build</th>
-                    <th>Suite de Testes</th>
-                    <th>Ficheiros de Release</th>
-                    <th>Estado</th>
+                    <th>Version (Tag)</th>
+                    <th>Date</th>
+                    <th>Build Environment</th>
+                    <th>Test Suite</th>
+                    <th>Release Artifacts</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -467,7 +489,10 @@
                     <td>Docker (JDK 17 + Android SDK 34)</td>
                     <td>
                         <a href="release/v1.0.0/reports/index.html" style="color: var(--accent-blue); font-weight: 700; text-decoration: none;">
-                            79 Unit + 49 Behavior (100%)
+                            86 Unit + 49 Behavior (100% Pass)
+                        </a><br>
+                        <a href="release/v1.0.0/reports/behavior-tests/index.html" style="color: var(--accent-green); font-size: 11px; text-decoration: none; font-weight: 600;">
+                            📷 View 49 Behavior Tests &amp; 89 Screenshots ↗
                         </a>
                     </td>
                     <td>
@@ -477,7 +502,7 @@
                     </td>
                     <td>
                         <span class="status-pill">
-                            <span>●</span> Produzido no CI
+                            <span>●</span> Built in CI
                         </span>
                     </td>
                 </tr>
@@ -488,12 +513,13 @@
     <!-- Footer -->
     <footer>
         <div>
-            MorseGO • Telegrafia CW de Alta Precisão • Código Aberto
+            MorseGO • High-Precision CW Telegraphy • Open Source (Apache 2.0)
         </div>
         <div>
-            <a href="release/v1.0.0/reports/index.html">Relatório de Testes</a> • 
-            <a href="BUILD_AND_TEST_GUIDE.md">Guia de Build &amp; Testes</a> • 
-            <a href=".github/workflows/ci.yml">Workflow CI/CD</a>
+            <a href="release/v1.0.0/reports/index.html">Master Test Dashboard</a> • 
+            <a href="release/v1.0.0/reports/behavior-tests/index.html">Behavior Tests Gallery (49)</a> • 
+            <a href="BUILD_AND_TEST_GUIDE.md">Build &amp; Test Guide</a> • 
+            <a href=".github/workflows/ci.yml">CI/CD Workflow</a>
         </div>
     </footer>
 

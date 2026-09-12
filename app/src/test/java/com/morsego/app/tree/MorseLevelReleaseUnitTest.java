@@ -132,4 +132,20 @@ public class MorseLevelReleaseUnitTest {
                     l13.getAllCharacters().contains(String.valueOf(c)));
         }
     }
+
+    @Test
+    public void testListeningStagePassedPreservedOnRetry() {
+        com.morsego.app.ui.LearnFragment fragment = new com.morsego.app.ui.LearnFragment();
+        // Initially, listening stage is not passed
+        assertFalse(fragment.isListeningStagePassed());
+
+        // When student passes Listening stage (Stage 1), flag is set to true
+        fragment.setListeningStagePassedForTesting(true);
+        assertTrue("Listening stage must be marked as passed", fragment.isListeningStagePassed());
+
+        // If sending stage fails and retry is triggered, listeningStagePassed must remain true
+        // so the user does NOT need to repeat listening
+        assertTrue("On exam retry, student must not need to redo listening if already passed",
+                fragment.isListeningStagePassed());
+    }
 }

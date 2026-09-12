@@ -28,6 +28,7 @@ This document provides complete instructions for setting up the required environ
 
 | Action | Docker (Windows CMD) | Docker (PowerShell) | Native Host (`gradlew`) | Primary Output |
 | :--- | :--- | :--- | :--- | :--- |
+| **Interactive Dev Shell** | `run-docker-dev.bat` | `.\run-docker-dev.ps1` | `bash` / terminal | Interactive shell with Gradle daemon |
 | **Unit Tests (79 tests)** | `run-docker-tests.bat unit` | `.\run-docker-tests.ps1 unit` | `.\gradlew.bat testDebugUnitTest` | `reports/unit-tests/index.html` |
 | **Build Debug APK** | `run-docker-tests.bat build` | `.\run-docker-tests.ps1 build` | `.\gradlew.bat assembleDebug` | `build-apks/` or `app/build/outputs/apk/debug/` |
 | **Build Release APK** | `run-docker-tests.bat release` | `.\run-docker-tests.ps1 release` | `.\gradlew.bat assembleRelease` | `build-apks/morseGO-release.apk` |
@@ -116,6 +117,66 @@ The container connects to `host.docker.internal:5555`, executes the 49 behavior 
 ```cmd
 run-docker-tests.bat all
 ```
+
+#### 6. Interactive Development Container (Dev Shell)
+Opens an interactive bash shell inside the Docker container with JDK 17, Android SDK 34, fast Gradle daemon, and your workspace mounted:
+```cmd
+# Windows CMD
+run-docker-dev.bat
+
+# Windows PowerShell
+.\run-docker-dev.ps1
+
+# Linux / macOS
+./run-docker-dev.sh
+```
+
+Inside the interactive container shell, you have access to convenient shortcuts:
+- `test` or `./gradlew test` — Run all unit tests.
+- `./gradlew test --continuous` — Continuous testing mode: automatically reruns tests every time you save a file on your host machine!
+- `build` or `./gradlew assembleDebug` — Build the debug APK.
+- `release` or `./gradlew assembleRelease` — Build the release APK.
+- `lint` or `./gradlew lint` — Run the Android Lint analyzer.
+- `exit` — Exit the container shell.
+
+#### 7. Run Android Studio IDE with Full GUI in Docker (Web noVNC & VNC)
+Launches the complete official **Android Studio IDE with graphical user interface** directly inside Docker, pre-loading the `morseGo` project and serving it via your web browser (no local X server required!):
+```cmd
+# Windows CMD (launches container and opens browser automatically)
+run-docker-android-studio.bat
+
+# Windows PowerShell
+.\run-docker-android-studio.ps1
+
+# Linux / macOS
+./run-docker-android-studio.sh
+```
+
+**Access Points:**
+* **Web Browser GUI (noVNC):** `http://localhost:6080/vnc.html?autoconnect=true&resize=remote`
+* **Native VNC Client:** `localhost:5900` (no password)
+* **Automatic Project Load:** `/workspace` (`morseGo`) is pre-loaded on startup with Android SDK 34 pre-configured.
+* **Persistent Settings:** Caches Android Studio configurations and Gradle dependencies in Docker volumes (`studio-config`, `studio-share`, `gradle-cache`).
+
+**Helper Commands:**
+* `run-docker-android-studio.bat stop` — Stop the Android Studio container.
+* `run-docker-android-studio.bat logs` — View live container logs.
+* `run-docker-android-studio.bat restart` — Restart the container and reopen the browser.
+
+
+#### 8. Visual Studio Code Dev Containers & Tasks (Launch Android Studio)
+You can launch Android Studio directly inside VS Code or via Dev Containers:
+1. **Dev Containers (Auto-Launch Android Studio)**:
+   - Ensure the **Dev Containers** extension (`ms-vscode-remote.remote-containers`) is installed in VS Code.
+   - Open the `morseGo` folder in VS Code.
+   - Press `Ctrl+Shift+P` / `F1` and select `Dev Containers: Reopen in Container`.
+   - VS Code starts the `android-studio` Docker container, maps ports 6080 and 5900, automatically opens the browser at `http://localhost:6080` displaying Android Studio, and hooks up the container workspace.
+2. **VS Code Tasks**:
+   - Press `Ctrl+Shift+B` (Default Build Task) or `Ctrl+Shift+P` -> `Tasks: Run Task`:
+     - **`Launch Android Studio in Docker`**: Starts the container and opens the browser.
+     - **`Open Android Studio Web GUI (Browser)`**: Directly opens `http://localhost:6080/vnc.html?autoconnect=true&resize=remote`.
+     - **`Run Unit Tests (Docker)`**: Runs the unit test suite inside Docker.
+     - **`Build Release APK (Docker)`**: Assembles and signs the release APK.
 
 ---
 
@@ -239,12 +300,19 @@ morseGo/
         ├── morseGO-v1.0.0-debug.apk     # Debug testing APK
         ├── reports/                     # Test execution reports
         │   ├── index.html               # Main HTML test dashboard
-        │   ├── unit-tests/              # 79 Unit tests report
+        │   ├── behavior-tests/          # 49 Behavior tests & screenshots gallery
+        │   ├── unit-tests/              # 86 Unit tests report (100% pass)
         │   └── instrumented/            # 49 Instrumented tests report
-        ├── screenshots/                 # Visual proof screenshots (49 tests)
-        │   ├── behavior_test_01.jpg     # Tree traversal screenshots
+        ├── screenshots/                 # Visual proof screenshots (89 files: 23 landscape + 66 portrait)
+        │   ├── phone_rotation_01_portrait_0_deg.jpg       # 0° Portrait Baseline
+        │   ├── phone_rotation_02_rotated_90_deg_tree.jpg   # 90° Rotated Landscape Tree (860×412)
+        │   ├── phone_rotation_03_rotated_90_deg_keyer.jpg  # 90° Rotated Landscape Keyer (860×412)
+        │   ├── phone_rotation_04_rotated_90_deg_exam.jpg   # 90° Rotated Landscape Exam (860×412)
+        │   ├── phone_rotation_05_rotated_90_deg_hardware.jpg # 90° Rotated Landscape Hardware (860×412)
+        │   ├── phone_rotation_06_restored_portrait_0_deg.jpg # 0° Restored Portrait
+        │   ├── behavior_test_01.jpg     # Tree traversal screenshots (Landscape 860×412)
         │   ├── behavior_test_48.jpg     # Word transmission success (CQ, 73)
-        │   └── behavior_test_49.jpg     # Timing failure test case
+        │   └── behavior_test_49.jpg     # Timing failure test case (Landscape 860×412)
         ├── SHA256SUMS.txt               # Cryptographic hashes
         ├── release-manifest.json        # Machine-readable release & Store metadata
         └── test-summary.json            # Machine-readable test metrics
@@ -267,7 +335,8 @@ In production, **official releases are never compiled manually on local PCs**. T
    ```
 
 2. What GitHub Actions does automatically:
-   1. **Unit Tests**: Runs all 79 unit tests on OpenJDK 17.
+   1. **Unit Tests**: Runs all 86 unit tests on OpenJDK 17 (including 90° phone rotation invariance tests).
+
    2. **Android Emulator Matrix**: Boots a hardware-accelerated Pixel 6 emulator (API 30) and runs all 49 behavior tests, capturing live device screenshots.
    3. **Docker Build**: Compiles Release and Debug APKs inside the official Docker container.
    4. **Integrity Verification**: Generates `SHA256SUMS.txt` cryptographic hashes.
@@ -310,6 +379,16 @@ In production, **official releases are never compiled manually on local PCs**. T
   adb devices
   ```
   Ensure "Always allow from this computer" is checked on the phone screen.
+
+### 5. `App not installed as package appears to be invalid` (RESOLVED)
+- **Root Causes**:
+  1. **Unsigned Release APK** (`INSTALL_PARSE_FAILED_NO_CERTIFICATES`): Prior release builds had no `signingConfig` defined in `app/build.gradle`, producing an unsigned APK which Android Package Installer rejects automatically.
+  2. **Malformed Intent Filter** (`INSTALL_PARSE_FAILED_MANIFEST_MALFORMED`): `AndroidManifest.xml` had `<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />` under `<activity>` without the mandatory `<meta-data>` resource.
+- **Fix Applied**:
+  - Generated dedicated release keystore (`app/release.keystore`).
+  - Added `signingConfigs.release` in `app/build.gradle` with both v1 (JAR signing) and v2 (APK Signature Scheme) enabled.
+  - Removed the unnecessary USB intent-filter from `AndroidManifest.xml` (physical CW keyers connect as standard HID OTG keyboard devices).
+  - Both `morseGO-v1.0.0-release.apk` and `morseGO-v1.0.0-debug.apk` are fully signed and validated with `apksigner`.
 
 ---
 

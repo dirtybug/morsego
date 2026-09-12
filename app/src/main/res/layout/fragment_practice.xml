@@ -39,11 +39,12 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvPracticeHeaderTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="monospace"
-                            android:text="TREINO DE ESCUTA CW"
+                            android:text="@string/cw_listening_practice_title"
                             android:textColor="@color/morse_cyan"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -102,10 +103,11 @@
                         app:strokeWidth="2dp" />
 
                     <TextView
+                        android:id="@+id/tvPracticeTapPrompt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Toque para ouvir o sinal Morse"
+                        android:text="@string/practice_tap_to_listen"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -196,7 +198,7 @@
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/morse_amber"
                 android:fontFamily="monospace"
-                android:text="Próxima Pergunta ▶"
+                android:text="@string/practice_next_question"
                 android:textColor="@color/radio_dark"
                 android:textStyle="bold"
                 android:visibility="gone" />

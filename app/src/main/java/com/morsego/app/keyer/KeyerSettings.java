@@ -107,7 +107,7 @@ public class KeyerSettings {
     public void setWpm(int wpm) { this.wpm = Math.max(5, Math.min(45, wpm)); save(); }
 
     public float getPitchHz() { return pitchHz; }
-    public void setPitchHz(float pitchHz) { this.pitchHz = pitchHz; save(); }
+    public void setPitchHz(float pitchHz) { this.pitchHz = Math.max(400.0f, Math.min(1000.0f, pitchHz)); save(); }
 
     public Mode getMode() { return mode; }
     public void setMode(Mode mode) { this.mode = mode; save(); }
@@ -128,9 +128,11 @@ public class KeyerSettings {
     public void setHapticsEnabled(boolean hapticsEnabled) { this.hapticsEnabled = hapticsEnabled; save(); }
 
     public int getCurrentUnlockedLevel() {
-        int saved = prefs.getInt(KEY_LEVEL, 1);
-        int backup = prefs.getInt(KEY_BACKUP_LEVEL, 1);
-        this.currentUnlockedLevel = Math.max(this.currentUnlockedLevel, Math.max(saved, backup));
+        if (prefs != null) {
+            int saved = prefs.getInt(KEY_LEVEL, 1);
+            int backup = prefs.getInt(KEY_BACKUP_LEVEL, 1);
+            this.currentUnlockedLevel = Math.max(this.currentUnlockedLevel, Math.max(saved, backup));
+        }
         return this.currentUnlockedLevel;
     }
 

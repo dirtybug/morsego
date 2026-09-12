@@ -1,6 +1,23 @@
-version: '3.8'
-
 services:
+  # Interactive Development Shell (run ./gradlew, compile, test, debug)
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: morsego-dev:latest
+    container_name: morsego-dev
+    stdin_open: true
+    tty: true
+    environment:
+      - APP_VERSION_NAME
+      - APP_VERSION_CODE
+    volumes:
+      - .:/workspace
+      - gradle-cache:/root/.gradle
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["dev"]
+
   # Service to run Unit Tests (morseGO core logic, tree, timing, dynamic generator)
   test-unit:
     build:
@@ -74,6 +91,35 @@ services:
       - "host.docker.internal:host-gateway"
     command: ["all"]
 
+  # Service to run Android Studio with complete GUI (in-browser noVNC and native VNC)
+  android-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.android-studio
+    image: morsego-android-studio:latest
+    container_name: morsego-android-studio
+    environment:
+      - RESOLUTION=1600x900
+      - DISPLAY=:1
+    ports:
+      - "6080:6080" # Web Browser GUI (noVNC)
+      - "5900:5900" # Native VNC Client
+    volumes:
+      - .:/workspace
+      - studio-gradle-cache:/root/.gradle
+      - studio-config:/root/.config/Google
+      - studio-share:/root/.local/share/Google
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stdin_open: true
+    tty: true
+
 volumes:
   gradle-cache:
     name: morsego-gradle-cache
+  studio-gradle-cache:
+    name: morsego-studio-gradle-cache
+  studio-config:
+    name: morsego-studio-config
+  studio-share:
+    name: morsego-studio-share

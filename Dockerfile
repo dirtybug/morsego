@@ -7,19 +7,31 @@ ENV ANDROID_HOME=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools
 
-# Install essential dependencies
+# Install essential dependencies and developer tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
     wget \
     unzip \
     git \
+    vim \
+    nano \
+    less \
+    procps \
     libpulse0 \
     libgl1 \
     libx11-6 \
     file \
     sed \
     && rm -rf /var/lib/apt/lists/*
+
+# Configure developer convenience aliases
+RUN echo 'alias ll="ls -la"' >> /root/.bashrc && \
+    echo 'alias test="./gradlew test"' >> /root/.bashrc && \
+    echo 'alias build="./gradlew assembleDebug"' >> /root/.bashrc && \
+    echo 'alias release="./gradlew assembleRelease"' >> /root/.bashrc && \
+    echo 'alias lint="./gradlew lint"' >> /root/.bashrc
+
 
 # Download and install Android SDK Commandline Tools (version 11076708)
 ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip

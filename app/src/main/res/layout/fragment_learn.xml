@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <!-- 2 New Characters Card -->
                 <com.google.android.material.card.MaterialCardView
@@ -249,7 +249,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:lineSpacingExtra="3dp"
-                            android:text="• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level."
+                            android:text="• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Successfully complete transmission to unlock the next level."
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -264,7 +264,7 @@
                     android:layout_marginBottom="16dp"
                     android:backgroundTint="@color/morse_amber"
                     android:fontFamily="monospace"
-                    android:text="START LEVEL EXAM ▶"
+                    android:text="START TRANSMISSION EXAM ▶"
                     android:textColor="@color/radio_dark"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -276,18 +276,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <!-- Test Phase Header -->
                 <TextView
                     android:id="@+id/tvTestPhaseBanner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/morse_cyan"
+                    android:background="@color/morse_amber"
                     android:fontFamily="monospace"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:text="STAGE 1 OF 2: LISTENING EXAM (RECEIVE)"
+                    android:text="TRANSMISSION EXAM (SEND)"
                     android:textColor="@color/radio_dark"
                     android:textSize="12sp"
                     android:textStyle="bold" />

@@ -83,6 +83,49 @@ O projeto foi construído inteiramente em **Java** com o framework oficial Andro
 
 Para garantir que o código e todos os testes correm num ambiente idêntico, isolado e reprodutível (com OpenJDK 17 e Android SDK 34), o projeto inclui suporte Docker completo:
 
+### 0. Ambiente Interativo de Desenvolvimento (Dev Container):
+Para programar e compilar interativamente dentro do Docker sem precisar de Java ou Android SDK instalados na máquina:
+```cmd
+# Windows CMD
+run-docker-dev.bat
+
+# Windows PowerShell
+.\run-docker-dev.ps1
+
+# Linux / macOS
+./run-docker-dev.sh
+```
+Abre uma consola interativa (`bash`) com JDK 17, Android SDK 34 e Gradle Daemon ativado. Atalhos úteis dentro do container:
+* `test` — Executa todos os testes unitários.
+* `./gradlew test --continuous` — Retesta automaticamente ao editar ficheiros no seu editor no Windows.
+* `build` — Compila o APK de Debug.
+* `release` — Compila o APK de Release assinado.
+
+### 🖥️ Executar o Android Studio com Interface Gráfica (GUI) no Docker:
+Pode correr o **Android Studio completo com interface gráfica** diretamente dentro de um container Docker, com carregamento automático do projeto `morseGo` e acesso imediato pelo seu navegador web (via noVNC) ou cliente VNC:
+
+```cmd
+# Windows CMD (inicia e abre automaticamente o navegador)
+run-docker-android-studio.bat
+
+# Windows PowerShell
+.\run-docker-android-studio.ps1
+
+# Linux / macOS
+./run-docker-android-studio.sh
+```
+
+* **Acesso pelo Navegador (Web noVNC):** `http://localhost:6080/vnc.html?autoconnect=true&resize=remote`
+* **Cliente VNC Nativo:** `localhost:5900` (sem senha)
+* **Projeto Carregado Automaticamente:** O projeto `morseGo` é montado em `/workspace` e aberto diretamente pelo Android Studio com o SDK Android 34 pré-configurado.
+* **Comandos Úteis:**
+  * `run-docker-android-studio.bat stop` — Para o container.
+  * `run-docker-android-studio.bat logs` — Exibe os logs em tempo real.
+  * `run-docker-android-studio.bat restart` — Reinicia o container e reabre o browser.
+
+* `lint` — Analisa o código com o Android Lint.
+* **VS Code Dev Containers (Android Studio GUI automático)**: Abra o projeto no VS Code e prima `Ctrl+Shift+P` -> *"Dev Containers: Reopen in Container"*. O container do Android Studio é iniciado automaticamente, abrindo o browser em `http://localhost:6080` com a IDE gráfica carregada e o projeto pronto! Também pode premir `Ctrl+Shift+B` no VS Code para executar a tarefa *"Launch Android Studio in Docker"*.
+
 ### 1. Testes Unitários (Rápido, ~3 segundos):
 No Windows (Prompt de Comando):
 ```cmd

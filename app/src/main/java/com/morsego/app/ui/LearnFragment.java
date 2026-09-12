@@ -65,6 +65,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     // Overall test results
     private int listeningTotalFailures = 0;
     private int sendingTotalFailures = 0;
+    private boolean listeningStagePassed = false;
 
     @Nullable
     @Override
@@ -127,12 +128,14 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             }
         });
 
-        binding.btnStartLevelTest.setOnClickListener(v -> startExam());
+        binding.btnStartLevelTest.setOnClickListener(v -> {
+            startExam();
+        });
         binding.btnCancelTest.setOnClickListener(v -> cancelExam());
         binding.btnReplayTestAudio.setOnClickListener(v -> playCurrentListeningAudio());
 
         binding.btnResultAction.setOnClickListener(v -> {
-            boolean passed = (listeningTotalFailures < MAX_ALLOWED_FAILURES) && (sendingTotalFailures < MAX_ALLOWED_FAILURES);
+            boolean passed = (sendingTotalFailures < MAX_ALLOWED_FAILURES);
             if (passed) {
                 int nextLevel = currentLevelNumber + 1;
                 if (nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
@@ -162,6 +165,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
 
         // Dedicated bottom paddle buttons: DIT (•) and DAH (—)
         binding.btnTouchDit.setOnTouchListener((v, event) -> {
+            if (!sendingWaitingForInput && currentStage == TestStage.SENDING) {
+                return true;
+            }
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 activity.getInputManager().setTouchDit(true);
             } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -171,6 +177,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         });
 
         binding.btnTouchDah.setOnTouchListener((v, event) -> {
+            if (!sendingWaitingForInput && currentStage == TestStage.SENDING) {
+                return true;
+            }
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 activity.getInputManager().setTouchDah(true);
             } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -183,6 +192,30 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         loadLevel(currentLevelNumber);
     }
 
+    private void setSendingPaddlesEnabled(boolean enabled) {
+        if (binding == null) return;
+        binding.btnTouchDit.setEnabled(enabled);
+        binding.btnTouchDah.setEnabled(enabled);
+        float alpha = enabled ? 1.0f : 0.35f;
+        binding.btnTouchDit.setAlpha(alpha);
+        binding.btnTouchDah.setAlpha(alpha);
+    }
+
+    private void prepareForNextSendingQuestion(long delayMs) {
+        sendingWaitingForInput = false;
+        setSendingPaddlesEnabled(false);
+
+        if (binding != null) {
+            // Hide/dim previous letter and show transition indicator so user clearly sees the change
+            binding.tvSendingPrompt.setText("· · ·");
+            binding.tvSendingPrompt.setAlpha(0.35f);
+            binding.tvSendingMorseProgress.setText("—");
+            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+            binding.tvSendingBuffer.setText(isPt ? "A preparar próxima letra..." : "Loading next character...");
+            binding.getRoot().postDelayed(this::nextSendingQuestion, delayMs);
+        }
+    }
+
     private void applyLocalization() {
         if (binding == null) return;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
@@ -191,7 +224,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                 "KEYER PADDLES (DIT / DAH OR USB KEYER):");
         binding.btnTouchDit.setText(isPt ? "DI (•)\n[ESQ]" : "DIT (•)\n[LEFT]");
         binding.btnTouchDah.setText(isPt ? "DAH (—)\n[DIR]" : "DAH (—)\n[RIGHT]");
-        binding.btnCancelTest.setText(isPt ? "Cancelar Teste" : "Cancel Exam");
+        binding.btnCancelTest.setText(isPt ? "Reiniciar Teste" : "Restart Exam");
         binding.btnResetSendingAttempt.setText(isPt ? "🔄 Limpar / Recomeçar Palavra" : "🔄 Clear / Restart Word");
         binding.tvListeningInstruction.setText(isPt ? "Toque para ouvir novamente" : "Tap to listen again");
         binding.tvNewLettersLabel.setText(isPt ? "2 NOVOS CARACTERES DESTE NÍVEL:" : "2 NEW CHARACTERS IN THIS LEVEL:");
@@ -199,9 +232,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvPlayChar2Label.setText(isPt ? "Ouvir som 🔊" : "Listen 🔊");
         binding.tvRequirementsTitle.setText(isPt ? "REQUISITOS PARA SUBIR DE NÍVEL:" : "LEVEL ADVANCEMENT REQUIREMENTS:");
         binding.tvRequirementsDesc.setText(isPt ?
-                "• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete as etapas de Ouvir e Mandar para desbloquear o próximo nível." :
-                "• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic & randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level.");
-        binding.btnStartLevelTest.setText(isPt ? "INICIAR TESTE DO NÍVEL ▶" : "START LEVEL EXAM ▶");
+                "• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete a transmissão com sucesso para desbloquear o próximo nível." :
+                "• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic & randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass the transmission exam to unlock the next level.");
+        binding.btnStartLevelTest.setText(isPt ? "INICIAR TESTE DE TRANSMISSÃO ▶" : "START TRANSMISSION EXAM ▶");
         binding.btnReviewLevel.setText(isPt ? "Rever Este Nível" : "Review This Level");
     }
 
@@ -209,6 +242,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         applyLocalization();
         this.currentLevelNumber = levelNum;
         this.currentLevel = MorseBinaryTree.getInstance().getLevel(levelNum);
+        this.listeningStagePassed = false;
 
         MainActivity activity = (MainActivity) getActivity();
         boolean isUnlocked = activity != null && activity.getSettings().isLevelUnlocked(levelNum);
@@ -239,31 +273,33 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         boolean nextUnlocked = activity != null && activity.getSettings().isLevelUnlocked(nextLevel);
         binding.btnNextLevel.setAlpha(nextUnlocked ? 1.0f : 0.4f);
 
-        showStudyView();
+        // Go directly to the transmission test in Send tab!
+        startExam();
     }
 
     private void showStudyView() {
-        currentStage = TestStage.STUDY;
-        binding.layoutStudyView.setVisibility(View.VISIBLE);
-        binding.layoutTestView.setVisibility(View.GONE);
-        binding.layoutResultView.setVisibility(View.GONE);
+        startExam();
     }
 
     // ================= EXAM WORKFLOW =================
 
     private void startExam() {
-        listeningTotalFailures = 0;
         sendingTotalFailures = 0;
+        listeningTotalFailures = 0;
 
         binding.layoutStudyView.setVisibility(View.GONE);
         binding.layoutTestView.setVisibility(View.VISIBLE);
         binding.layoutResultView.setVisibility(View.GONE);
 
-        startListeningStage();
+        startSendingStage();
+    }
+
+    private void startSendingStageDirectly() {
+        startExam();
     }
 
     private void cancelExam() {
-        showStudyView();
+        startExam();
     }
 
     /**
@@ -334,7 +370,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void startListeningStage() {
         currentStage = TestStage.LISTENING;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        binding.tvTestPhaseBanner.setText(isPt ? "ETAPA 1 DE 2: TESTE DE ESCUTA (OUVIR)" : "STAGE 1 OF 2: LISTENING EXAM (RECEIVE)");
+        binding.tvTestPhaseBanner.setText(isPt ? "ETAPA 1 DE 2: TREINO DE ESCUTA EM CW (OUVIR)" : "STAGE 1 OF 2: CW LISTENING TRAINING (RECEIVE)");
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#00E5FF"));
         binding.layoutStageListening.setVisibility(View.VISIBLE);
         binding.layoutStageSending.setVisibility(View.GONE);
@@ -351,6 +387,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void nextListeningQuestion() {
         if (currentQueue.isEmpty()) {
             listeningTotalFailures = currentStageFailures;
+            listeningStagePassed = true;
             startSendingStage();
             return;
         }
@@ -496,7 +533,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     private void startSendingStage() {
         currentStage = TestStage.SENDING;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        binding.tvTestPhaseBanner.setText(isPt ? "ETAPA 2 DE 2: TESTE DE TRANSMISSÃO (MANDAR)" : "STAGE 2 OF 2: TRANSMISSION EXAM (SEND)");
+        binding.tvTestPhaseBanner.setText(isPt ? "TESTE DE TRANSMISSÃO (MANDAR)" : "TRANSMISSION EXAM (SEND)");
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
         binding.layoutStageSending.setVisibility(View.VISIBLE);
@@ -514,12 +551,13 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         if (currentQueue.isEmpty()) {
             sendingTotalFailures = currentStageFailures;
             boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-            String passMsg = isPt ? "Parabéns! Passou no teste de Ouvir e Mandar!" : "Congratulations! Passed the Listening and Sending Exam!";
+            String passMsg = isPt ? "Parabéns! Passou no teste de Transmissão!" : "Congratulations! Passed the Transmission Exam!";
             showExamResults(true, passMsg);
             return;
         }
 
         sendingWaitingForInput = true;
+        setSendingPaddlesEnabled(true);
         currentSendingTarget = currentQueue.poll();
         currentWordKeyed.setLength(0);
         updateLivesUi();
@@ -529,6 +567,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvSendingPromptLabel.setText(isPt ?
                 (isSingleLetter ? "TRANSMITA A LETRA:" : "TRANSMITA A PALAVRA (LETRAS SEPARADAS):") :
                 (isSingleLetter ? "TRANSMIT LETTER:" : "TRANSMIT WORD (SEPARATED LETTERS):"));
+        binding.tvSendingPrompt.setAlpha(1.0f);
         binding.tvSendingPrompt.setText(currentSendingTarget);
         updateSendingMorseProgress();
 
@@ -649,7 +688,7 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                     "✓ Correct! Transmitted '" + keyedText + "' successfully!");
             binding.tvSendingFeedback.setTextColor(Color.parseColor("#00E676"));
             revealFullSendingMorsePattern();
-            binding.getRoot().postDelayed(this::nextSendingQuestion, 800);
+            prepareForNextSendingQuestion(450L);
         } else {
             // FAILED SENDING QUESTION (WRONG LETTER ERROR)!
             currentStageFailures++;
@@ -680,9 +719,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
                 String failMsg = isPt ?
                         "Excedeu o limite de 3 falhas no Teste de Envio." :
                         "Exceeded limit of 3 failures in Transmission Test.";
-                binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1500);
+                binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1200);
             } else {
-                binding.getRoot().postDelayed(this::nextSendingQuestion, 1600);
+                prepareForNextSendingQuestion(900L);
             }
         }
     }
@@ -709,6 +748,16 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
     @Override
     public void onTimingFailure(MorseTiming.PauseEvaluation eval) {
         if (binding == null || currentStage != TestStage.SENDING || !sendingWaitingForInput) return;
+
+        // If the timing evaluation is an intra-element cadence warning (within the same letter),
+        // show feedback in the timing view without aborting/destroying the student's in-progress letter!
+        if (eval != null && eval.feedback != null &&
+                (eval.feedback.contains("ponto/traço") || eval.feedback.contains("dit/dah") ||
+                 eval.feedback.contains("mesma letra") || eval.feedback.contains("same character"))) {
+            binding.tvTimingFeedback.setText(eval.feedback);
+            binding.tvTimingFeedback.setTextColor(Color.parseColor("#FF5252"));
+            return;
+        }
 
         sendingWaitingForInput = false;
         questionsAnsweredInStage++;
@@ -744,9 +793,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             String failMsg = isPt ?
                     "Excedeu o limite de 3 falhas no Teste de Envio (desrespeito dos tempos mín/máx de pausa)." :
                     "Exceeded limit of 3 failures in Transmission Test (pause timing violated).";
-            binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1600);
+            binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1200);
         } else {
-            binding.getRoot().postDelayed(this::nextSendingQuestion, 1800);
+            prepareForNextSendingQuestion(950L);
         }
     }
 
@@ -831,8 +880,8 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         binding.tvPenaltyNotice.setVisibility(View.GONE);
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         if (currentStage == TestStage.LISTENING) {
-            binding.tvListeningFeedback.setText(isPt ? "✓ Correto! Recuperação com sucesso." : "✓ Correct! Recovered successfully.");
-            binding.tvListeningFeedback.setTextColor(Color.parseColor("#00E676"));
+            binding.tvListeningInstruction.setText(isPt ? "✓ Correto! Recuperação com sucesso." : "✓ Correct! Recovered successfully.");
+            binding.tvListeningInstruction.setTextColor(Color.parseColor("#00E676"));
         } else {
             binding.tvSendingFeedback.setText(isPt ? "✓ Correto! Recuperação com sucesso." : "✓ Correct! Recovered successfully.");
             binding.tvSendingFeedback.setTextColor(Color.parseColor("#00E676"));
@@ -878,13 +927,17 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
         this.currentSendingTarget = target;
         this.currentWordKeyed.setLength(0);
         this.sendingWaitingForInput = true;
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        boolean isSingleLetter = (target.length() == 1);
-        binding.tvSendingPromptLabel.setText(isPt ?
-                (isSingleLetter ? "TRANSMITA A LETRA:" : "TRANSMITA A PALAVRA (LETRAS SEPARADAS):") :
-                (isSingleLetter ? "TRANSMIT LETTER:" : "TRANSMIT WORD (SEPARATED LETTERS):"));
-        binding.tvSendingPrompt.setText(target);
-        updateSendingMorseProgress();
+        setSendingPaddlesEnabled(true);
+        if (binding != null) {
+            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+            boolean isSingleLetter = (target.length() == 1);
+            binding.tvSendingPromptLabel.setText(isPt ?
+                    (isSingleLetter ? "TRANSMITA A LETRA:" : "TRANSMITA A PALAVRA (LETRAS SEPARADAS):") :
+                    (isSingleLetter ? "TRANSMIT LETTER:" : "TRANSMIT WORD (SEPARATED LETTERS):"));
+            binding.tvSendingPrompt.setAlpha(1.0f);
+            binding.tvSendingPrompt.setText(target);
+            updateSendingMorseProgress();
+        }
     }
 
     public void simulateKeyCharacterForTesting(char c) {
@@ -910,11 +963,9 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
 
             String summary = isPt ?
-                    ("Etapa 1 (Ouvir): Aprovado (Falhas: " + listeningTotalFailures + "/3)\n" +
-                            "Etapa 2 (Mandar): Aprovado (Falhas: " + sendingTotalFailures + "/3)\n\n" +
+                    ("Teste de Transmissão (Mandar): Aprovado (Falhas: " + sendingTotalFailures + "/3)\n\n" +
                             "Dominou as letras novas e palavras formadas com o vocabulário deste nível!") :
-                    ("Stage 1 (Listening): Passed (Mistakes: " + listeningTotalFailures + "/3)\n" +
-                            "Stage 2 (Transmission): Passed (Mistakes: " + sendingTotalFailures + "/3)\n\n" +
+                    ("Transmission Exam (Send): Passed (Mistakes: " + sendingTotalFailures + "/3)\n\n" +
                             "Mastered the new characters and vocabulary of this level!");
             binding.tvResultSummary.setText(summary);
 
@@ -937,18 +988,25 @@ public class LearnFragment extends Fragment implements MorseDecoder.DecoderListe
             binding.btnResultAction.setText(isPt ? "AVANÇAR PARA O PRÓXIMO NÍVEL ▶" : "ADVANCE TO NEXT LEVEL ▶");
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FFB300"));
         } else {
-            binding.tvResultTitle.setText(isPt ? "❌ TESTE FALHADO" : "❌ EXAM FAILED");
+            binding.tvResultTitle.setText(isPt ? "❌ TESTE DE ENVIO FALHADO" : "❌ TRANSMISSION EXAM FAILED");
             binding.tvResultTitle.setTextColor(Color.parseColor("#FF5252"));
 
-            String summary = isPt ?
-                    (detailMessage + "\n\nRegra: O teste só tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!") :
-                    (detailMessage + "\n\nRule: The exam only tolerates up to 3 mistakes total.\nPractice your timing cadence and try again!");
+            String summary = detailMessage + "\n\n"
+                    + (isPt ? "Regra: O teste de envio tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!" :
+                    "Rule: The transmission exam allows up to 3 mistakes total.\nPractice your timing cadence and try again!");
             binding.tvResultSummary.setText(summary);
             binding.tvResultUnlockMsg.setVisibility(View.GONE);
-
-            binding.btnResultAction.setText(isPt ? "REPETIR TESTE 🔄" : "RETRY EXAM 🔄");
+            binding.btnResultAction.setText(isPt ? "REPETIR ENVIO (MANDAR) 🔄" : "RETRY TRANSMISSION 🔄");
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FF5252"));
         }
+    }
+
+    public boolean isListeningStagePassed() {
+        return listeningStagePassed;
+    }
+
+    public void setListeningStagePassedForTesting(boolean passed) {
+        this.listeningStagePassed = passed;
     }
 
     @Override

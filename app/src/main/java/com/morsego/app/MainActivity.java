@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,7 @@ import com.morsego.app.keyer.IambicKeyerEngine;
 import com.morsego.app.keyer.KeyerInputManager;
 import com.morsego.app.keyer.KeyerSettings;
 import com.morsego.app.keyer.MorseDecoder;
+import com.morsego.app.keyer.MorseTiming;
 import com.morsego.app.ui.FreeKeyerFragment;
 import com.morsego.app.ui.HardwareFragment;
 import com.morsego.app.ui.LearnFragment;
@@ -29,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     public static final int TAB_TREE = R.id.nav_tree;
     public static final int TAB_LEARN = R.id.nav_learn;
+    public static final int TAB_SEND = R.id.nav_learn;
     public static final int TAB_PRACTICE = R.id.nav_practice;
+    public static final int TAB_RECEIVE = R.id.nav_practice;
     public static final int TAB_KEYER = R.id.nav_keyer;
     public static final int TAB_HARDWARE = R.id.nav_hardware;
 
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         });
 
         // Default start fragment: TreeFragment (Binary Tree view)
-        switchFragment(new TreeFragment());
+        binding.bottomNavigation.setSelectedItemId(R.id.nav_tree);
         checkSilentMode();
     }
 

@@ -2,6 +2,7 @@ package com.morsego.app.audio;
 
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 
 import com.morsego.app.keyer.MorseTiming;
@@ -58,7 +59,7 @@ public class MorseAudioSynthesizer {
                 audioFormat,
                 bufferSize,
                 AudioTrack.MODE_STREAM,
-                AudioTrack.AUDIO_SESSION_ID_GENERATE
+                AudioManager.AUDIO_SESSION_ID_GENERATE
         );
 
         audioTrack.play();

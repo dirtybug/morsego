@@ -6,6 +6,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -59,12 +60,8 @@ public class MorseGoBehaviorScreenshotsTest {
 
         // Capture screenshot of Tree screen
         ScreenshotHelper.capture("01_binary_tree_screen");
-
-        // When user plays the selected character
-        onView(withId(R.id.btnPlaySelected)).perform(click());
-        Thread.sleep(700);
-
-        ScreenshotHelper.capture("02_binary_tree_audio_preview");
+        Thread.sleep(500);
+        ScreenshotHelper.capture("02_binary_tree_selection_preview");
     }
 
     /**
@@ -72,50 +69,38 @@ public class MorseGoBehaviorScreenshotsTest {
      */
     @Test
     public void test02_LearnFragment_StudyModeAndSoundPreview() throws InterruptedException {
-        // When user navigates to "Aprender"
+        // When user navigates to "Enviar"
         onView(withId(R.id.nav_learn)).perform(click());
         Thread.sleep(600);
 
-        // Then verify study view is visible with 2 new characters
+        // Verify transmission exam is directly visible
         onView(withId(R.id.tvLevelTitle)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvNewChar1)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvNewChar2)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
 
-        // Capture study mode presentation
-        ScreenshotHelper.capture("03_learn_study_level1");
-
-        // When user taps to preview sound of char 1
-        onView(withId(R.id.btnPlayChar1)).perform(click());
-        Thread.sleep(600);
-
-        // When user taps to preview sound of char 2
-        onView(withId(R.id.btnPlayChar2)).perform(click());
-        Thread.sleep(600);
+        // Capture transmission exam presentation
+        ScreenshotHelper.capture("03_learn_transmission_exam_direct");
     }
 
     /**
-     * BEHAVIOR 3: Starting the Level Exam - Listening Stage (Stage 1 of 2).
+     * BEHAVIOR 3: CW Listening Training (Ouvir / Receive).
      */
     @Test
     public void test03_ExamListeningStage_DynamicOptionsAndLives() throws InterruptedException {
-        // Given user is in Learn tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        // Given user is in Ouvir (Practice) tab
+        onView(withId(R.id.nav_practice)).perform(click());
         Thread.sleep(500);
 
-        // When user starts the level exam
-        onView(withId(R.id.btnStartLevelTest)).perform(click());
-        Thread.sleep(800);
-
-        // Then verify Stage 1 (Listening) is displayed
-        onView(withId(R.id.tvTestPhaseBanner)).check(matches(anyOf(containsString("1"), containsString("ESCUTA"), containsString("LISTENING"))));
-        onView(withId(R.id.tvTestLives)).check(matches(anyOf(containsString("Vidas:"), containsString("Lives:"), containsString("❤️❤️❤️"))));
-        onView(withId(R.id.tvTestProgress)).check(matches(isDisplayed()));
+        // Then verify CW listening training screen is displayed
+        onView(withId(R.id.tvPracticeHeaderTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvPracticeScore)).check(matches(isDisplayed()));
 
         // Capture listening stage screenshot
         ScreenshotHelper.capture("04_exam_listening_stage");
 
         // When user clicks audio replay button
-        onView(withId(R.id.btnReplayTestAudio)).perform(click());
+        onView(withId(R.id.btnPlayQuestionAudio)).perform(click());
         Thread.sleep(600);
 
         ScreenshotHelper.capture("05_exam_listening_audio_playing");
@@ -131,18 +116,18 @@ public class MorseGoBehaviorScreenshotsTest {
         Thread.sleep(500);
 
         // Verify keyer components
-        onView(withId(R.id.tvKeyerDisplay)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvCurrentPattern)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvBuffer)).check(matches(isDisplayed()));
 
         // Capture initial free keyer screen
         ScreenshotHelper.capture("06_free_keyer_initial");
 
         // User interacts with on-screen DI paddle
-        onView(withId(R.id.btnKeyerDit)).perform(click());
+        onView(withId(R.id.btnFreeDit)).perform(click());
         Thread.sleep(300);
 
         // User interacts with on-screen DAH paddle
-        onView(withId(R.id.btnKeyerDah)).perform(click());
+        onView(withId(R.id.btnFreeDah)).perform(click());
         Thread.sleep(500);
 
         ScreenshotHelper.capture("07_free_keyer_paddles_keyed");
@@ -264,7 +249,7 @@ public class MorseGoBehaviorScreenshotsTest {
         // Verify keyer tab in landscape
         onView(withId(R.id.nav_keyer)).perform(click());
         Thread.sleep(400);
-        onView(withId(R.id.tvKeyerDisplay)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
 
         // Verify hardware tab in landscape
         onView(withId(R.id.nav_hardware)).perform(click());
@@ -278,4 +263,63 @@ public class MorseGoBehaviorScreenshotsTest {
         Thread.sleep(500);
         onView(withId(R.id.cardLeftPaddle)).check(matches(isDisplayed()));
     }
+
+    /**
+     * BEHAVIOR 9: 90-Degree Phone Rotation Verification (Virar o Telemóvel 90 Graus).
+     * Rotates device 90° clockwise into Horizontal / Landscape orientation,
+     * navigates across the core application workflows (Morse Tree, CW Keyer, Exam, Hardware),
+     * captures landscape screenshots, and rotates back to Portrait to confirm full state preservation.
+     */
+    @Test
+    public void test09_RotatePhone90Degrees_LandscapeScreenshots() throws InterruptedException {
+        // Step 1: Ensure Baseline in Portrait (0 degrees)
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        });
+        Thread.sleep(500);
+        onView(withId(R.id.nav_tree)).perform(click());
+        Thread.sleep(400);
+        ScreenshotHelper.capture("phone_rotation_01_portrait_0_deg");
+
+        // Step 2: Rotate Phone 90 Degrees Clockwise to Landscape (Horizontal)
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        });
+        Thread.sleep(700);
+
+        // Verify and capture Landscape Binary Tree
+        onView(withId(R.id.nav_tree)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("phone_rotation_02_rotated_90_deg_tree");
+
+        // Verify and capture Landscape Free Keyer
+        onView(withId(R.id.nav_keyer)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.tvDecodedOutput)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("phone_rotation_03_rotated_90_deg_keyer");
+
+        // Verify and capture Landscape Exam / Learn
+        onView(withId(R.id.nav_learn)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.tvLevelTitle)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("phone_rotation_04_rotated_90_deg_exam");
+
+        // Verify and capture Landscape Hardware CW Paddle
+        onView(withId(R.id.nav_hardware)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.cardLeftPaddle)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("phone_rotation_05_rotated_90_deg_hardware");
+
+        // Step 3: Rotate Phone Back to Portrait (0 degrees)
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        });
+        Thread.sleep(600);
+        onView(withId(R.id.nav_tree)).perform(click());
+        Thread.sleep(400);
+        onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
+        ScreenshotHelper.capture("phone_rotation_06_restored_portrait_0_deg");
+    }
 }
+

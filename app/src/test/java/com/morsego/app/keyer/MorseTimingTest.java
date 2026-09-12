@@ -57,13 +57,17 @@ public class MorseTimingTest {
         assertTrue(evalGood.isGood);
         assertFalse(evalGood.isTimingFailure);
 
-        // Too fast letter pause: 80ms (< 0.60x) -> TIMING FAILURE
-        MorseTiming.PauseEvaluation evalTooFast = MorseTiming.evaluateLetterPause(80, wpm);
+        // Too fast letter pause: 50ms (< 0.40x) -> TIMING FAILURE
+        MorseTiming.PauseEvaluation evalTooFast = MorseTiming.evaluateLetterPause(50, wpm);
         assertFalse(evalTooFast.isGood);
         assertTrue(evalTooFast.isTimingFailure);
 
-        // Too long letter pause: 450ms (> 2.2x) -> TIMING FAILURE
-        MorseTiming.PauseEvaluation evalTooSlow = MorseTiming.evaluateLetterPause(450, wpm);
+        // Previous tight pause of 450ms (2.5x) is now accepted with the new generous tolerance
+        MorseTiming.PauseEvaluation evalTolerated = MorseTiming.evaluateLetterPause(450, wpm);
+        assertFalse(evalTolerated.isTimingFailure);
+
+        // Too long letter pause: 650ms (> 3.2x) -> TIMING FAILURE
+        MorseTiming.PauseEvaluation evalTooSlow = MorseTiming.evaluateLetterPause(650, wpm);
         assertFalse(evalTooSlow.isGood);
         assertTrue(evalTooSlow.isTimingFailure);
     }

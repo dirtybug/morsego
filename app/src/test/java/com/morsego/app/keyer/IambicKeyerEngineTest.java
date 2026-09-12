@@ -91,4 +91,86 @@ public class IambicKeyerEngineTest {
         engine.onDitChanged(false);
         assertFalse(toneActive.get());
     }
+
+    @Test
+    public void testDebounceRequiresReleaseForConsecutiveDits() throws InterruptedException {
+        settings.setMode(KeyerSettings.Mode.IAMBIC_B);
+        settings.setWpm(40); // Fast WPM for testing: dit = 30ms
+
+        // Hold Dit down continuously
+        engine.onDitChanged(true);
+        // Wait long enough that multiple dits would have fired without debounce (30ms dit + 30ms space = 60ms)
+        Thread.sleep(180);
+        // With debounce, holding Dit must emit only 1 dit
+        assertEquals("Holding Dit must emit exactly 1 dit until released", 1, elementsEmitted.get());
+
+        // Release Dit
+        engine.onDitChanged(false);
+        Thread.sleep(50);
+
+        // Press Dit again: second dit must be emitted
+        engine.onDitChanged(true);
+        Thread.sleep(120);
+        assertEquals("Releasing and pressing Dit again must emit the second dit", 2, elementsEmitted.get());
+
+        engine.onDitChanged(false);
+    }
+
+    @Test
+    public void testDebounceRequiresReleaseForConsecutiveDahs() throws InterruptedException {
+        settings.setMode(KeyerSettings.Mode.IAMBIC_B);
+        settings.setWpm(40); // Fast WPM: dah = 90ms, space = 30ms
+
+        // Hold Dah down continuously
+        engine.onDahChanged(true);
+        Thread.sleep(260);
+        // With debounce, holding Dah must emit only 1 dah
+        assertEquals("Holding Dah must emit exactly 1 dah until released", 1, elementsEmitted.get());
+
+        // Release Dah
+        engine.onDahChanged(false);
+        Thread.sleep(50);
+
+        // Press Dah again: second dah must be emitted
+        engine.onDahChanged(true);
+        Thread.sleep(150);
+        assertEquals("Releasing and pressing Dah again must emit the second dah", 2, elementsEmitted.get());
+
+        engine.onDahChanged(false);
+    }
+
+    @Test
+    public void testSendingLetterN_DahThenDit() throws InterruptedException {
+        settings.setMode(KeyerSettings.Mode.IAMBIC_B);
+        settings.setWpm(40); // Fast WPM
+        java.util.List<Character> emittedChars = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+        IambicKeyerEngine testEngine = new IambicKeyerEngine(settings, new IambicKeyerEngine.KeyerListener() {
+            @Override public void onToneStart() {}
+            @Override public void onToneStop() {}
+            @Override public void onElementEmitted(char element) {
+                emittedChars.add(element);
+            }
+        });
+
+        // 1. Press and release Dah (-)
+        testEngine.onDahChanged(true);
+        Thread.sleep(40);
+        testEngine.onDahChanged(false);
+
+        // 2. Press and release Dit (.)
+        Thread.sleep(120);
+        testEngine.onDitChanged(true);
+        Thread.sleep(40);
+        testEngine.onDitChanged(false);
+
+        Thread.sleep(100);
+
+        // Must have received '-' followed by '.' = 'N'
+        assertEquals(2, emittedChars.size());
+        assertEquals(Character.valueOf('-'), emittedChars.get(0));
+        assertEquals(Character.valueOf('.'), emittedChars.get(1));
+
+        testEngine.release();
+    }
 }

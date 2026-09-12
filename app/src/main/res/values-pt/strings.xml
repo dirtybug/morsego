@@ -3,12 +3,19 @@
     <string name="morsego_motto">MorseGO • O Morcego da Telegrafia CW</string>
 
     <!-- Navigation -->
-    <string name="tree_title">Árvore</string>
-    <string name="learn_title">Aprender</string>
-    <string name="practice_title">Praticar</string>
+    <string name="send_title">Enviar</string>
+    <string name="listen_title">Ouvir</string>
+    <string name="receive_title">Ouvir</string>
+    <string name="tree_title">Árvore de Morse</string>
+    <string name="learn_title">Enviar</string>
+    <string name="practice_title">Ouvir</string>
     <string name="keyer_title">Manipulador</string>
-    <string name="hardware_title">Hardware CW</string>
+    <string name="hardware_title">USB</string>
     <string name="settings_title">Definições</string>
+
+    <string name="cw_listening_practice_title">TREINO DE ESCUTA EM CW</string>
+    <string name="practice_tap_to_listen">Toque para ouvir o sinal Morse</string>
+    <string name="practice_next_question">Próxima Pergunta ▶</string>
 
     <!-- Tree View -->
     <string name="tree_header_title">ÁRVORE BINÁRIA DE MORSE</string>
@@ -17,6 +24,9 @@
     <string name="tree_practice_level">Praticar Este Nível ▶</string>
     <string name="tree_code_label">Código: %s</string>
     <string name="tree_listen_button">Ouvir</string>
+    <string name="tree_interactive_title">ÁRVORE INTERATIVA</string>
+    <string name="tree_zoom_reset">Repor</string>
+    <string name="tree_zoom_hint">🔍 Junte os dedos para zoom • Arraste para navegar • Toque duplo para alternar</string>
 
     <!-- Learn & Exam -->
     <string name="level_number_format">NÍVEL %1$d / %2$d</string>

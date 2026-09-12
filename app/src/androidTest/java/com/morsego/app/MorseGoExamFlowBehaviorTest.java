@@ -65,24 +65,19 @@ public class MorseGoExamFlowBehaviorTest {
         onView(withId(R.id.nav_learn)).perform(click());
         Thread.sleep(500);
 
-        // Verify requirements text is displayed
-        onView(withId(R.id.btnStartLevelTest)).check(matches(isDisplayed()));
-        ScreenshotHelper.capture("14_exam_requirements_info");
-
-        // Start exam
-        onView(withId(R.id.btnStartLevelTest)).perform(click());
-        Thread.sleep(800);
-
-        // Verify listening stage header
-        onView(withId(R.id.tvTestPhaseBanner)).check(matches(anyOf(containsString("1"), containsString("ESCUTA"), containsString("LISTENING"))));
+        // Verify direct entry into transmission exam
+        onView(withId(R.id.tvTestPhaseBanner)).check(matches(withText(anyOf(containsString("TRANSMISSÃO"), containsString("TRANSMISSION")))));
 
         // Verify 3 lives (❤️❤️❤️)
         onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
 
         // Verify progress indicates active items
-        onView(withId(R.id.tvTestProgress)).check(matches(anyOf(containsString("Letras"), containsString("Characters"), containsString("/"))));
+        onView(withId(R.id.tvTestProgress)).check(matches(withText(anyOf(containsString("Letras"), containsString("Characters"), containsString("/")))));
 
-        ScreenshotHelper.capture("15_exam_listening_in_progress");
+        // Verify prompt is displayed
+        onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
+
+        ScreenshotHelper.capture("15_exam_transmission_in_progress");
     }
 
     /**
@@ -118,15 +113,14 @@ public class MorseGoExamFlowBehaviorTest {
         onView(withId(R.id.nav_learn)).perform(click());
         Thread.sleep(500);
 
-        // Start test
-        onView(withId(R.id.btnStartLevelTest)).perform(click());
-        Thread.sleep(800);
+        // Verify prompt is displayed
+        onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
 
-        // Cancel test to return to study view cleanly
+        // Restart test
         onView(withId(R.id.btnCancelTest)).perform(click());
         Thread.sleep(500);
 
-        onView(withId(R.id.layoutStudyView)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("17_exam_study_view_restored");
     }
 
@@ -169,8 +163,8 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(800);
 
         // Verify result layout shows success and level unlock message
-        onView(withId(R.id.tvResultTitle)).check(matches(anyOf(containsString("CONCLUÍDO"), containsString("COMPLETED"))));
-        onView(withId(R.id.tvResultUnlockMsg)).check(matches(anyOf(containsString("2"), containsString("Desbloqueou"), containsString("Unlocked"))));
+        onView(withId(R.id.tvResultTitle)).check(matches(withText(anyOf(containsString("CONCLUÍDO"), containsString("COMPLETED")))));
+        onView(withId(R.id.tvResultUnlockMsg)).check(matches(withText(anyOf(containsString("2"), containsString("Desbloqueou"), containsString("Unlocked")))));
 
         ScreenshotHelper.capture("19_level_release_unlock_dialog");
 
@@ -183,7 +177,7 @@ public class MorseGoExamFlowBehaviorTest {
         Assert.assertTrue("Level 2 must now be unlocked", activity.getSettings().isLevelUnlocked(2));
 
         // Verify Level 2 study screen is displayed with new letters A and I
-        onView(withId(R.id.tvLevelNumber)).check(matches(anyOf(containsString("2"), containsString("NÍVEL 2"), containsString("LEVEL 2"))));
+        onView(withId(R.id.tvLevelNumber)).check(matches(withText(anyOf(containsString("2"), containsString("NÍVEL 2"), containsString("LEVEL 2")))));
         onView(withId(R.id.tvNewChar1)).check(matches(withText("A")));
         onView(withId(R.id.tvNewChar2)).check(matches(withText("I")));
 
@@ -327,20 +321,20 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(700);
 
         // Verify result card displayed with failure indication
-        onView(withId(R.id.tvResultTitle)).check(matches(anyOf(
+        onView(withId(R.id.tvResultTitle)).check(matches(withText(anyOf(
                 containsString("NÃO PASSOU"),
                 containsString("REPROVADO"),
                 containsString("FAILED"),
                 containsString("TRY AGAIN"),
                 containsString("TENTE NOVAMENTE")
-        )));
+        ))));
 
         // Verify action button offers retry
-        onView(withId(R.id.btnResultAction)).check(matches(anyOf(
+        onView(withId(R.id.btnResultAction)).check(matches(withText(anyOf(
                 containsString("REPETIR"),
                 containsString("RETRY"),
                 containsString("TENTAR")
-        )));
+        ))));
         ScreenshotHelper.capture("25_exam_failure_three_strikes_dialog");
 
         // Test in Landscape
@@ -701,10 +695,10 @@ public class MorseGoExamFlowBehaviorTest {
         // 3. Verify that in Landscape, listening stage remains active, lives are intact, options are interactive
         onView(withId(R.id.layoutStageListening)).check(matches(isDisplayed()));
         onView(withId(R.id.tvTestLives)).check(matches(withText(containsString("❤️❤️❤️"))));
-        onView(withId(R.id.btnListeningOption1)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnListeningOption2)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnListeningOption3)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnListeningOption4)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTestOpt1)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTestOpt2)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTestOpt3)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnTestOpt4)).check(matches(isDisplayed()));
 
         ScreenshotHelper.capture("screenshot_screen_rotation_landscape");
 

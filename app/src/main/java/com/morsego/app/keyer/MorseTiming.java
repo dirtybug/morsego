@@ -75,22 +75,22 @@ public class MorseTiming {
 
     /**
      * Evaluates pause between letters in a word (Nominal: 3 Dits).
-     * Violating minimum (< 0.60x) or maximum (> 2.2x) is considered a TIMING FAILURE.
+     * Violating minimum (< 0.40x) or maximum (> 3.2x) is considered a TIMING FAILURE.
      */
     public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm) {
         long ideal = interCharSpaceMs(wpm);
         float ratio = (float) pauseMs / ideal;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
-        if (ratio < 0.60f) {
+        if (ratio < 0.40f) {
             String feedback = isPt ?
-                    "Falha: Pausa insuficiente entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.6x)" :
-                    "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.6x)";
+                    "Falha: Pausa insuficiente entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.4x)" :
+                    "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.4x)";
             return new PauseEvaluation(false, true, feedback, ratio);
-        } else if (ratio > 2.2f) {
+        } else if (ratio > 3.2f) {
             String feedback = isPt ?
-                    "Falha: Pausa excessiva entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 2.2x)" :
-                    "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 2.2x)";
+                    "Falha: Pausa excessiva entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 3.2x)" :
+                    "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 3.2x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio >= 0.7f && ratio <= 1.8f) {
             String feedback = isPt ?

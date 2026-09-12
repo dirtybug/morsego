@@ -61,7 +61,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep01_TreeRelease_Level1_Root_T_and_E() throws InterruptedException {
         updateLevelOnUI(1);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("1"), containsString("NÍVEL 1"), containsString("LEVEL 1"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("1"), containsString("NÍVEL 1"), containsString("LEVEL 1")))));
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
@@ -81,7 +81,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep02_TreeRelease_Level2_Branch_E_A_and_I() throws InterruptedException {
         updateLevelOnUI(2);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("2"), containsString("NÍVEL 2"), containsString("LEVEL 2"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("2"), containsString("NÍVEL 2"), containsString("LEVEL 2")))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("A"))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("I"))));
 
@@ -102,7 +102,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep03_TreeRelease_Level3_Branch_T_M_and_N() throws InterruptedException {
         updateLevelOnUI(3);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("3"), containsString("NÍVEL 3"), containsString("LEVEL 3"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("3"), containsString("NÍVEL 3"), containsString("LEVEL 3")))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("M"))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("N"))));
 
@@ -121,7 +121,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep04_TreeRelease_Level4_Branch_I_S_and_U() throws InterruptedException {
         updateLevelOnUI(4);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("4"), containsString("NÍVEL 4"), containsString("LEVEL 4"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("4"), containsString("NÍVEL 4"), containsString("LEVEL 4")))));
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         MorseTreeNode nodeI = tree.getRoot().getDitChild().getDitChild();
@@ -138,7 +138,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep05_TreeRelease_Level13_Alphabet_Complete() throws InterruptedException {
         updateLevelOnUI(13);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("13"), containsString("NÍVEL 13"), containsString("LEVEL 13"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("13"), containsString("NÍVEL 13"), containsString("LEVEL 13")))));
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         MorseTreeNode nodeG = tree.getRoot().getDahChild().getDahChild().getDitChild();
@@ -155,7 +155,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep06_TreeRelease_Level21_Full_Tree() throws InterruptedException {
         updateLevelOnUI(21);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("21"), containsString("NÍVEL 21"), containsString("LEVEL 21"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("21"), containsString("NÍVEL 21"), containsString("LEVEL 21")))));
 
         ScreenshotHelper.capture("step06_tree_level21_full_tree");
     }
@@ -175,7 +175,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
             });
             Thread.sleep(150);
 
-            onView(withId(R.id.tvTreeLevelTitle)).check(matches(containsString(String.valueOf(currentLvl))));
+            onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString(String.valueOf(currentLvl)))));
         }
 
         ScreenshotHelper.capture("step07_all_21_levels_completed_tree");
@@ -188,7 +188,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
     public void testStep08_TreeRelease_Level11_X_and_B_under_D() throws InterruptedException {
         updateLevelOnUI(11);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("11"), containsString("NÍVEL 11"), containsString("LEVEL 11"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("11"), containsString("NÍVEL 11"), containsString("LEVEL 11")))));
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         MorseTreeNode root = tree.getRoot();
@@ -220,7 +220,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
         Thread.sleep(400);
 
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(containsString("11")));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("11"))));
 
         // 2. Rotate to Landscape (Horizontal)
         scenario.onActivity(activity -> {
@@ -230,7 +230,7 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
 
         // Verify tree view and state remain active and displayed in landscape
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(containsString("11")));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("11"))));
         ScreenshotHelper.capture("step09_tree_landscape_rotation");
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
@@ -245,6 +245,6 @@ public class MorseGoTreeStepByStepReleaseBehaviorTest {
         Thread.sleep(600);
 
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(containsString("11")));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(containsString("11"))));
     }
 }

@@ -21,6 +21,8 @@ public class IambicKeyerEngine {
     private volatile boolean dahPressed = false;
     private volatile boolean ditMemory = false;
     private volatile boolean dahMemory = false;
+    private volatile boolean ditNeedsRelease = false;
+    private volatile boolean dahNeedsRelease = false;
 
     public IambicKeyerEngine(KeyerSettings settings, KeyerListener listener) {
         this.settings = settings;
@@ -35,8 +37,11 @@ public class IambicKeyerEngine {
         }
 
         if (pressed) {
+            ditNeedsRelease = false;
             ditMemory = true;
             startLoopIfNeeded();
+        } else {
+            ditNeedsRelease = false;
         }
     }
 
@@ -48,8 +53,11 @@ public class IambicKeyerEngine {
         }
 
         if (pressed) {
+            dahNeedsRelease = false;
             dahMemory = true;
             startLoopIfNeeded();
+        } else {
+            dahNeedsRelease = false;
         }
     }
 
@@ -69,8 +77,8 @@ public class IambicKeyerEngine {
             char lastElement = ' ';
 
             while (isRunning.get()) {
-                boolean curDit = ditPressed || ditMemory;
-                boolean curDah = dahPressed || dahMemory;
+                boolean curDit = (!ditNeedsRelease && ditPressed) || ditMemory;
+                boolean curDah = (!dahNeedsRelease && dahPressed) || dahMemory;
 
                 if (!curDit && !curDah) {
                     isRunning.set(false);
@@ -93,6 +101,7 @@ public class IambicKeyerEngine {
 
                 if (sendDit) {
                     ditMemory = false;
+                    ditNeedsRelease = true; // Consumed: requires releasing paddle before another dit
                     lastElement = '.';
                     if (listener != null) {
                         listener.onToneStart();
@@ -102,6 +111,7 @@ public class IambicKeyerEngine {
                     if (listener != null) listener.onToneStop();
                 } else {
                     dahMemory = false;
+                    dahNeedsRelease = true; // Consumed: requires releasing paddle before another dah
                     lastElement = '-';
                     if (listener != null) {
                         listener.onToneStart();
@@ -114,8 +124,8 @@ public class IambicKeyerEngine {
                 // Intra-element spacing (1 dit unit)
                 long startPause = System.currentTimeMillis();
                 while (System.currentTimeMillis() - startPause < elementSpace) {
-                    if (ditPressed) ditMemory = true;
-                    if (dahPressed) dahMemory = true;
+                    if (ditPressed && !ditNeedsRelease) ditMemory = true;
+                    if (dahPressed && !dahNeedsRelease) dahMemory = true;
                     sleep(5);
                 }
 
@@ -138,6 +148,8 @@ public class IambicKeyerEngine {
         isRunning.set(false);
         ditMemory = false;
         dahMemory = false;
+        ditNeedsRelease = false;
+        dahNeedsRelease = false;
         if (listener != null) listener.onToneStop();
     }
 

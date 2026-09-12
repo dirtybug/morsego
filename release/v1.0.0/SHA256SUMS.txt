@@ -1,0 +1,2 @@
+9e0eb32b0bbc906ce22f26da5b4954aa152443dbf409bacb521088e34b767a86  morseGO-v1.0.0-debug.apk
+a4d9f2d616d15db13a01a8cf34e3343117dfd71d49e0e19eacdbb8756c01c06c  morseGO-v1.0.0-release.apk

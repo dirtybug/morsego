@@ -78,7 +78,7 @@ public class MorseGoUnderMAndNBehaviorTest {
     public void test01_UnderN_BranchRelease_Level6_D_and_K() throws InterruptedException {
         updateLevelOnUI(6);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("6"), containsString("NÍVEL 6"), containsString("LEVEL 6"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("6"), containsString("NÍVEL 6"), containsString("LEVEL 6")))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("D"))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("K"))));
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
@@ -106,7 +106,7 @@ public class MorseGoUnderMAndNBehaviorTest {
     public void test02_UnderM_BranchRelease_Level7_G_and_O() throws InterruptedException {
         updateLevelOnUI(7);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("7"), containsString("NÍVEL 7"), containsString("LEVEL 7"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("7"), containsString("NÍVEL 7"), containsString("LEVEL 7")))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("G"))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("O"))));
 
@@ -127,7 +127,7 @@ public class MorseGoUnderMAndNBehaviorTest {
     public void test03_UnderN_SubBranches_Level11_and_12() throws InterruptedException {
         // Level 11: B and X under D
         updateLevelOnUI(11);
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("11"), containsString("NÍVEL 11"), containsString("LEVEL 11"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("11"), containsString("NÍVEL 11"), containsString("LEVEL 11")))));
 
         MorseBinaryTree tree = MorseBinaryTree.getInstance();
         Assert.assertTrue("Node B under D (N) must be unlocked", tree.findNodeByCharacter("B").isUnlocked());
@@ -135,7 +135,7 @@ public class MorseGoUnderMAndNBehaviorTest {
 
         // Level 12: C and Y under K
         updateLevelOnUI(12);
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("12"), containsString("NÍVEL 12"), containsString("LEVEL 12"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("12"), containsString("NÍVEL 12"), containsString("LEVEL 12")))));
 
         Assert.assertTrue("Node C under K (N) must be unlocked", tree.findNodeByCharacter("C").isUnlocked());
         Assert.assertTrue("Node Y under K (N) must be unlocked", tree.findNodeByCharacter("Y").isUnlocked());
@@ -150,7 +150,7 @@ public class MorseGoUnderMAndNBehaviorTest {
     public void test04_UnderM_SubBranch_Level13_Z_and_Q() throws InterruptedException {
         updateLevelOnUI(13);
 
-        onView(withId(R.id.tvTreeLevelTitle)).check(matches(anyOf(containsString("13"), containsString("NÍVEL 13"), containsString("LEVEL 13"))));
+        onView(withId(R.id.tvTreeLevelTitle)).check(matches(withText(anyOf(containsString("13"), containsString("NÍVEL 13"), containsString("LEVEL 13")))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("Z"))));
         onView(withId(R.id.tvTreeLevelSub)).check(matches(withText(containsString("Q"))));
 

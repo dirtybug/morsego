@@ -22,7 +22,6 @@ import java.util.Locale;
 public class TreeFragment extends Fragment {
 
     private FragmentTreeBinding binding;
-    private String selectedChar = "E";
 
     @Nullable
     @Override
@@ -42,24 +41,15 @@ public class TreeFragment extends Fragment {
 
         binding.morseTreeView.setUnlockedLevel(currentLevel);
 
-        // Update initial selected node
-        updateSelectedNode("E", ".");
-
-        binding.morseTreeView.setOnNodeClickListener(node -> {
-            updateSelectedNode(node.getCharacter(), node.getMorseCode());
-            activity.getSynthesizer().playMorsePattern(node.getMorseCode(), activity.getSettings().getWpm(), null);
+        // Zoom controls
+        binding.morseTreeView.setOnZoomChangeListener(scaleFactor -> {
+            int percent = Math.round(scaleFactor * 100);
+            binding.tvZoomLevel.setText(percent + "%");
         });
 
-        binding.btnPlaySelected.setOnClickListener(v -> {
-            String morse = MorseBinaryTree.getInstance().getMorse(selectedChar);
-            if (morse != null) {
-                activity.getSynthesizer().playMorsePattern(morse, activity.getSettings().getWpm(), null);
-            }
-        });
-
-        binding.btnGoToLesson.setOnClickListener(v -> {
-            activity.navigateToTab(MainActivity.TAB_LEARN);
-        });
+        binding.btnZoomIn.setOnClickListener(v -> binding.morseTreeView.zoomIn());
+        binding.btnZoomOut.setOnClickListener(v -> binding.morseTreeView.zoomOut());
+        binding.btnZoomReset.setOnClickListener(v -> binding.morseTreeView.resetZoom());
     }
 
     @Override
@@ -88,19 +78,6 @@ public class TreeFragment extends Fragment {
         binding.tvTreeLevelSub.setText(treeLevel.getTitle() + "\n" + newCharsLabel +
                 treeLevel.getChar1() + " (" + treeLevel.getMorse1() + ")" + andLabel +
                 treeLevel.getChar2() + " (" + treeLevel.getMorse2() + ")");
-    }
-
-    private void updateSelectedNode(String character, String morse) {
-        this.selectedChar = character;
-        boolean isPt = Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        binding.tvSelectedChar.setText(character);
-        binding.tvSelectedMorse.setText((isPt ? "Código: " : "Code: ") + morse);
-
-        StringBuilder path = new StringBuilder(isPt ? "Raiz" : "Root");
-        for (int i = 0; i < morse.length(); i++) {
-            path.append(morse.charAt(i) == '.' ? " -> DIT (•)" : " -> DAH (—)");
-        }
-        binding.tvSelectedPath.setText(path.toString());
     }
 
     @Override
