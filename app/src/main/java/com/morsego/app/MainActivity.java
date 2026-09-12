@@ -175,7 +175,33 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         }
     }
 
+    private Boolean silentModeOverrideForTesting = null;
+    private volatile String lastMorsePlayType = null; // "VIBRATION" or "AUDIO"
+
+    public void setSilentModeForced(Boolean forcedSilent) {
+        this.silentModeOverrideForTesting = forcedSilent;
+        if (forcedSilent != null && settings != null) {
+            settings.setSoundEnabled(!forcedSilent);
+        }
+        checkSilentMode();
+    }
+
+    public Boolean getSilentModeForced() {
+        return silentModeOverrideForTesting;
+    }
+
+    public String getLastMorsePlayType() {
+        return lastMorsePlayType;
+    }
+
+    public boolean isSilentBannerVisible() {
+        return binding != null && binding.bannerSilentMode.getVisibility() == View.VISIBLE;
+    }
+
     public boolean isDeviceInSilentMode() {
+        if (silentModeOverrideForTesting != null) {
+            return silentModeOverrideForTesting;
+        }
         try {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am != null) {
@@ -204,8 +230,10 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     public void playMorse(String pattern, int wpm, Runnable onFinished) {
         if (isDeviceInSilentMode()) {
+            lastMorsePlayType = "VIBRATION";
             vibrateMorsePattern(pattern, wpm, onFinished);
         } else {
+            lastMorsePlayType = "AUDIO";
             synthesizer.playMorsePattern(pattern, wpm, onFinished);
         }
     }
@@ -371,8 +399,10 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     @Override
     public void onToneStart() {
         if (isDeviceInSilentMode()) {
+            lastMorsePlayType = "VIBRATION";
             startToneVibration();
         } else if (settings.isSoundEnabled()) {
+            lastMorsePlayType = "AUDIO";
             synthesizer.startTone();
         }
         decoder.onToneStarted();

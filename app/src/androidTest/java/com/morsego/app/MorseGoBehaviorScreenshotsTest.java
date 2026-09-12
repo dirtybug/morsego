@@ -8,7 +8,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
+import org.junit.Assert;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -320,6 +322,74 @@ public class MorseGoBehaviorScreenshotsTest {
         Thread.sleep(400);
         onView(withId(R.id.morseTreeView)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("phone_rotation_06_restored_portrait_0_deg");
+    }
+
+    /**
+     * BEHAVIOR 10: Silent / Vibration Mode and Sound Mode with Screenshots.
+     * Verifies that:
+     * 1. Setting silent/vibratory mode makes the top banner visible, routes CW signals to vibration,
+     *    and captures a full-screen screenshot ("14_silent_vibration_mode_active").
+     * 2. Setting sound mode removes the top banner, routes CW signals to audio synthesis,
+     *    and captures a full-screen screenshot ("15_sound_mode_active").
+     */
+    @Test
+    public void test10_SilentVibrationModeAndSoundMode_Screenshots() throws InterruptedException {
+        // --- PHASE 1: VIBRATING / SILENT MODE ---
+        // Activate silent mode
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setSilentModeForced(true);
+        });
+        Thread.sleep(600);
+
+        // Verify silent mode banner is visible and has the warning message
+        onView(withId(R.id.bannerSilentMode)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSilentWarning)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSilentWarning)).check(matches(withText(anyOf(
+                containsString("silêncio"),
+                containsString("silent"),
+                containsString("Vibração"),
+                containsString("vibration")
+        ))));
+
+        // Play Morse signal and verify it activates vibration routing
+        activityRule.getScenario().onActivity(activity -> {
+            Assert.assertTrue("Device must report silent mode active", activity.isDeviceInSilentMode());
+            Assert.assertTrue("Banner must be visible in silent mode", activity.isSilentBannerVisible());
+            activity.playMorse(".-", 15, null);
+            Assert.assertEquals("Morse playback must use VIBRATION in silent mode", "VIBRATION", activity.getLastMorsePlayType());
+        });
+        Thread.sleep(500);
+
+        // Capture screenshot of Silent/Vibrating mode
+        ScreenshotHelper.capture("14_silent_vibration_mode_active");
+
+        // --- PHASE 2: NORMAL SOUND MODE ---
+        // Restore sound mode
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setSilentModeForced(false);
+        });
+        Thread.sleep(600);
+
+        // Verify silent mode banner is hidden (GONE)
+        onView(withId(R.id.bannerSilentMode)).check(matches(not(isDisplayed())));
+
+        // Play Morse signal and verify it activates audio routing
+        activityRule.getScenario().onActivity(activity -> {
+            Assert.assertFalse("Device must report silent mode inactive", activity.isDeviceInSilentMode());
+            Assert.assertFalse("Banner must be gone in sound mode", activity.isSilentBannerVisible());
+            activity.playMorse(".-", 15, null);
+            Assert.assertEquals("Morse playback must use AUDIO in sound mode", "AUDIO", activity.getLastMorsePlayType());
+        });
+        Thread.sleep(500);
+
+        // Capture screenshot of Normal Sound mode
+        ScreenshotHelper.capture("15_sound_mode_active");
+
+        // Reset testing override to restore system state
+        activityRule.getScenario().onActivity(activity -> {
+            activity.setSilentModeForced(null);
+        });
+        Thread.sleep(300);
     }
 }
 
