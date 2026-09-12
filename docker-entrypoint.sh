@@ -51,7 +51,18 @@ case "$ACTION" in
             [ ! -f "$RELEASE_DIR/reports/index.html" ] && cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
             echo "✓ Unit test report saved to $RELEASE_DIR/reports/unit-tests/index.html"
         fi
-        echo "✓ All unit tests passed successfully!"
+        echo ""
+        echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
+        mkdir -p "$RELEASE_DIR/screenshots"
+        java -Djava.awt.headless=true tools/ScreenshotGenerator.java "$RELEASE_DIR/screenshots" || true
+        echo "✓ All unit tests and screenshots generated successfully!"
+        ;;
+
+    screenshots)
+        echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
+        mkdir -p "$RELEASE_DIR/screenshots"
+        java -Djava.awt.headless=true tools/ScreenshotGenerator.java "$RELEASE_DIR/screenshots"
+        echo "✓ Screenshots saved to $RELEASE_DIR/screenshots/"
         ;;
 
     build|assemble)

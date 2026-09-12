@@ -25,6 +25,8 @@ if "%TARGET%"=="clean" (
     echo [INFO] Limpando cache do Gradle, pastas .gradle, .idea e build...
     call clean.bat
     exit /b 0
+) else if "%TARGET%"=="screenshots" (
+    docker compose run --rm test-unit screenshots
 ) else if "%TARGET%"=="unit" (
     docker compose run --rm test-unit
 ) else if "%TARGET%"=="build" (
@@ -44,8 +46,9 @@ echo ====================================================
 echo                   morseGO - Resumo
 echo ====================================================
 if "%TARGET%"=="unit" (
-    echo [INFO] Testes unitarios concluidos com sucesso!
-    echo [DICA] O alvo "unit" testa apenas a JVM. Para gerar os ficheiros APK:
+    echo [INFO] Testes unitarios e geracao de screenshots concluidos com sucesso!
+    echo [DICA] Comandos adicionais disponiveis:
+    echo        - Screenshots: run-docker-tests.bat screenshots
     echo        - APK Debug:   run-docker-tests.bat build
     echo        - APK Release: run-docker-tests.bat release
     echo        - Todos:       run-docker-tests.bat all
@@ -54,6 +57,7 @@ echo.
 echo Ficheiros disponiveis na pasta: .\release\development\
 echo   - APK Release:           .\release\development\morseGO-release.apk
 echo   - APK Debug:             .\release\development\morseGO-debug.apk
+echo   - Screenshots:           .\release\development\screenshots\
 echo   - Relatorios de Testes:  .\release\development\reports\
 echo   - Portal Central MorseGO:.\index.html
 echo ====================================================

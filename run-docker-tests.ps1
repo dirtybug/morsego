@@ -19,6 +19,10 @@ switch ($Target.ToLower()) {
         & ".\clean.ps1"
         exit 0
     }
+    "screenshots" {
+        docker compose run --rm test-unit screenshots
+        exit 0
+    }
     "unit" {
         docker compose run --rm test-unit
     }
