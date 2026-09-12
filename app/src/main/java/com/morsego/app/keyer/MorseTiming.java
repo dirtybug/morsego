@@ -82,15 +82,15 @@ public class MorseTiming {
         float ratio = (float) pauseMs / ideal;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
-        if (ratio < 0.40f) {
+        if (ratio < 0.35f) {
             String feedback = isPt ?
-                    "Falha: Pausa insuficiente entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.4x)" :
-                    "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.4x)";
+                    "Falha: Pausa insuficiente entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.35x)" :
+                    "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.35x)";
             return new PauseEvaluation(false, true, feedback, ratio);
-        } else if (ratio > 3.2f) {
+        } else if (ratio > 5.0f) {
             String feedback = isPt ?
-                    "Falha: Pausa excessiva entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 3.2x)" :
-                    "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 3.2x)";
+                    "Falha: Pausa excessiva entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 5.0x)" :
+                    "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 5.0x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio >= 0.7f && ratio <= 1.8f) {
             String feedback = isPt ?

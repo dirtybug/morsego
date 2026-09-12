@@ -36,4 +36,4 @@ case "$TARGET" in
 esac
 
 echo ""
-echo "Done! Check ./reports/ for HTML test reports."
+echo "Done! Check ./release/development/reports/ for HTML test reports."

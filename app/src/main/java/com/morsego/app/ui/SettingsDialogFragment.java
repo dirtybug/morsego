@@ -81,7 +81,7 @@ public class SettingsDialogFragment extends DialogFragment {
         });
 
         binding.btnTestTone.setOnClickListener(v -> {
-            activity.getSynthesizer().playMorsePattern("... --- ...", settings.getWpm(), null);
+            activity.playMorse("... --- ...", settings.getWpm(), null);
         });
 
         // Mode
@@ -112,6 +112,7 @@ public class SettingsDialogFragment extends DialogFragment {
         binding.switchSound.setChecked(settings.isSoundEnabled());
         binding.switchSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
             settings.setSoundEnabled(isChecked);
+            activity.checkSilentMode();
         });
 
         binding.switchHaptics.setChecked(settings.isHapticsEnabled());

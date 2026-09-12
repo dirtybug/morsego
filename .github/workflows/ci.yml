@@ -89,9 +89,9 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none
           script: |
             ./gradlew connectedDebugAndroidTest -PversionName="${{ env.APP_VERSION_NAME }}" -PversionCode="${{ env.APP_VERSION_CODE }}" --info --stacktrace
-            # Pull screenshots captured on emulator during behavior tests directly to release folder
-            mkdir -p "release/${{ env.VERSION }}/screenshots"
-            adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "release/${{ env.VERSION }}/screenshots/" 2>/dev/null || true
+            # Pull screenshots captured on emulator during behavior tests directly to development release folder
+            mkdir -p "release/development/screenshots"
+            adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "release/development/screenshots/" 2>/dev/null || true
 
       - name: Build Docker Container & Run Tests in Docker
         run: |
@@ -117,23 +117,40 @@ jobs:
           mkdir -p "${RELEASE_DIR}/reports/behavior-tests"
           mkdir -p "${RELEASE_DIR}/screenshots"
 
-          # 1. Ensure APKs are in the release folder
-          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ ! -f "${RELEASE_DIR}/morseGO-${VERSION}-release.apk" ]; then
+          # 1. Copy APKs from release/development/ (or build outputs) into release/${VERSION}/
+          if [ -f "release/development/morseGO-release.apk" ]; then
+            cp "release/development/morseGO-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
+          elif [ -f "release/development/morseGO-development-release.apk" ]; then
+            cp "release/development/morseGO-development-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
+          elif [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
             cp "app/build/outputs/apk/release/app-release-unsigned.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
           fi
 
-          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ] && [ ! -f "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk" ]; then
+          if [ -f "release/development/morseGO-debug.apk" ]; then
+            cp "release/development/morseGO-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
+          elif [ -f "release/development/morseGO-development-debug.apk" ]; then
+            cp "release/development/morseGO-development-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
+          elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
             cp "app/build/outputs/apk/debug/app-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
           fi
 
-          # 2. Copy test reports into release/reports
-          if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
+          # 2. Copy test reports and screenshots from release/development/ into release/${VERSION}/
+          if [ -d "release/development/reports/unit-tests" ]; then
+            cp -r release/development/reports/unit-tests/* "${RELEASE_DIR}/reports/unit-tests/" 2>/dev/null || true
+            cp "${RELEASE_DIR}/reports/unit-tests/index.html" "${RELEASE_DIR}/reports/index.html" 2>/dev/null || true
+          elif [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
             cp -r app/build/reports/tests/testDebugUnitTest/* "${RELEASE_DIR}/reports/unit-tests/"
             cp "${RELEASE_DIR}/reports/unit-tests/index.html" "${RELEASE_DIR}/reports/index.html" 2>/dev/null || true
           fi
 
-          if [ -d "app/build/reports/androidTests/connected" ]; then
+          if [ -d "release/development/reports/instrumented" ]; then
+            cp -r release/development/reports/instrumented/* "${RELEASE_DIR}/reports/behavior-tests/" 2>/dev/null || true
+          elif [ -d "app/build/reports/androidTests/connected" ]; then
             cp -r app/build/reports/androidTests/connected/* "${RELEASE_DIR}/reports/behavior-tests/"
+          fi
+
+          if [ -d "release/development/screenshots" ]; then
+            cp -r release/development/screenshots/* "${RELEASE_DIR}/screenshots/" 2>/dev/null || true
           fi
 
           # 3. Generate SHA256 checksums

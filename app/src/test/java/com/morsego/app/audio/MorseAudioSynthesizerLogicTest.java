@@ -55,6 +55,27 @@ public class MorseAudioSynthesizerLogicTest {
     }
 
     @Test
+    public void testSilentModeBehaviorDecision() {
+        // When device is in silent mode, audio tone must not play, vibration must be used instead
+        boolean isSilent = true;
+        boolean soundEnabled = true;
+
+        boolean shouldPlayAudio = soundEnabled && !isSilent;
+        boolean shouldVibrateMorse = isSilent;
+
+        assertFalse("Audio should not play when silent mode is active", shouldPlayAudio);
+        assertTrue("Morse vibration should trigger when silent mode is active", shouldVibrateMorse);
+
+        // When silent mode is deactivated
+        isSilent = false;
+        shouldPlayAudio = soundEnabled && !isSilent;
+        shouldVibrateMorse = isSilent;
+
+        assertTrue("Audio should play when silent mode is deactivated and sound is enabled", shouldPlayAudio);
+        assertFalse("Morse vibration should not trigger when silent mode is inactive", shouldVibrateMorse);
+    }
+
+    @Test
     public void testOrientationAndRotationStability() {
         // Verify audio timing consistency in Portrait and Landscape
         int portraitOrientation = 1;

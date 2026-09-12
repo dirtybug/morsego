@@ -20,3 +20,6 @@ scratch/
 /tests/
 /screenshots/
 /releases/
+
+# Local development build deliverables (CI copies to release/<version>)
+release/development/

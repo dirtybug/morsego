@@ -62,7 +62,7 @@ public class MorseGoExamFlowBehaviorTest {
     @Test
     public void test01_ExamQueue_StructureAndLivesDisplay() throws InterruptedException {
         // Navigate to Learn tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(500);
 
         // Verify direct entry into transmission exam
@@ -86,7 +86,7 @@ public class MorseGoExamFlowBehaviorTest {
     @Test
     public void test02_TransmissionControls_TouchPaddlesAndCadence() throws InterruptedException {
         // Navigate to Learn tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(500);
 
         // Verify dedicated bottom paddle buttons are visible
@@ -110,7 +110,7 @@ public class MorseGoExamFlowBehaviorTest {
     @Test
     public void test03_ResetSendingAttempt_ButtonBehavior() throws InterruptedException {
         // Navigate to Learn tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(500);
 
         // Verify prompt is displayed
@@ -150,14 +150,14 @@ public class MorseGoExamFlowBehaviorTest {
         Assert.assertFalse("Level 2 must be locked initially", activity.getSettings().isLevelUnlocked(2));
 
         // Navigate to Learn tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(600);
 
-        // Find LearnFragment and trigger exam pass
+        // Find SendFragment and trigger exam pass
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateExamPassForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateExamPassForTesting();
             }
         });
         Thread.sleep(800);
@@ -206,7 +206,7 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
 
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.tvLevelNumber)).check(matches(isDisplayed()));
 
@@ -231,7 +231,7 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
 
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
 
         // Start exam
@@ -272,10 +272,10 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
 
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
 
-        // Simulate wrong decoded letter in LearnFragment
+        // Simulate wrong decoded letter in SendFragment
         activity.runOnUiThread(() -> {
             activity.getDecoder().clear();
             // Verify audio synthesizer is active and frequency is valid
@@ -304,7 +304,7 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
 
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
 
         // Start exam
@@ -314,8 +314,8 @@ public class MorseGoExamFlowBehaviorTest {
         // Simulate student failing with 3 strikes
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).showExamResults(false, "Exceeded limit of 3 failures.");
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).showExamResults(false, "Exceeded limit of 3 failures.");
             }
         });
         Thread.sleep(700);
@@ -356,7 +356,7 @@ public class MorseGoExamFlowBehaviorTest {
         activity.runOnUiThread(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         Thread.sleep(400);
 
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
 
         // Verify touch paddles available for sending
@@ -386,7 +386,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // Given: User is in Learn tab and starts exam
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -397,8 +397,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 2. Student fails question once (e.g. wrong answer clicked or wrong letter sent)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateQuestionMistakeForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateQuestionMistakeForTesting();
             }
         });
         Thread.sleep(500);
@@ -413,8 +413,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 3. Student retries and answers correctly
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateQuestionSuccessForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateQuestionSuccessForTesting();
             }
         });
         Thread.sleep(600);
@@ -441,7 +441,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Navigate to Learn tab and start exam
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -454,8 +454,8 @@ public class MorseGoExamFlowBehaviorTest {
         // State 2: Wrong Answer (Same window, wrong option clicked -> Red, correct -> Green, Morse revealed)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                com.morsego.app.ui.SendFragment lf = (com.morsego.app.ui.SendFragment) f;
                 String target = lf.getCurrentListeningTargetForTesting();
                 String wrongChoice = (target != null && target.equals("E")) ? "T" : "E";
                 lf.triggerListeningOptionForTesting(wrongChoice);
@@ -471,8 +471,8 @@ public class MorseGoExamFlowBehaviorTest {
         // State 3: Right Answer (Same window, correct option clicked -> Green, Morse revealed)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                com.morsego.app.ui.SendFragment lf = (com.morsego.app.ui.SendFragment) f;
                 String target = lf.getCurrentListeningTargetForTesting();
                 lf.triggerListeningOptionForTesting(target);
             }
@@ -501,7 +501,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Navigate to Learn tab and start exam
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -513,8 +513,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 2. Student inputs a failed answer (wrong option selected)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                com.morsego.app.ui.SendFragment lf = (com.morsego.app.ui.SendFragment) f;
                 String target = lf.getCurrentListeningTargetForTesting();
                 String wrongChoice = (target != null && target.equals("E")) ? "T" : "E";
                 lf.triggerListeningOptionForTesting(wrongChoice);
@@ -556,7 +556,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Navigate to Learn tab and start exam in Sending stage
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -564,8 +564,8 @@ public class MorseGoExamFlowBehaviorTest {
         // Transition to Sending stage directly
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).startSendingStageForTesting();
             }
         });
         Thread.sleep(600);
@@ -577,8 +577,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 2. Student inputs a failed answer (wrong letter transmitted)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                com.morsego.app.ui.SendFragment lf = (com.morsego.app.ui.SendFragment) f;
                 String target = lf.getCurrentSendingTargetForTesting();
                 String wrongKeyed = (target != null && target.equals("E")) ? "T" : "E";
                 lf.simulateSendingFailureForTesting(wrongKeyed);
@@ -624,7 +624,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Navigate to Learn tab and start exam in Sending stage
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -632,8 +632,8 @@ public class MorseGoExamFlowBehaviorTest {
         // Transition to Sending stage directly
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).startSendingStageForTesting();
             }
         });
         Thread.sleep(600);
@@ -645,8 +645,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 2. Student inputs a passed answer (correct sequence transmitted)
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                com.morsego.app.ui.LearnFragment lf = (com.morsego.app.ui.LearnFragment) f;
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                com.morsego.app.ui.SendFragment lf = (com.morsego.app.ui.SendFragment) f;
                 String target = lf.getCurrentSendingTargetForTesting();
                 lf.simulateSendingSuccessForTesting(target);
             }
@@ -679,7 +679,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Enter Learn screen and start Exam
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -705,8 +705,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 4. Switch to Transmission (Sending) stage in Landscape
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).startSendingStageForTesting();
             }
         });
         Thread.sleep(600);
@@ -739,7 +739,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(500);
 
         try {
-            onView(withId(R.id.nav_learn)).perform(click());
+            onView(withId(R.id.nav_send)).perform(click());
             Thread.sleep(400);
             onView(withId(R.id.btnStartLevelTest)).perform(click());
             Thread.sleep(600);
@@ -751,8 +751,8 @@ public class MorseGoExamFlowBehaviorTest {
             // Transition to Stage 2 Sending in Landscape
             activity.runOnUiThread(() -> {
                 androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (f instanceof com.morsego.app.ui.LearnFragment) {
-                    ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+                if (f instanceof com.morsego.app.ui.SendFragment) {
+                    ((com.morsego.app.ui.SendFragment) f).startSendingStageForTesting();
                 }
             });
             Thread.sleep(600);
@@ -789,7 +789,7 @@ public class MorseGoExamFlowBehaviorTest {
         Thread.sleep(400);
 
         // 1. Navigate to Learn tab and start exam
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.btnStartLevelTest)).perform(click());
         Thread.sleep(600);
@@ -797,8 +797,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 2. Transition to Sending (Transmission) stage
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).startSendingStageForTesting();
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).startSendingStageForTesting();
             }
         });
         Thread.sleep(600);
@@ -808,8 +808,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 3. Set a multi-letter word target: "TEA"
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).setSendingTargetForTesting("TEA");
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).setSendingTargetForTesting("TEA");
             }
         });
         Thread.sleep(400);
@@ -825,8 +825,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 4. Student keys letter 1: 'T' ('-')
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('T');
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateKeyCharacterForTesting('T');
             }
         });
         Thread.sleep(300);
@@ -838,8 +838,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 5. Student keys letter 2: 'E' ('.')
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('E');
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateKeyCharacterForTesting('E');
             }
         });
         Thread.sleep(300);
@@ -851,8 +851,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 6. Student keys letter 3: 'A' ('.-') -> Completes word "TEA"
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('A');
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateKeyCharacterForTesting('A');
             }
         });
         Thread.sleep(400);
@@ -870,8 +870,8 @@ public class MorseGoExamFlowBehaviorTest {
         // 7. Test Word Failure: Set target word "CQ"
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).setSendingTargetForTesting("CQ");
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).setSendingTargetForTesting("CQ");
             }
         });
         Thread.sleep(400);
@@ -879,8 +879,8 @@ public class MorseGoExamFlowBehaviorTest {
         // Key correct first letter 'C'
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('C');
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateKeyCharacterForTesting('C');
             }
         });
         Thread.sleep(300);
@@ -888,8 +888,8 @@ public class MorseGoExamFlowBehaviorTest {
         // Key WRONG second letter 'E' instead of 'Q'
         activity.runOnUiThread(() -> {
             androidx.fragment.app.Fragment f = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (f instanceof com.morsego.app.ui.LearnFragment) {
-                ((com.morsego.app.ui.LearnFragment) f).simulateKeyCharacterForTesting('E');
+            if (f instanceof com.morsego.app.ui.SendFragment) {
+                ((com.morsego.app.ui.SendFragment) f).simulateKeyCharacterForTesting('E');
             }
         });
         Thread.sleep(400);
@@ -909,3 +909,4 @@ public class MorseGoExamFlowBehaviorTest {
         ScreenshotHelper.capture("screenshot_transmission_word_fail");
     }
 }
+

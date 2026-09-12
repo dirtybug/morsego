@@ -36,7 +36,5 @@ switch ($Target.ToLower()) {
 }
 
 Write-Host "`nTestes finalizados!" -ForegroundColor Green
-Write-Host "Relatórios salvos em: .\reports\" -ForegroundColor White
-if (Test-Path ".\screenshots") {
-    Write-Host "Screenshots salvas em: .\screenshots\" -ForegroundColor White
-}
+Write-Host "Relatórios e APKs salvos em: .\release\development\" -ForegroundColor White
+

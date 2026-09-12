@@ -1,11 +1,19 @@
 package com.morsego.app;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,16 +32,18 @@ import com.morsego.app.ui.FreeKeyerFragment;
 import com.morsego.app.ui.HardwareFragment;
 import com.morsego.app.ui.LearnFragment;
 import com.morsego.app.ui.PracticeFragment;
+import com.morsego.app.ui.ReceiveFragment;
+import com.morsego.app.ui.SendFragment;
 import com.morsego.app.ui.SettingsDialogFragment;
 import com.morsego.app.ui.TreeFragment;
 
 public class MainActivity extends AppCompatActivity implements KeyerInputManager.PaddleListener, IambicKeyerEngine.KeyerListener {
 
     public static final int TAB_TREE = R.id.nav_tree;
-    public static final int TAB_LEARN = R.id.nav_learn;
-    public static final int TAB_SEND = R.id.nav_learn;
-    public static final int TAB_PRACTICE = R.id.nav_practice;
-    public static final int TAB_RECEIVE = R.id.nav_practice;
+    public static final int TAB_SEND = R.id.nav_send;
+    public static final int TAB_RECEIVE = R.id.nav_receive;
+    public static final int TAB_LEARN = R.id.nav_send;
+    public static final int TAB_PRACTICE = R.id.nav_receive;
     public static final int TAB_KEYER = R.id.nav_keyer;
     public static final int TAB_HARDWARE = R.id.nav_hardware;
 
@@ -45,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     private IambicKeyerEngine iambicEngine;
     private MorseDecoder decoder;
     private Vibrator vibrator;
+    private BroadcastReceiver silentModeReceiver;
+    private ContentObserver volumeObserver;
+    private volatile boolean isVibratingTone = false;
 
     private Fragment currentFragment;
 
@@ -78,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
             if (itemId == R.id.nav_tree) {
                 switchFragment(new TreeFragment());
                 return true;
-            } else if (itemId == R.id.nav_learn) {
-                switchFragment(new LearnFragment());
+            } else if (itemId == R.id.nav_send || itemId == R.id.nav_learn) {
+                switchFragment(new SendFragment());
                 return true;
-            } else if (itemId == R.id.nav_practice) {
-                switchFragment(new PracticeFragment());
+            } else if (itemId == R.id.nav_receive || itemId == R.id.nav_practice) {
+                switchFragment(new ReceiveFragment());
                 return true;
             } else if (itemId == R.id.nav_keyer) {
                 switchFragment(new FreeKeyerFragment());
@@ -102,27 +115,121 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     @Override
     protected void onResume() {
         super.onResume();
+        registerSilentModeObserver();
         checkSilentMode();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterSilentModeObserver();
+    }
+
+    private void registerSilentModeObserver() {
+        if (silentModeReceiver == null) {
+            silentModeReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    checkSilentMode();
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+            filter.addAction("android.media.VOLUME_CHANGED_ACTION");
+            filter.addAction("android.media.RINGER_MODE_CHANGED");
+            try {
+                registerReceiver(silentModeReceiver, filter);
+            } catch (Exception ignored) {}
+        }
+
+        if (volumeObserver == null) {
+            try {
+                volumeObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        super.onChange(selfChange);
+                        checkSilentMode();
+                    }
+                };
+                getContentResolver().registerContentObserver(
+                        Settings.System.CONTENT_URI,
+                        true,
+                        volumeObserver
+                );
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private void unregisterSilentModeObserver() {
+        if (silentModeReceiver != null) {
+            try {
+                unregisterReceiver(silentModeReceiver);
+            } catch (Exception ignored) {}
+            silentModeReceiver = null;
+        }
+        if (volumeObserver != null) {
+            try {
+                getContentResolver().unregisterContentObserver(volumeObserver);
+            } catch (Exception ignored) {}
+            volumeObserver = null;
+        }
     }
 
     public boolean isDeviceInSilentMode() {
         try {
-            android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am != null) {
                 int ringerMode = am.getRingerMode();
-                int musicVol = am.getStreamVolume(android.media.AudioManager.STREAM_MUSIC);
-                return ringerMode == android.media.AudioManager.RINGER_MODE_SILENT
-                        || ringerMode == android.media.AudioManager.RINGER_MODE_VIBRATE
-                        || musicVol == 0;
+                int musicVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                if (ringerMode == AudioManager.RINGER_MODE_SILENT
+                        || ringerMode == AudioManager.RINGER_MODE_VIBRATE
+                        || musicVol == 0) {
+                    return true;
+                }
             }
         } catch (Exception ignored) {}
-        return false;
+        return settings != null && !settings.isSoundEnabled();
     }
 
     public void checkSilentMode() {
         if (binding == null) return;
-        boolean isSilent = isDeviceInSilentMode();
-        binding.bannerSilentMode.setVisibility(isSilent ? View.VISIBLE : View.GONE);
+        runOnUiThread(() -> {
+            boolean isSilent = isDeviceInSilentMode();
+            int targetVisibility = isSilent ? View.VISIBLE : View.GONE;
+            if (binding.bannerSilentMode.getVisibility() != targetVisibility) {
+                binding.bannerSilentMode.setVisibility(targetVisibility);
+            }
+        });
+    }
+
+    public void playMorse(String pattern, int wpm, Runnable onFinished) {
+        if (isDeviceInSilentMode()) {
+            vibrateMorsePattern(pattern, wpm, onFinished);
+        } else {
+            synthesizer.playMorsePattern(pattern, wpm, onFinished);
+        }
+    }
+
+    public void startToneVibration() {
+        if (vibrator == null || !vibrator.hasVibrator()) return;
+        isVibratingTone = true;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(5000, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(5000);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    public void stopToneVibration() {
+        if (!isVibratingTone) return;
+        isVibratingTone = false;
+        if (vibrator != null) {
+            try {
+                vibrator.cancel();
+            } catch (Exception ignored) {}
+        }
     }
 
     public void vibrate(long ms) {
@@ -137,7 +244,14 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     }
 
     public void vibrateMorsePattern(String pattern, int wpm) {
-        if (vibrator == null) return;
+        vibrateMorsePattern(pattern, wpm, null);
+    }
+
+    public void vibrateMorsePattern(String pattern, int wpm, Runnable onFinished) {
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            if (onFinished != null) runOnUiThread(onFinished);
+            return;
+        }
         java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
             long dit = MorseTiming.ditDurationMs(wpm);
             long dah = MorseTiming.dahDurationMs(wpm);
@@ -158,7 +272,12 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
                         Thread.sleep(dit * 7);
                     }
                 }
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+                if (vibrator != null) vibrator.cancel();
+            }
+            if (onFinished != null) {
+                runOnUiThread(onFinished);
+            }
         });
     }
 
@@ -174,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     }
 
     private void triggerHaptic() {
+        if (isDeviceInSilentMode()) return;
         if (!settings.isHapticsEnabled() || vibrator == null) return;
         vibrate(15);
     }
@@ -198,6 +318,12 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+            if (binding != null && binding.getRoot() != null) {
+                binding.getRoot().postDelayed(this::checkSilentMode, 200);
+            }
+        }
         if (inputManager.handleKeyEvent(event)) {
             return true;
         }
@@ -244,7 +370,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public void onToneStart() {
-        if (settings.isSoundEnabled()) {
+        if (isDeviceInSilentMode()) {
+            startToneVibration();
+        } else if (settings.isSoundEnabled()) {
             synthesizer.startTone();
         }
         decoder.onToneStarted();
@@ -257,6 +385,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public void onToneStop() {
+        if (isVibratingTone) {
+            stopToneVibration();
+        }
         synthesizer.stopTone();
         decoder.onToneStopped();
         runOnUiThread(() -> {
@@ -280,6 +411,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterSilentModeObserver();
         if (iambicEngine != null) iambicEngine.release();
         if (synthesizer != null) synthesizer.release();
     }

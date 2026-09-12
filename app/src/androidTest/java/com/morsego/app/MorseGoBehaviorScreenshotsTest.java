@@ -70,7 +70,7 @@ public class MorseGoBehaviorScreenshotsTest {
     @Test
     public void test02_LearnFragment_StudyModeAndSoundPreview() throws InterruptedException {
         // When user navigates to "Enviar"
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(600);
 
         // Verify transmission exam is directly visible
@@ -89,7 +89,7 @@ public class MorseGoBehaviorScreenshotsTest {
     @Test
     public void test03_ExamListeningStage_DynamicOptionsAndLives() throws InterruptedException {
         // Given user is in Ouvir (Practice) tab
-        onView(withId(R.id.nav_practice)).perform(click());
+        onView(withId(R.id.nav_receive)).perform(click());
         Thread.sleep(500);
 
         // Then verify CW listening training screen is displayed
@@ -177,7 +177,7 @@ public class MorseGoBehaviorScreenshotsTest {
     @Test
     public void test06_PracticeQuiz_RestrictedPool() throws InterruptedException {
         // When user navigates to "Treino"
-        onView(withId(R.id.nav_practice)).perform(click());
+        onView(withId(R.id.nav_receive)).perform(click());
         Thread.sleep(500);
 
         // Verify practice quiz info
@@ -205,7 +205,7 @@ public class MorseGoBehaviorScreenshotsTest {
     @Test
     public void test07_SettingsDialog_WpmAndPitchConfiguration() throws InterruptedException {
         // Given user is on any tab
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
 
         // When user clicks settings icon
@@ -300,7 +300,7 @@ public class MorseGoBehaviorScreenshotsTest {
         ScreenshotHelper.capture("phone_rotation_03_rotated_90_deg_keyer");
 
         // Verify and capture Landscape Exam / Learn
-        onView(withId(R.id.nav_learn)).perform(click());
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
         onView(withId(R.id.tvLevelTitle)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("phone_rotation_04_rotated_90_deg_exam");
@@ -322,4 +322,5 @@ public class MorseGoBehaviorScreenshotsTest {
         ScreenshotHelper.capture("phone_rotation_06_restored_portrait_0_deg");
     }
 }
+
 

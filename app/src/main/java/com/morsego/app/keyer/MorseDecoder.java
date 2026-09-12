@@ -161,16 +161,16 @@ public class MorseDecoder {
     private void scheduleMaxLetterPauseWatcher() {
         cancelMaxLetterPauseWatcher();
         int wpm = settings.getWpm();
-        // Generous tolerance: 3.2x inter-character pause with a minimum floor of 1200ms
-        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 3.2f) + 100L, 1200L);
+        // High generous tolerance: 5.0x inter-character pause with a minimum floor of 2200ms
+        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 5.0f) + 200L, 2200L);
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
                 boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
                 String feedback = isPt ?
-                        "Falha: Pausa excessiva entre letras (> máx 3.2x)" :
-                        "Failure: Excessive pause between letters (> max 3.2x)";
+                        "Falha: Pausa excessiva entre letras (> máx 5.0x)" :
+                        "Failure: Excessive pause between letters (> max 5.0x)";
                 MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
-                        false, true, feedback, 3.3f);
+                        false, true, feedback, 5.1f);
                 notifyTimingFeedback(eval);
                 notifyTimingFailure(eval);
             }

@@ -47,12 +47,10 @@ if "%TARGET%"=="unit" (
     echo        - Todos:       run-docker-tests.bat all
 )
 echo.
-echo Ficheiros disponiveis na pasta: .\release\v1.0.0\
-echo   - APK Release:           .\release\v1.0.0\morseGO-v1.0.0-release.apk
-echo   - APK Debug:             .\release\v1.0.0\morseGO-v1.0.0-debug.apk
-echo   - Painel de Relatorios:  .\release\v1.0.0\reports\index.html
-echo   - Behavior Tests Galeria:.\release\v1.0.0\reports\behavior-tests\index.html
-echo   - Capturas de Ecra (89): .\release\v1.0.0\screenshots\
+echo Ficheiros disponiveis na pasta: .\release\development\
+echo   - APK Release:           .\release\development\morseGO-release.apk
+echo   - APK Debug:             .\release\development\morseGO-debug.apk
+echo   - Relatorios de Testes:  .\release\development\reports\
 echo   - Portal Central MorseGO:.\index.html
 echo ====================================================
 echo Concluido com sucesso!
