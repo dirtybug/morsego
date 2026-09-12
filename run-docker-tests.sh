@@ -15,6 +15,10 @@ fi
 echo "Target selected: $TARGET"
 
 case "$TARGET" in
+    clean)
+        ./clean.sh
+        exit 0
+        ;;
     unit)
         docker compose run --rm test-unit
         ;;

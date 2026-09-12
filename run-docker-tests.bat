@@ -21,7 +21,11 @@ set TARGET=%1
 if "%TARGET%"=="" set TARGET=unit
 
 echo Executando container Docker para o alvo: %TARGET%...
-if "%TARGET%"=="unit" (
+if "%TARGET%"=="clean" (
+    echo [INFO] Limpando cache do Gradle, pastas .gradle, .idea e build...
+    call clean.bat
+    exit /b 0
+) else if "%TARGET%"=="unit" (
     docker compose run --rm test-unit
 ) else if "%TARGET%"=="build" (
     docker compose run --rm build-apk

@@ -15,6 +15,10 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
 Write-Host "Alvo selecionado: $Target" -ForegroundColor Yellow
 
 switch ($Target.ToLower()) {
+    "clean" {
+        & ".\clean.ps1"
+        exit 0
+    }
     "unit" {
         docker compose run --rm test-unit
     }

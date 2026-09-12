@@ -12,4 +12,6 @@ buildscript {
 
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
+    delete "${rootProject.projectDir}/app/build"
+    delete "${rootProject.projectDir}/.idea"
 }
