@@ -12,7 +12,6 @@ fi
 RELEASE_DIR="${RELEASE_DIR:-/workspace/release/development}"
 mkdir -p "$RELEASE_DIR/reports/unit-tests"
 mkdir -p "$RELEASE_DIR/reports/instrumented"
-mkdir -p "$RELEASE_DIR/screenshots"
 [ -f /workspace/gradlew ] && chmod +x /workspace/gradlew 2>/dev/null || true
 rm -f /root/.gradle/caches/journal-1/*.lock 2>/dev/null || true
 rm -f /root/.gradle/caches/*.lock 2>/dev/null || true
@@ -104,9 +103,13 @@ case "$ACTION" in
         echo ">>> Running Connected Android Instrumented Tests (Behavior, Radio Words, Screenshots)..."
         ./gradlew connectedDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
 
-        echo ">>> Collecting behavior test screenshots from device..."
-        # Pull screenshots saved by ScreenshotHelper in /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/
-        adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "$RELEASE_DIR/screenshots/" 2>/dev/null || true
+        if [ "${GENERATE_SCREENSHOTS:-false}" = "true" ] || [ "${GENERATE_SCREENSHOTS:-0}" = "1" ]; then
+            echo ">>> Collecting behavior test screenshots from device..."
+            mkdir -p "$RELEASE_DIR/screenshots"
+            adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "$RELEASE_DIR/screenshots/" 2>/dev/null || true
+        else
+            echo "ℹ️ Skipping screenshot generation."
+        fi
 
         if [ -d "app/build/reports/androidTests/connected" ]; then
             cp -r app/build/reports/androidTests/connected/* "$RELEASE_DIR/reports/instrumented/"
