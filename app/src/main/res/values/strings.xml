@@ -3,13 +3,12 @@
     <string name="morsego_motto">MorseGO • Bat Echolocation CW Telegraphy</string>
 
     <!-- Navigation -->
+    <string name="tree_title">Tree</string>
     <string name="send_title">Send</string>
-    <string name="listen_title">Listen</string>
-    <string name="receive_title">Listen</string>
-    <string name="tree_title">Morse Tree</string>
+    <string name="listen_title">Receive</string>
+    <string name="receive_title">Receive</string>
     <string name="learn_title">Send</string>
-    <string name="practice_title">Listen</string>
-    <string name="keyer_title">Keyer</string>
+    <string name="practice_title">Receive</string>
     <string name="hardware_title">USB</string>
     <string name="settings_title">Settings</string>
 
@@ -28,18 +27,18 @@
     <string name="tree_zoom_reset">Reset</string>
     <string name="tree_zoom_hint">🔍 Pinch to zoom • Drag to pan • Double-tap to toggle</string>
 
-    <!-- Learn & Exam -->
+    <!-- Send & Receive Tests -->
     <string name="level_number_format">LEVEL %1$d / %2$d</string>
     <string name="new_letters_title">2 NEW CHARACTERS IN THIS LEVEL:</string>
-    <string name="level_requirements_title">LEVEL ADVANCEMENT REQUIREMENTS:</string>
-    <string name="level_requirements_desc">• Characters in exam: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the learned pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass both Listening and Transmission stages to unlock the next level.</string>
-    <string name="start_exam_button">START LEVEL EXAM ▶</string>
+    <string name="level_requirements_title">SEND TEST ADVANCEMENT REQUIREMENTS:</string>
+    <string name="level_requirements_desc">• Characters in test: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the vocabulary pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass the transmission test to unlock the next level.</string>
+    <string name="start_exam_button">START SEND TEST ▶</string>
     <string name="exam_completed_title">🎉 LEVEL COMPLETED!</string>
     <string name="exam_unlocked_msg">Unlocked Level %1$d in the Morse Binary Tree!</string>
     <string name="advance_next_level_button">ADVANCE TO NEXT LEVEL ▶</string>
     <string name="review_level_button">Review This Level</string>
-    <string name="exam_stage_listening">Stage 1: Listening (Hear &amp; Identify)</string>
-    <string name="exam_stage_transmission">Stage 2: Transmission (Key with Paddles)</string>
+    <string name="exam_stage_listening">Receive Test: Acoustic Listening (Hear &amp; Identify)</string>
+    <string name="exam_stage_transmission">Send Test: Keying Transmission (Key with Paddles)</string>
     <string name="exam_lives_label">Lives:</string>
 
     <!-- Radio Words -->

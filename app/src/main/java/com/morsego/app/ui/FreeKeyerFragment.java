@@ -40,7 +40,7 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
 
         MainActivity activity = (MainActivity) requireActivity();
 
-        binding.tvTxStatus.setText("CW KEYER (" + activity.getSettings().getMode().getLabel().toUpperCase() + ")");
+        binding.tvTxStatus.setText("READ CW (" + activity.getSettings().getMode().getLabel().toUpperCase() + ")");
         binding.tvKeyerWpm.setText(activity.getSettings().getWpm() + " WPM");
         binding.tvSeekWpmValue.setText(String.valueOf(activity.getSettings().getWpm()));
         binding.seekWpm.setProgress(activity.getSettings().getWpm() - 5);

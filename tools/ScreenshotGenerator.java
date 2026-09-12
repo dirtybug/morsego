@@ -145,7 +145,7 @@ public class ScreenshotGenerator {
         g.setColor(new Color(0x28, 0x2D, 0x36));
         g.drawLine(0, y, WIDTH, y);
 
-        String[] tabs = {"Arvore", "Enviar", "Ouvir", "Keyer", "USB"};
+        String[] tabs = {"Arvore", "Send", "Receive", "USB", "Config"};
         int tabW = WIDTH / tabs.length;
 
         for (int i = 0; i < tabs.length; i++) {
@@ -167,12 +167,13 @@ public class ScreenshotGenerator {
                 g.drawArc(cx - 7, iconY, 14, 12, 0, 180);
                 g.fillRect(cx - 8, iconY + 6, 3, 6);
                 g.fillRect(cx + 5, iconY + 6, 3, 6);
-            } else if (i == 3) { // Keyer paddles
-                g.fillRect(cx - 6, iconY + 2, 4, 10);
-                g.fillRect(cx + 2, iconY + 2, 4, 10);
-            } else if (i == 4) { // USB plug
+            } else if (i == 3) { // USB plug
                 g.drawRect(cx - 5, iconY + 1, 10, 8);
                 g.drawLine(cx, iconY + 9, cx, iconY + 14);
+            } else if (i == 4) { // Settings gear
+                g.drawOval(cx - 6, iconY + 1, 12, 12);
+                g.drawLine(cx, iconY, cx, iconY + 14);
+                g.drawLine(cx - 7, iconY + 7, cx + 7, iconY + 7);
             }
 
             g.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 11));
@@ -219,7 +220,7 @@ public class ScreenshotGenerator {
         // Subtitle
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("FASE 2: TRANSMISSAO (MANIPULACAO CW)", 20, curY + 60);
+        g.drawString("TESTE DE SEND (TRANSMISSAO CW)", 20, curY + 60);
 
         // Exam Question Card
         int cardY = curY + 80;
@@ -323,7 +324,7 @@ public class ScreenshotGenerator {
         // Subtitle
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("FASE 2: TRANSMISSAO (MANIPULACAO CW)", 20, curY + 65);
+        g.drawString("TESTE DE SEND (TRANSMISSAO CW)", 20, curY + 65);
 
         // Exam Question Card
         int cardY = curY + 88;
@@ -493,13 +494,13 @@ public class ScreenshotGenerator {
             g.drawString(subLetters[i], sx - 6, sy + 6);
         }
 
-        // Action Button: Praticar Este Nivel
-        int btnY = treeY + treeH - 70;
-        g.setColor(COLOR_AMBER);
-        g.fillRoundRect(40, btnY, WIDTH - 80, 48, 12, 12);
-        g.setColor(COLOR_BG);
-        g.setFont(new Font("SansSerif", Font.BOLD, 15));
-        g.drawString("PRATICAR ESTE NIVEL >", WIDTH / 2 - 95, btnY + 30);
+        // Tree Navigation & Exploration Hint (no exam button in tree)
+        int hintY = treeY + treeH - 35;
+        g.setColor(COLOR_TEXT_SEC);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        String hint = "Junte os dedos para zoom • Arraste para navegar • Toque para ouvir som CW";
+        int hintW = g.getFontMetrics().stringWidth(hint);
+        g.drawString(hint, WIDTH / 2 - hintW / 2, hintY);
 
         drawBottomNav(g, 0); // Arvore active
 
@@ -509,7 +510,7 @@ public class ScreenshotGenerator {
     }
 
     /**
-     * 4. CW LISTENING EXAM SCREENSHOT
+     * 4. RECEIVE (LISTENING) TEST SCREENSHOT
      */
     public static void generateListeningExam(File file) throws Exception {
         BufferedImage img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -524,14 +525,19 @@ public class ScreenshotGenerator {
         int curY = 84;
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("TREINO DE AUDICAO CW", 20, curY + 35);
-        for (int i = 0; i < 3; i++) {
-            drawHeart(g, WIDTH - 95 + (i * 24), curY + 20, 18);
-        }
+        g.drawString("TESTE DE RECEIVE (RECEBER)", 20, curY + 35);
+
+        // Badge indicating active mode
+        g.setColor(new Color(0x1B, 0x38, 0x25));
+        g.fillRoundRect(WIDTH - 150, curY + 16, 130, 26, 8, 8);
+        g.setColor(COLOR_GREEN);
+        g.drawRoundRect(WIDTH - 150, curY + 16, 130, 26, 8, 8);
+        g.setFont(new Font("Monospaced", Font.BOLD, 11));
+        g.drawString("RECEIVE TEST", WIDTH - 138, curY + 33);
 
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("Identifique o som emitido pelo sinal Morse:", 20, curY + 60);
+        g.drawString("Escute o sinal acústico CW e selecione a letra recebida:", 20, curY + 60);
 
         // Acoustic Play Audio Card
         int playCardY = curY + 80;
@@ -551,8 +557,8 @@ public class ScreenshotGenerator {
         g.setFont(new Font("SansSerif", Font.BOLD, 14));
         g.drawString("Toque para Ouvir o Sinal CW", WIDTH / 2 - 95, playCardY + 125);
 
-        // 4 Options Grid (A, B, C, D)
-        String[] options = {"E", "T", "A", "N"};
+        // 4 Options Grid (A, B, C, D) in alphabetical order
+        String[] options = {"A", "E", "N", "T"};
         int optGridY = playCardY + playCardH + 30;
         int optW = (WIDTH - 55) / 2;
         int optH = 75;
@@ -561,7 +567,7 @@ public class ScreenshotGenerator {
             int ox = (i % 2 == 0) ? 20 : 35 + optW;
             int oy = optGridY + (i / 2) * (optH + 15);
 
-            boolean isCorrectHighlight = (i == 0); // Option E highlighted
+            boolean isCorrectHighlight = (i == 1); // Option E highlighted
             g.setColor(isCorrectHighlight ? new Color(0x1B, 0x38, 0x25) : COLOR_SURFACE);
             g.fillRoundRect(ox, oy, optW, optH, 12, 12);
             g.setColor(isCorrectHighlight ? COLOR_GREEN : new Color(0x35, 0x3D, 0x4A));
@@ -573,7 +579,7 @@ public class ScreenshotGenerator {
             g.drawString(options[i], ox + optW / 2 - 10, oy + 48);
         }
 
-        drawBottomNav(g, 2); // Ouvir active
+        drawBottomNav(g, 2); // Receive active
 
         g.dispose();
         ImageIO.write(img, "PNG", file);
@@ -596,7 +602,7 @@ public class ScreenshotGenerator {
         int curY = 84;
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("MANIPULADOR LIVRE (IAMBIC B)", 20, curY + 35);
+        g.drawString("READ CW (DECODIFICADOR EM TEMPO REAL)", 20, curY + 35);
 
         // Decoded Output Terminal Display
         int termY = curY + 60;
@@ -666,7 +672,7 @@ public class ScreenshotGenerator {
     }
 
     /**
-     * 6. HARDWARE USB CW KEYER CALIBRATION SCREENSHOT
+     * 6. HARDWARE USB CW KEYER CALIBRATION & TIMING/SOUND SETTINGS SCREENSHOT
      */
     public static void generateHardwareSetup(File file) throws Exception {
         BufferedImage img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -681,75 +687,92 @@ public class ScreenshotGenerator {
         int curY = 84;
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("MONITOR & CALIBRACAO USB", 20, curY + 35);
+        g.drawString("CONFIGURACOES USB & SETTINGS", 20, curY + 35);
 
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("Manipulador Externo (ASIN B0F666MVG6)", 20, curY + 60);
+        g.drawString("Manipulador Externo USB • Definicoes de Tempos e Som", 20, curY + 60);
 
         // Hardware Status Monitor Cards
         int monitorY = curY + 80;
         int monW = (WIDTH - 55) / 2;
-        int monH = 130;
+        int monH = 120;
 
         // Left Paddle Monitor
         g.setColor(COLOR_SURFACE);
         g.fillRoundRect(20, monitorY, monW, monH, 14, 14);
         g.setColor(COLOR_GREEN);
-        g.fillOval(35, monitorY + 20, 12, 12);
+        g.fillOval(35, monitorY + 18, 12, 12);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("PA ESQUERDA", 55, monitorY + 31);
+        g.drawString("PA ESQUERDA", 55, monitorY + 29);
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 22));
-        g.drawString("DI (.)", 35, monitorY + 70);
+        g.drawString("DI (.)", 35, monitorY + 65);
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        g.drawString("Mapeado: CTRL_LEFT", 35, monitorY + 95);
+        g.drawString("Mapeado: CTRL_LEFT", 35, monitorY + 90);
 
         // Right Paddle Monitor
         g.setColor(COLOR_SURFACE);
         g.fillRoundRect(35 + monW, monitorY, monW, monH, 14, 14);
         g.setColor(COLOR_GREEN);
-        g.fillOval(50 + monW, monitorY + 20, 12, 12);
+        g.fillOval(50 + monW, monitorY + 18, 12, 12);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("PA DIREITA", 70 + monW, monitorY + 31);
+        g.drawString("PA DIREITA", 70 + monW, monitorY + 29);
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 22));
-        g.drawString("DAH (-)", 50 + monW, monitorY + 70);
+        g.drawString("DAH (-)", 50 + monW, monitorY + 65);
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        g.drawString("Mapeado: CTRL_RIGHT", 50 + monW, monitorY + 95);
+        g.drawString("Mapeado: CTRL_RIGHT", 50 + monW, monitorY + 90);
 
         // Calibration action buttons
-        int btnY = monitorY + monH + 25;
+        int btnY = monitorY + monH + 16;
         g.setColor(COLOR_CARD);
-        g.fillRoundRect(20, btnY, WIDTH - 40, 50, 12, 12);
+        g.fillRoundRect(20, btnY, WIDTH - 40, 44, 12, 12);
         g.setColor(COLOR_AMBER);
         g.setStroke(new BasicStroke(1.5f));
-        g.drawRoundRect(20, btnY, WIDTH - 40, 50, 12, 12);
-        g.setFont(new Font("SansSerif", Font.BOLD, 14));
-        g.drawString("[<>] Inverter Pas (Modo Canhoto)", 40, btnY + 32);
+        g.drawRoundRect(20, btnY, WIDTH - 40, 44, 12, 12);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        g.drawString("[<>] Inverter Pas (Modo Canhoto)", 40, btnY + 28);
 
-        int btnY2 = btnY + 65;
+        int btnY2 = btnY + 54;
         g.setColor(COLOR_CARD);
-        g.fillRoundRect(20, btnY2, WIDTH - 40, 50, 12, 12);
+        g.fillRoundRect(20, btnY2, WIDTH - 40, 44, 12, 12);
         g.setColor(COLOR_TEXT_PRI);
-        g.setFont(new Font("SansSerif", Font.BOLD, 14));
-        g.drawString("[R] Repor Padrao VBand (Ctrl Esquerdo/Direito)", 40, btnY2 + 32);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        g.drawString("[R] Repor Padrao VBand (Ctrl Esquerdo/Direito)", 40, btnY2 + 28);
+
+        // Settings de Tempos e Som Card
+        int setY = btnY2 + 54;
+        int setH = 115;
+        g.setColor(COLOR_SURFACE);
+        g.fillRoundRect(20, setY, WIDTH - 40, setH, 14, 14);
+        g.setColor(new Color(0x35, 0x3D, 0x4A));
+        g.drawRoundRect(20, setY, WIDTH - 40, setH, 14, 14);
+
+        g.setColor(COLOR_AMBER);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        g.drawString("SETTINGS DE TEMPOS E SOM (PARIS / SINTETIZADOR CW)", 35, setY + 26);
+
+        g.setColor(COLOR_TEXT_PRI);
+        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        g.drawString("• Velocidade: 15 WPM (Dit = 80ms, Dah = 240ms, PARIS 50-dit)", 35, setY + 52);
+        g.drawString("• Frequencia de Som CW: 700 Hz (Tom Senoidal Sintetizado)", 35, setY + 74);
+        g.drawString("• Modo Iambic B: Memoria de ponto/traco com squeeze keying", 35, setY + 96);
 
         // Hardware Console Logs
-        int logY = btnY2 + 65;
-        int logH = HEIGHT - logY - 80;
+        int logY = setY + setH + 14;
+        int logH = HEIGHT - logY - 75;
         g.setColor(new Color(0x05, 0x07, 0x09));
         g.fillRoundRect(20, logY, WIDTH - 40, logH, 12, 12);
         g.setColor(COLOR_GREEN);
         g.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        g.drawString("[USB] Dispositivo ASIN B0F666MVG6 detetado", 30, logY + 25);
-        g.drawString("[CALIB] Paddle Dit calibrado -> KEYCODE_CTRL_LEFT", 30, logY + 45);
-        g.drawString("[CALIB] Paddle Dah calibrado -> KEYCODE_CTRL_RIGHT", 30, logY + 65);
-        g.drawString("[STATUS] Pronto para manipulacao Iambic em tempo real", 30, logY + 85);
+        g.drawString("[USB] ASIN B0F666MVG6 online | Dit: CTRL_LEFT | Dah: CTRL_RIGHT", 30, logY + 25);
+        g.drawString("[AUDIO] Sintetizador AudioTrack ativo (700 Hz, volume max)", 30, logY + 45);
+        g.drawString("[PARIS] Relogio de tempo calibrado a 15 WPM (cadencia PARIS)", 30, logY + 65);
 
-        drawBottomNav(g, 4); // USB active
+        drawBottomNav(g, 3); // USB active
 
         g.dispose();
         ImageIO.write(img, "PNG", file);

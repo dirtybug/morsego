@@ -88,6 +88,11 @@ public class MorseRadioWords {
         return RADIO_WORDS;
     }
 
+    public static RadioWordItem getRandomWord() {
+        int idx = (int) (Math.random() * RADIO_WORDS.size());
+        return RADIO_WORDS.get(idx);
+    }
+
     public static class RadioPill {
         public enum Mode {
             LISTEN, SEND, OUVIR, ENVIAR;

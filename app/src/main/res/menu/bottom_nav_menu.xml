@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/nav_tree"
+        android:icon="@drawable/ic_tree"
+        android:title="@string/tree_title" />
+    <item
         android:id="@+id/nav_send"
         android:icon="@drawable/ic_finger"
         android:title="@string/send_title" />
     <item
         android:id="@+id/nav_receive"
         android:icon="@drawable/ic_ear"
-        android:title="@string/listen_title" />
-    <item
-        android:id="@+id/nav_tree"
-        android:icon="@drawable/ic_tree"
-        android:title="@string/tree_title" />
-    <item
-        android:id="@+id/nav_keyer"
-        android:icon="@drawable/ic_radio"
-        android:title="@string/keyer_title" />
+        android:title="@string/receive_title" />
     <item
         android:id="@+id/nav_hardware"
         android:icon="@drawable/ic_hardware"
         android:title="@string/hardware_title" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings_title" />
 </menu>

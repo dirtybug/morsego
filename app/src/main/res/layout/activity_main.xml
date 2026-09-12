@@ -99,6 +99,7 @@
         android:background="@color/radio_surface"
         app:itemIconTint="@color/morse_amber"
         app:itemTextColor="@color/text_secondary"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 

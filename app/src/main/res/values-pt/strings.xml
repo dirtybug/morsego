@@ -3,15 +3,14 @@
     <string name="morsego_motto">MorseGO • O Morcego da Telegrafia CW</string>
 
     <!-- Navigation -->
-    <string name="send_title">Enviar</string>
-    <string name="listen_title">Ouvir</string>
-    <string name="receive_title">Ouvir</string>
-    <string name="tree_title">Árvore de Morse</string>
-    <string name="learn_title">Enviar</string>
-    <string name="practice_title">Ouvir</string>
-    <string name="keyer_title">Manipulador</string>
+    <string name="tree_title">Árvore</string>
+    <string name="send_title">Send</string>
+    <string name="listen_title">Receive</string>
+    <string name="receive_title">Receive</string>
+    <string name="learn_title">Send</string>
+    <string name="practice_title">Receive</string>
     <string name="hardware_title">USB</string>
-    <string name="settings_title">Definições</string>
+    <string name="settings_title">Configurações</string>
 
     <string name="cw_listening_practice_title">TREINO DE ESCUTA EM CW</string>
     <string name="practice_tap_to_listen">Toque para ouvir o sinal Morse</string>
@@ -28,18 +27,18 @@
     <string name="tree_zoom_reset">Repor</string>
     <string name="tree_zoom_hint">🔍 Junte os dedos para zoom • Arraste para navegar • Toque duplo para alternar</string>
 
-    <!-- Learn & Exam -->
+    <!-- Send & Receive Tests -->
     <string name="level_number_format">NÍVEL %1$d / %2$d</string>
     <string name="new_letters_title">2 NOVOS CARACTERES DESTE NÍVEL:</string>
-    <string name="level_requirements_title">REQUISITOS PARA SUBIR DE NÍVEL:</string>
-    <string name="level_requirements_desc">• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete as etapas de Ouvir e Mandar para desbloquear o próximo nível.</string>
-    <string name="start_exam_button">INICIAR TESTE DO NÍVEL ▶</string>
+    <string name="level_requirements_title">REQUISITOS DO TESTE DE SEND (TRANSMISSÃO):</string>
+    <string name="level_requirements_desc">• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete a transmissão com pás para desbloquear o próximo nível.</string>
+    <string name="start_exam_button">INICIAR TESTE DE SEND ▶</string>
     <string name="exam_completed_title">🎉 NÍVEL CONCLUÍDO!</string>
     <string name="exam_unlocked_msg">Desbloqueou o Nível %1$d na Árvore Binária de Morse!</string>
     <string name="advance_next_level_button">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
     <string name="review_level_button">Rever Este Nível</string>
-    <string name="exam_stage_listening">Etapa 1: Audição (Ouvir &amp; Identificar)</string>
-    <string name="exam_stage_transmission">Etapa 2: Transmissão (Mandar com Pás)</string>
+    <string name="exam_stage_listening">Teste de Receive: Audição Acústica (Ouvir &amp; Identificar)</string>
+    <string name="exam_stage_transmission">Teste de Send: Transmissão CW (Mandar com Pás)</string>
     <string name="exam_lives_label">Vidas:</string>
 
     <!-- Radio Words -->

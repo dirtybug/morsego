@@ -69,7 +69,7 @@ public class ReceiveFragment extends Fragment {
     private void applyLocalization() {
         if (binding == null) return;
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        binding.tvPracticeHeaderTitle.setText(isPt ? "TREINO DE ESCUTA EM CW" : "CW LISTENING TRAINING");
+        binding.tvPracticeHeaderTitle.setText(isPt ? "TESTE DE RECEÇÃO (RECEIVE)" : "RECEIVE TEST (LISTENING)");
         binding.tvPracticeTapPrompt.setText(isPt ? "Toque para ouvir o sinal Morse" : "Tap to listen to Morse signal");
         binding.btnNextQuestion.setText(isPt ? "Próxima Pergunta ▶" : "Next Question ▶");
     }
@@ -99,27 +99,37 @@ public class ReceiveFragment extends Fragment {
         List<String> pool = new ArrayList<>(level.getAllCharacters());
 
         boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
+        boolean radioUnlocked = com.morsego.app.tree.MorseRadioWords.isUnlocked(currentLevel);
         String info = isPt ?
-                ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + pool.size() + " caracteres") :
-                ("Testing unlocked characters in tree (Level " + currentLevel + "): " + pool.size() + " characters");
+                ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + pool.size() + " caracteres" + (radioUnlocked ? " • Palavras de Rádio CW Ativas" : "")) :
+                ("Testing unlocked characters in tree (Level " + currentLevel + "): " + pool.size() + " characters" + (radioUnlocked ? " • Ham Radio Words Active" : ""));
         binding.tvPracticeUnlockedInfo.setText(info);
 
-        // Pick random answer from pool
-        Collections.shuffle(pool);
-        currentAnswer = pool.get(0);
-
-        // Generate 3 wrong options
+        boolean pickRadioWord = radioUnlocked && (Math.random() < 0.35);
         List<String> options = new ArrayList<>();
-        options.add(currentAnswer);
 
-        // Fill remaining ONLY with characters from the level's pool
-        for (String c : pool) {
-            if (!options.contains(c) && options.size() < 4) {
-                options.add(c);
+        if (pickRadioWord) {
+            com.morsego.app.tree.MorseRadioWords.RadioWordItem item = com.morsego.app.tree.MorseRadioWords.getRandomWord();
+            currentAnswer = item.word;
+            options = com.morsego.app.tree.MorseRadioWords.generateListeningChoices(currentAnswer, 4);
+        } else {
+            // Pick random answer from pool
+            Collections.shuffle(pool);
+            currentAnswer = pool.get(0);
+
+            // Generate 3 wrong options
+            options.add(currentAnswer);
+
+            // Fill remaining ONLY with characters from the level's pool
+            for (String c : pool) {
+                if (!options.contains(c) && options.size() < 4) {
+                    options.add(c);
+                }
             }
         }
 
-        Collections.shuffle(options);
+        // Put letter options in alphabetical order as required
+        Collections.sort(options);
 
         for (int i = 0; i < optionButtons.size(); i++) {
             Button btn = optionButtons.get(i);
@@ -139,9 +149,19 @@ public class ReceiveFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         if (activity == null) return;
 
-        String morse = MorseBinaryTree.getInstance().getMorse(currentAnswer);
-        if (morse != null) {
-            activity.playMorse(morse, activity.getSettings().getWpm(), null);
+        if (currentAnswer.length() == 1) {
+            String morse = MorseBinaryTree.getInstance().getMorse(currentAnswer);
+            if (morse != null) {
+                activity.playMorse(morse, activity.getSettings().getWpm(), null);
+            }
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < currentAnswer.length(); i++) {
+                if (i > 0) sb.append(" ");
+                String m = MorseBinaryTree.getInstance().getMorse(String.valueOf(currentAnswer.charAt(i)));
+                if (m != null) sb.append(m);
+            }
+            activity.playMorse(sb.toString(), activity.getSettings().getWpm(), null);
         }
     }
 
