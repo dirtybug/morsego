@@ -210,6 +210,17 @@ public class KeyerInputManager {
         }
     }
 
+    public void resetTouchStates() {
+        if (isDitPressed) {
+            isDitPressed = false;
+            if (listener != null) listener.onDitStateChanged(false);
+        }
+        if (isDahPressed) {
+            isDahPressed = false;
+            if (listener != null) listener.onDahStateChanged(false);
+        }
+    }
+
     private void addLog(HardwareLog log) {
         if (recentLogs.size() >= 20) {
             recentLogs.remove(0);

@@ -173,4 +173,74 @@ public class IambicKeyerEngineTest {
 
         testEngine.release();
     }
+
+    @Test
+    public void testFastTapDitDuringDah_ModeB() throws InterruptedException {
+        settings.setMode(KeyerSettings.Mode.IAMBIC_B);
+        settings.setWpm(25); // dit = 48ms, dah = 144ms
+        java.util.List<Character> emitted = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+        IambicKeyerEngine testEngine = new IambicKeyerEngine(settings, new IambicKeyerEngine.KeyerListener() {
+            @Override public void onToneStart() {}
+            @Override public void onToneStop() {}
+            @Override public void onElementEmitted(char element) {
+                emitted.add(element);
+            }
+        });
+
+        // 1. Press and quickly release Dah
+        testEngine.onDahChanged(true);
+        Thread.sleep(20);
+        testEngine.onDahChanged(false);
+
+        // 2. Rapid tap on Dit while Dah is still actively playing (at 25 WPM, Dah is 144ms)
+        Thread.sleep(20);
+        testEngine.onDitChanged(true);
+        Thread.sleep(15); // Fast 15ms tap
+        testEngine.onDitChanged(false);
+
+        // Allow Dah + pause + Dit to complete
+        Thread.sleep(300);
+
+        assertEquals("Must emit Dah and Dit", 2, emitted.size());
+        assertEquals(Character.valueOf('-'), emitted.get(0));
+        assertEquals(Character.valueOf('.'), emitted.get(1));
+
+        testEngine.release();
+    }
+
+    @Test
+    public void testFastTapDitDuringDah_ModeA() throws InterruptedException {
+        settings.setMode(KeyerSettings.Mode.IAMBIC_A);
+        settings.setWpm(25); // dit = 48ms, dah = 144ms
+        java.util.List<Character> emitted = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+        IambicKeyerEngine testEngine = new IambicKeyerEngine(settings, new IambicKeyerEngine.KeyerListener() {
+            @Override public void onToneStart() {}
+            @Override public void onToneStop() {}
+            @Override public void onElementEmitted(char element) {
+                emitted.add(element);
+            }
+        });
+
+        // 1. Press and quickly release Dah
+        testEngine.onDahChanged(true);
+        Thread.sleep(20);
+        testEngine.onDahChanged(false);
+
+        // 2. Rapid tap on Dit while Dah is still actively playing
+        Thread.sleep(20);
+        testEngine.onDitChanged(true);
+        Thread.sleep(15); // Fast 15ms tap
+        testEngine.onDitChanged(false);
+
+        // Allow Dah + pause + Dit to complete
+        Thread.sleep(300);
+
+        assertEquals("Mode A must also preserve fast tap Dit memory during Dah", 2, emitted.size());
+        assertEquals(Character.valueOf('-'), emitted.get(0));
+        assertEquals(Character.valueOf('.'), emitted.get(1));
+
+        testEngine.release();
+    }
 }

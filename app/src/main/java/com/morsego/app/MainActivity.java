@@ -412,10 +412,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     public void onToneStart() {
         boolean silent = isDeviceInSilentMode();
         lastMorsePlayType = silent ? "VIBRATION" : "AUDIO";
-        if (signalDispatcher != null) {
-            signalDispatcher.setSilentMode(silent);
-            signalDispatcher.startTone();
-        } else if (silent) {
+        if (silent) {
             startToneVibration();
         } else if (settings.isSoundEnabled()) {
             synthesizer.startTone();
@@ -430,14 +427,10 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public void onToneStop() {
-        if (signalDispatcher != null) {
-            signalDispatcher.stopTone();
-        } else {
-            if (isVibratingTone) {
-                stopToneVibration();
-            }
-            synthesizer.stopTone();
+        if (isVibratingTone) {
+            stopToneVibration();
         }
+        synthesizer.stopTone();
         decoder.onToneStopped();
         runOnUiThread(() -> {
             if (currentFragment instanceof FreeKeyerFragment) {

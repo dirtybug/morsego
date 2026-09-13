@@ -167,10 +167,17 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             if (!sendingWaitingForInput && currentStage == TestStage.SENDING) {
                 return true;
             }
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
                 activity.getInputManager().setTouchDit(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
                 activity.getInputManager().setTouchDit(false);
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                float y = event.getY();
+                if (x < 0 || x > v.getWidth() || y < 0 || y > v.getHeight()) {
+                    activity.getInputManager().setTouchDit(false);
+                }
             }
             return true;
         });
@@ -179,10 +186,17 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             if (!sendingWaitingForInput && currentStage == TestStage.SENDING) {
                 return true;
             }
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
                 activity.getInputManager().setTouchDah(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
                 activity.getInputManager().setTouchDah(false);
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                float y = event.getY();
+                if (x < 0 || x > v.getWidth() || y < 0 || y > v.getHeight()) {
+                    activity.getInputManager().setTouchDah(false);
+                }
             }
             return true;
         });
@@ -198,6 +212,12 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         float alpha = enabled ? 1.0f : 0.35f;
         binding.btnTouchDit.setAlpha(alpha);
         binding.btnTouchDah.setAlpha(alpha);
+        if (!enabled) {
+            MainActivity act = (MainActivity) getActivity();
+            if (act != null) {
+                act.getInputManager().resetTouchStates();
+            }
+        }
     }
 
     private void prepareForNextSendingQuestion(long delayMs) {
@@ -1044,6 +1064,15 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
                 boolean nextUnlocked = activity.getSettings().isLevelUnlocked(nextLevel);
                 binding.btnNextLevel.setAlpha(nextUnlocked ? 1.0f : 0.4f);
             }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.getInputManager().resetTouchStates();
         }
     }
 

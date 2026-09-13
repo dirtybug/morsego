@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.morsego.app.MainActivity;
+import com.morsego.app.R;
 import com.morsego.app.databinding.FragmentKeyerBinding;
 import com.morsego.app.keyer.MorseDecoder;
 
@@ -65,7 +66,7 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
             if (!text.isEmpty()) {
                 ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboard.setPrimaryClip(ClipData.newPlainText("MorseGO", text));
-                Toast.makeText(getContext(), "Texto copiado!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -74,19 +75,33 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
 
         // Touch Paddle controls
         binding.btnFreeDit.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
                 activity.getInputManager().setTouchDit(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
                 activity.getInputManager().setTouchDit(false);
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                float y = event.getY();
+                if (x < 0 || x > v.getWidth() || y < 0 || y > v.getHeight()) {
+                    activity.getInputManager().setTouchDit(false);
+                }
             }
             return true;
         });
 
         binding.btnFreeDah.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
                 activity.getInputManager().setTouchDah(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
                 activity.getInputManager().setTouchDah(false);
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                float y = event.getY();
+                if (x < 0 || x > v.getWidth() || y < 0 || y > v.getHeight()) {
+                    activity.getInputManager().setTouchDah(false);
+                }
             }
             return true;
         });
@@ -126,6 +141,15 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
     @Override
     public void onCharacterDecoded(char character) {
         // Updated in onTextUpdated
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.getInputManager().resetTouchStates();
+        }
     }
 
     @Override

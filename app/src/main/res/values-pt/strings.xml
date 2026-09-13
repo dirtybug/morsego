@@ -99,4 +99,5 @@
     <string name="silent_mode_warning">🔇 Telemóvel em silêncio: Vibração tátil ativada para sinais de Morse.</string>
     <string name="error_wrong_letter">❌ Erro de Letra Errada! Transmitiu \'%1$s\', esperado \'%2$s\'.</string>
     <string name="error_timing">❌ Erro de Tempo! Cadência de pausa fora dos limites: %1$s.</string>
+    <string name="text_copied">Texto copiado!</string>
 </resources>

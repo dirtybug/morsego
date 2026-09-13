@@ -29,35 +29,41 @@ public class IambicKeyerEngine {
         this.listener = listener;
     }
 
-    public void onDitChanged(boolean pressed) {
-        ditPressed = pressed;
-        if (settings.getMode() == KeyerSettings.Mode.STRAIGHT_KEY) {
-            handleStraightKey();
-            return;
-        }
+    private final Object loopLock = new Object();
 
-        if (pressed) {
-            ditNeedsRelease = false;
-            ditMemory = true;
-            startLoopIfNeeded();
-        } else {
-            ditNeedsRelease = false;
+    public void onDitChanged(boolean pressed) {
+        synchronized (loopLock) {
+            ditPressed = pressed;
+            if (settings.getMode() == KeyerSettings.Mode.STRAIGHT_KEY) {
+                handleStraightKey();
+                return;
+            }
+
+            if (pressed) {
+                ditNeedsRelease = false;
+                ditMemory = true;
+                startLoopIfNeededLocked();
+            } else {
+                ditNeedsRelease = false;
+            }
         }
     }
 
     public void onDahChanged(boolean pressed) {
-        dahPressed = pressed;
-        if (settings.getMode() == KeyerSettings.Mode.STRAIGHT_KEY) {
-            handleStraightKey();
-            return;
-        }
+        synchronized (loopLock) {
+            dahPressed = pressed;
+            if (settings.getMode() == KeyerSettings.Mode.STRAIGHT_KEY) {
+                handleStraightKey();
+                return;
+            }
 
-        if (pressed) {
-            dahNeedsRelease = false;
-            dahMemory = true;
-            startLoopIfNeeded();
-        } else {
-            dahNeedsRelease = false;
+            if (pressed) {
+                dahNeedsRelease = false;
+                dahMemory = true;
+                startLoopIfNeededLocked();
+            } else {
+                dahNeedsRelease = false;
+            }
         }
     }
 
@@ -69,14 +75,10 @@ public class IambicKeyerEngine {
         }
     }
 
-    private final Object loopLock = new Object();
-
-    private void startLoopIfNeeded() {
-        synchronized (loopLock) {
-            if (isRunning.get()) return;
-            isRunning.set(true);
-            executor.execute(this::runLoop);
-        }
+    private void startLoopIfNeededLocked() {
+        if (isRunning.get()) return;
+        isRunning.set(true);
+        executor.execute(this::runLoop);
     }
 
     private void runLoop() {
@@ -111,8 +113,10 @@ public class IambicKeyerEngine {
             }
 
             if (sendDit) {
-                ditMemory = false;
-                ditNeedsRelease = true; // Consumed: requires releasing paddle before another dit
+                synchronized (loopLock) {
+                    ditMemory = false;
+                    ditNeedsRelease = true; // Consumed: requires releasing paddle before another dit
+                }
                 lastElement = '.';
                 if (listener != null) {
                     listener.onToneStart();
@@ -120,13 +124,19 @@ public class IambicKeyerEngine {
                 }
                 long startDit = System.currentTimeMillis();
                 while (System.currentTimeMillis() - startDit < ditDuration) {
-                    if (dahPressed) dahMemory = true;
+                    if (dahPressed) {
+                        synchronized (loopLock) {
+                            dahMemory = true;
+                        }
+                    }
                     sleep(2);
                 }
                 if (listener != null) listener.onToneStop();
             } else {
-                dahMemory = false;
-                dahNeedsRelease = true; // Consumed: requires releasing paddle before another dah
+                synchronized (loopLock) {
+                    dahMemory = false;
+                    dahNeedsRelease = true; // Consumed: requires releasing paddle before another dah
+                }
                 lastElement = '-';
                 if (listener != null) {
                     listener.onToneStart();
@@ -134,7 +144,11 @@ public class IambicKeyerEngine {
                 }
                 long startDah = System.currentTimeMillis();
                 while (System.currentTimeMillis() - startDah < dahDuration) {
-                    if (ditPressed) ditMemory = true;
+                    if (ditPressed) {
+                        synchronized (loopLock) {
+                            ditMemory = true;
+                        }
+                    }
                     sleep(2);
                 }
                 if (listener != null) listener.onToneStop();
@@ -143,15 +157,11 @@ public class IambicKeyerEngine {
             // Intra-element spacing (1 dit unit)
             long startPause = System.currentTimeMillis();
             while (System.currentTimeMillis() - startPause < elementSpace) {
-                if (ditPressed && !ditNeedsRelease) ditMemory = true;
-                if (dahPressed && !dahNeedsRelease) dahMemory = true;
+                synchronized (loopLock) {
+                    if (ditPressed && !ditNeedsRelease) ditMemory = true;
+                    if (dahPressed && !dahNeedsRelease) dahMemory = true;
+                }
                 sleep(2);
-            }
-
-            // In Mode A, clear memory if paddle was already released
-            if (settings.getMode() == KeyerSettings.Mode.IAMBIC_A) {
-                if (!ditPressed) ditMemory = false;
-                if (!dahPressed) dahMemory = false;
             }
         }
     }
@@ -163,11 +173,13 @@ public class IambicKeyerEngine {
     }
 
     public void stop() {
-        isRunning.set(false);
-        ditMemory = false;
-        dahMemory = false;
-        ditNeedsRelease = false;
-        dahNeedsRelease = false;
+        synchronized (loopLock) {
+            isRunning.set(false);
+            ditMemory = false;
+            dahMemory = false;
+            ditNeedsRelease = false;
+            dahNeedsRelease = false;
+        }
         if (listener != null) listener.onToneStop();
     }
 

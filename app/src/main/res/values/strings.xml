@@ -99,4 +99,5 @@
     <string name="silent_mode_warning">🔇 Device in silent mode: Haptic vibration enabled for Morse signals.</string>
     <string name="error_wrong_letter">❌ Wrong Letter Error! Keyed \'%1$s\', expected \'%2$s\'.</string>
     <string name="error_timing">❌ Timing Error! Pause cadence out of bounds: %1$s.</string>
+    <string name="text_copied">Text copied!</string>
 </resources>
