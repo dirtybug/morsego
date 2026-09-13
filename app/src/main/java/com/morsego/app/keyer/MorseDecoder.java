@@ -29,6 +29,7 @@ public class MorseDecoder {
     // Timing tracking
     private long lastToneStopTime = 0;
     private long lastCharToneStopTime = 0;
+    private long customCharPauseMs = 0;
 
     // Manual / Straight-key timing
     private long toneStartTime = 0;
@@ -66,6 +67,14 @@ public class MorseDecoder {
         }
     }
 
+    public void setCustomCharPauseMs(long ms) {
+        this.customCharPauseMs = ms;
+    }
+
+    public long getCustomCharPauseMs() {
+        return customCharPauseMs;
+    }
+
     public void setListener(DecoderListener listener) {
         this.listener = listener;
     }
@@ -89,9 +98,7 @@ public class MorseDecoder {
                 // Inter-letter pause between letters of a word
                 MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(pause, settings.getWpm());
                 notifyTimingFeedback(eval);
-                if (eval.isTimingFailure) {
-                    notifyTimingFailure(eval);
-                }
+                // Pause between letters is instructional guidance, never abort the user
             }
         }
     }
@@ -131,8 +138,9 @@ public class MorseDecoder {
         cancelPauseWatchers();
 
         int wpm = settings.getWpm();
-        long charPause = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 2.0f), 800L);
-        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm), charPause + 300L);
+        long charPause = customCharPauseMs > 0 ? customCharPauseMs :
+                Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 3.5f), 1500L);
+        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm), charPause + 500L);
 
         charPauseRunnable = () -> {
             commitCharacter();
@@ -162,15 +170,14 @@ public class MorseDecoder {
     private void scheduleMaxLetterPauseWatcher() {
         cancelMaxLetterPauseWatcher();
         int wpm = settings.getWpm();
-        // High generous tolerance: 5.0x inter-character pause with a minimum floor of 2200ms
-        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 5.0f) + 200L, 2200L);
+        // Generous letter pause tolerance: minimum floor of 6000ms
+        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 6.0f) + 500L, 6000L);
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
-                String feedback = "Failure: Excessive pause between letters (> max 5.0x)";
+                String feedback = "Pause cadence: Generous pause between letters";
                 MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
-                        false, true, feedback, 5.1f);
+                        false, false, feedback, 5.1f);
                 notifyTimingFeedback(eval);
-                notifyTimingFailure(eval);
             }
         };
         postDelayedToHandler(maxLetterPauseRunnable, maxWait);
@@ -184,6 +191,7 @@ public class MorseDecoder {
     }
 
     public synchronized void commitCharacter() {
+        cancelPauseWatchers();
         if (currentPattern.length() == 0) return;
 
         lastCharToneStopTime = lastToneStopTime > 0 ? lastToneStopTime : System.currentTimeMillis();

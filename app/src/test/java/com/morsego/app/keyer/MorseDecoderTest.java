@@ -135,4 +135,13 @@ public class MorseDecoderTest {
         assertEquals(1, orientation);
         assertEquals("CQ", decoder.getDecodedText());
     }
+
+    @Test
+    public void testCustomCharPauseTolerance() {
+        assertEquals(0, decoder.getCustomCharPauseMs());
+        decoder.setCustomCharPauseMs(2000L);
+        assertEquals(2000L, decoder.getCustomCharPauseMs());
+        decoder.setCustomCharPauseMs(0);
+        assertEquals(0, decoder.getCustomCharPauseMs());
+    }
 }

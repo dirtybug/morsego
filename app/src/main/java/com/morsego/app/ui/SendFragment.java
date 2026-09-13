@@ -63,6 +63,14 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     private String currentSendingTarget = "";
     private boolean sendingWaitingForInput = false;
     private final StringBuilder currentWordKeyed = new StringBuilder();
+    private Runnable quickCommitRunnable = null;
+
+    private void cancelQuickCommit() {
+        if (quickCommitRunnable != null && binding != null) {
+            binding.getRoot().removeCallbacks(quickCommitRunnable);
+            quickCommitRunnable = null;
+        }
+    }
 
     // Overall test results
     private int listeningTotalFailures = 0;
@@ -162,6 +170,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         binding.btnReviewLevel.setOnClickListener(v -> showStudyView());
 
         binding.btnResetSendingAttempt.setOnClickListener(v -> {
+            cancelQuickCommit();
             currentWordKeyed.setLength(0);
             updateSendingMorseProgress();
             binding.tvSendingBuffer.setText(R.string.keyer_input_empty);
@@ -230,6 +239,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     }
 
     private void prepareForNextSendingQuestion(long delayMs) {
+        cancelQuickCommit();
         sendingWaitingForInput = false;
         setSendingPaddlesEnabled(false);
 
@@ -635,7 +645,12 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     // --- STAGE 2: SENDING (MANDAR / TRANSMISSION) ---
 
     private void startSendingStage() {
+        cancelQuickCommit();
         currentStage = TestStage.SENDING;
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.getDecoder().setCustomCharPauseMs(2000L);
+        }
         binding.tvTestPhaseBanner.setText(R.string.exam_send_banner);
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
@@ -652,6 +667,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     }
 
     private void nextSendingQuestion() {
+        cancelQuickCommit();
         if (currentQueue.isEmpty()) {
             sendingTotalFailures = currentStageFailures;
             String passMsg = getString(R.string.exam_pass_send_msg);
@@ -680,6 +696,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
+            activity.getDecoder().setCustomCharPauseMs(2000L);
             activity.getDecoder().clear();
         }
     }
@@ -746,6 +763,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
     @Override
     public void onCharacterDecoded(char character) {
+        cancelQuickCommit();
         if (binding == null || currentStage != TestStage.SENDING || !sendingWaitingForInput) return;
 
         char upperChar = Character.toUpperCase(character);
@@ -830,54 +848,15 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     }
 
     /**
-     * Timing failure rule: informs the user clearly of timing/cadence failure
+     * Timing cadence warning: displays cadence guidance to the user without
+     * prematurely aborting the question or docking lives.
      */
     @Override
     public void onTimingFailure(MorseTiming.PauseEvaluation eval) {
         if (binding == null || currentStage != TestStage.SENDING || !sendingWaitingForInput) return;
-
-        // If the timing evaluation is an intra-element cadence warning (within the same letter),
-        // show feedback in the timing view without aborting/destroying the student's in-progress letter!
-        if (eval != null && eval.feedback != null &&
-                (eval.feedback.contains("dit/dah") || eval.feedback.contains("same character") ||
-                 eval.feedback.contains("ponto/traço") || eval.feedback.contains("mesma letra"))) {
+        if (eval != null && eval.feedback != null) {
             binding.tvTimingFeedback.setText(eval.feedback);
-            binding.tvTimingFeedback.setTextColor(Color.parseColor("#FF5252"));
-            return;
-        }
-
-        sendingWaitingForInput = false;
-        questionsAnsweredInStage++;
-        currentStageFailures++;
-
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            for (int i = 0; i < currentSendingTarget.length(); i++) {
-                activity.getSettings().recordLetterFailure(String.valueOf(currentSendingTarget.charAt(i)));
-            }
-            activity.getDecoder().clear();
-        }
-
-        applyFailurePenalty(currentSendingTarget);
-
-        String errorMsg = getString(R.string.error_timing, eval != null ? eval.feedback : "");
-        binding.tvSendingFeedback.setText(errorMsg);
-        binding.tvSendingFeedback.setTextColor(Color.parseColor("#FF5252"));
-        binding.tvTimingFeedback.setText(errorMsg);
-        binding.tvTimingFeedback.setTextColor(Color.parseColor("#FF5252"));
-
-        // Reveal correct pattern and play sound & vibration so user learns cadence
-        revealFullSendingMorsePattern();
-        playFailureFeedbackAudioAndVibrate(currentSendingTarget);
-
-        updateLivesUi();
-
-        if (currentStageFailures >= MAX_ALLOWED_FAILURES) {
-            sendingTotalFailures = currentStageFailures;
-            String failMsg = getString(R.string.exam_fail_listening_exceeded);
-            binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1200);
-        } else {
-            prepareForNextSendingQuestion(950L);
+            binding.tvTimingFeedback.setTextColor(Color.parseColor("#FFB300"));
         }
     }
 
@@ -912,9 +891,33 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
     @Override
     public void onPatternChanged(String currentPattern) {
-        if (binding != null && currentStage == TestStage.SENDING) {
-            String bufferText = currentWordKeyed.toString() + (currentPattern.isEmpty() ? "" : " [" + currentPattern + "]");
-            binding.tvSendingBuffer.setText(getString(R.string.keyer_input_prefix, bufferText.isEmpty() ? "—" : bufferText));
+        if (binding == null || currentStage != TestStage.SENDING) return;
+
+        cancelQuickCommit();
+
+        String bufferText = currentWordKeyed.toString() + (currentPattern.isEmpty() ? "" : " [" + currentPattern + "]");
+        binding.tvSendingBuffer.setText(getString(R.string.keyer_input_prefix, bufferText.isEmpty() ? "—" : bufferText));
+
+        if (!sendingWaitingForInput || currentPattern.isEmpty() || currentSendingTarget == null) {
+            return;
+        }
+
+        int nextIndex = currentWordKeyed.length();
+        if (nextIndex < currentSendingTarget.length()) {
+            char expectedChar = currentSendingTarget.charAt(nextIndex);
+            String expectedMorse = MorseBinaryTree.getInstance().getMorse(String.valueOf(expectedChar));
+
+            if (expectedMorse != null && currentPattern.equals(expectedMorse)) {
+                // Exact match for the expected letter pattern: quick commit responsively!
+                quickCommitRunnable = () -> {
+                    quickCommitRunnable = null;
+                    MainActivity activity = (MainActivity) getActivity();
+                    if (activity != null && activity.getDecoder() != null && sendingWaitingForInput) {
+                        activity.getDecoder().commitCharacter();
+                    }
+                };
+                binding.getRoot().postDelayed(quickCommitRunnable, 400L);
+            }
         }
     }
 
@@ -1145,15 +1148,22 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     @Override
     public void onPause() {
         super.onPause();
+        cancelQuickCommit();
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
             activity.getInputManager().resetTouchStates();
+            activity.getDecoder().setCustomCharPauseMs(0);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        cancelQuickCommit();
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.getDecoder().setCustomCharPauseMs(0);
+        }
         binding = null;
     }
 }
