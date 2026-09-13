@@ -53,12 +53,25 @@ if "%TARGET%"=="unit" (
     echo        - APK Release: run-docker-tests.bat release
     echo        - All:         run-docker-tests.bat all
 )
-echo.
 echo Available files in directory: .\release\development\
-echo   - APK Release:           .\release\development\morseGO-release.apk
-echo   - APK Debug:             .\release\development\morseGO-debug.apk
-echo   - Screenshots:           .\release\development\screenshots\
-echo   - Test Reports:          .\release\development\reports\
-echo   - Central Portal:        .\index.html
+if exist ".\release\development\morseGO-release.apk" (
+    echo   - APK Release:           .\release\development\morseGO-release.apk
+) else (
+    echo   - APK Release:           [Not built - run: run-docker-tests.bat release]
+)
+if exist ".\release\development\morseGO-debug.apk" (
+    echo   - APK Debug:             .\release\development\morseGO-debug.apk
+) else (
+    echo   - APK Debug:             [Not built - run: run-docker-tests.bat build]
+)
+if exist ".\release\development\screenshots\" (
+    echo   - Screenshots:           .\release\development\screenshots\
+)
+if exist ".\release\development\reports\" (
+    echo   - Test Reports:          .\release\development\reports\
+)
+if exist ".\index.html" (
+    echo   - Central Portal:        .\index.html
+)
 echo ====================================================
 echo Completed successfully!
