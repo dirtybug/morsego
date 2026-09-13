@@ -85,6 +85,17 @@
     <string name="receive_test_passed">🎉 Teste de Receção Concluído! (Pontuação: %1$d/%2$d)</string>
     <string name="receive_test_failed">❌ Teste de Receção Falhou: Ultrapassou 3 erros.</string>
     <string name="btn_restart_receive">Reiniciar Teste de Receção 🔄</string>
+    <string name="receive_passed_need_send">🎉 Teste de Ouvir do Nível %1$d Concluído!\nComplete o teste de Transmitir para subir de nível.</string>
+    <string name="btn_go_to_send">IR PARA TRANSMITIR ▶</string>
+    <string name="send_passed_title">TRANSMITIR CONCLUÍDO!</string>
+    <string name="send_passed_need_receive_summary">Teste de Transmissão (Enviar): Aprovado!\n\nAgora complete o Teste de Receção (Ouvir) para desbloquear o próximo nível.</string>
+    <string name="send_passed_need_receive_msg">Falta passar o teste de Ouvir no Nível %1$d para subir de nível.</string>
+    <string name="btn_go_to_receive">IR PARA OUVIR ▶</string>
+    <string name="level_completed_both_passed">🎉 Parabéns! Nível %1$d totalmente concluído (Ouvir e Transmitir)! Nível %2$d desbloqueado!</string>
+    <string name="btn_next_level">AVANÇAR PARA O NÍVEL %1$d ▶</string>
+    <string name="level_mode_status_format">Ouvir: %1$s • Transmitir: %2$s</string>
+    <string name="status_passed">✅</string>
+    <string name="status_pending">⏳</string>
 
     <!-- Radio Words -->
     <string name="radio_words_title">Palavras de Rádio CW</string>

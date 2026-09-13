@@ -52,6 +52,8 @@ public class KeyerSettings {
 
     private final SharedPreferences prefs;
     private final java.util.Map<String, Integer> inMemoryFailures = new java.util.HashMap<>();
+    private final java.util.Set<Integer> inMemoryReceivePassed = new java.util.HashSet<>();
+    private final java.util.Set<Integer> inMemorySendPassed = new java.util.HashSet<>();
 
     public KeyerSettings() {
         this.prefs = null;
@@ -150,9 +152,61 @@ public class KeyerSettings {
         return level <= getCurrentUnlockedLevel();
     }
 
+    public boolean isReceivePassed(int level) {
+        if (level < getCurrentUnlockedLevel()) {
+            return true;
+        }
+        if (inMemoryReceivePassed.contains(level)) {
+            return true;
+        }
+        if (prefs != null) {
+            return prefs.getBoolean("level_" + level + "_receive_passed", false);
+        }
+        return false;
+    }
+
+    public synchronized void setReceivePassed(int level, boolean passed) {
+        if (passed) {
+            inMemoryReceivePassed.add(level);
+        } else {
+            inMemoryReceivePassed.remove(level);
+        }
+        if (prefs != null) {
+            prefs.edit().putBoolean("level_" + level + "_receive_passed", passed).commit();
+        }
+    }
+
+    public boolean isSendPassed(int level) {
+        if (level < getCurrentUnlockedLevel()) {
+            return true;
+        }
+        if (inMemorySendPassed.contains(level)) {
+            return true;
+        }
+        if (prefs != null) {
+            return prefs.getBoolean("level_" + level + "_send_passed", false);
+        }
+        return false;
+    }
+
+    public synchronized void setSendPassed(int level, boolean passed) {
+        if (passed) {
+            inMemorySendPassed.add(level);
+        } else {
+            inMemorySendPassed.remove(level);
+        }
+        if (prefs != null) {
+            prefs.edit().putBoolean("level_" + level + "_send_passed", passed).commit();
+        }
+    }
+
+    public boolean canUnlockNextLevel(int completedLevel) {
+        return isReceivePassed(completedLevel) && isSendPassed(completedLevel);
+    }
+
     public synchronized boolean unlockNextLevel(int completedLevel) {
         int current = getCurrentUnlockedLevel();
-        if (completedLevel >= current) {
+        if (completedLevel >= current && canUnlockNextLevel(completedLevel)) {
             this.currentUnlockedLevel = completedLevel + 1;
             if (prefs != null) {
                 prefs.edit()
@@ -163,6 +217,12 @@ public class KeyerSettings {
             return true;
         }
         return false;
+    }
+
+    public synchronized boolean forceUnlockNextLevel(int completedLevel) {
+        setReceivePassed(completedLevel, true);
+        setSendPassed(completedLevel, true);
+        return unlockNextLevel(completedLevel);
     }
 
     public void recordLetterFailure(String letter) {

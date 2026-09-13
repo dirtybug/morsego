@@ -64,17 +64,7 @@ public class ReceiveFragment extends Fragment {
 
         binding.btnPlayQuestionAudio.setOnClickListener(v -> playQuestionAudio());
 
-        binding.btnNextQuestion.setOnClickListener(v -> {
-            if (testFinished) {
-                resetTest();
-            } else {
-                binding.btnNextQuestion.setVisibility(View.GONE);
-                binding.tvQuizResult.setVisibility(View.GONE);
-                enableOptionButtons(true);
-                setupNewQuestion();
-                updateLivesAndProgressUi();
-            }
-        });
+        binding.btnNextQuestion.setOnClickListener(v -> onNextQuestionClicked());
 
         binding.btnPrevLevel.setOnClickListener(v -> {
             if (currentLevelNumber > 1) {
@@ -98,6 +88,9 @@ public class ReceiveFragment extends Fragment {
         applyLocalization();
         MainActivity activity = (MainActivity) getActivity();
         int initialLevel = (activity != null) ? activity.getSettings().getCurrentUnlockedLevel() : 1;
+        if (getArguments() != null && getArguments().containsKey("target_level")) {
+            initialLevel = getArguments().getInt("target_level");
+        }
         loadLevel(initialLevel);
     }
 
@@ -135,7 +128,18 @@ public class ReceiveFragment extends Fragment {
         if (binding != null) {
             binding.btnNextQuestion.setVisibility(View.GONE);
             binding.tvQuizResult.setVisibility(View.GONE);
+            binding.btnNextQuestion.setText(R.string.practice_next_question);
+            binding.btnNextQuestion.setOnClickListener(v -> onNextQuestionClicked());
         }
+        enableOptionButtons(true);
+        setupNewQuestion();
+        updateLivesAndProgressUi();
+    }
+
+    private void onNextQuestionClicked() {
+        if (binding == null) return;
+        binding.btnNextQuestion.setVisibility(View.GONE);
+        binding.tvQuizResult.setVisibility(View.GONE);
         enableOptionButtons(true);
         setupNewQuestion();
         updateLivesAndProgressUi();
@@ -174,13 +178,9 @@ public class ReceiveFragment extends Fragment {
         super.onResume();
         applyLocalization();
         MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
+        if (activity != null && currentLevel == null) {
             int unlocked = activity.getSettings().getCurrentUnlockedLevel();
-            if (currentLevel == null) {
-                loadLevel(unlocked);
-            } else {
-                loadLevel(currentLevelNumber);
-            }
+            loadLevel(unlocked);
         }
     }
 
@@ -192,9 +192,15 @@ public class ReceiveFragment extends Fragment {
         List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
 
         boolean radioUnlocked = com.morsego.app.tree.MorseRadioWords.isUnlocked(currentLevelNum);
-        String info = radioUnlocked ?
+        com.morsego.app.keyer.KeyerSettings settings = activity.getSettings();
+        String recvStatus = (settings != null && settings.isReceivePassed(currentLevelNum)) ? getString(R.string.status_passed) : getString(R.string.status_pending);
+        String sendStatus = (settings != null && settings.isSendPassed(currentLevelNum)) ? getString(R.string.status_passed) : getString(R.string.status_pending);
+        String statusStr = getString(R.string.level_mode_status_format, recvStatus, sendStatus);
+
+        String info = (radioUnlocked ?
                 getString(R.string.receive_unlocked_info_radio_format, currentLevelNum, pool.size()) :
-                getString(R.string.receive_unlocked_info_format, currentLevelNum, pool.size());
+                getString(R.string.receive_unlocked_info_format, currentLevelNum, pool.size()))
+                + " • " + statusStr;
         binding.tvPracticeUnlockedInfo.setText(info);
 
         boolean pickRadioWord = radioUnlocked && (Math.random() < 0.35);
@@ -288,17 +294,58 @@ public class ReceiveFragment extends Fragment {
             binding.tvQuizResult.setText(R.string.receive_test_failed);
             binding.tvQuizResult.setTextColor(Color.parseColor("#FF5252"));
             binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+            binding.btnNextQuestion.setOnClickListener(v -> resetTest());
             binding.tvQuizResult.setVisibility(View.VISIBLE);
             binding.btnNextQuestion.setVisibility(View.VISIBLE);
         } else if (questionsAnswered >= totalQuestions) {
             testFinished = true;
-            binding.tvQuizResult.setText(getString(R.string.receive_test_passed, scoreCorrect, totalQuestions));
-            binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
-            binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+            MainActivity activity = (MainActivity) getActivity();
+            boolean isSendPassed = false;
+            if (activity != null) {
+                activity.getSettings().setReceivePassed(currentLevelNumber, true);
+                isSendPassed = activity.getSettings().isSendPassed(currentLevelNumber);
+            }
+
             binding.tvQuizResult.setVisibility(View.VISIBLE);
             binding.btnNextQuestion.setVisibility(View.VISIBLE);
+
+            if (!isSendPassed) {
+                binding.tvQuizResult.setText(getString(R.string.receive_passed_need_send, currentLevelNumber));
+                binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
+                binding.btnNextQuestion.setText(R.string.btn_go_to_send);
+                binding.btnNextQuestion.setOnClickListener(v -> {
+                    if (activity != null) {
+                        activity.navigateToSend(currentLevelNumber);
+                    }
+                });
+
+                final int lvl = currentLevelNumber;
+                binding.getRoot().postDelayed(() -> {
+                    if (isAdded() && testFinished && activity != null) {
+                        activity.navigateToSend(lvl);
+                    }
+                }, 2500);
+            } else {
+                if (activity != null) {
+                    activity.getSettings().unlockNextLevel(currentLevelNumber);
+                }
+                int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
+                int nextLevel = currentLevelNumber + 1;
+                if (nextLevel <= maxLevels) {
+                    binding.tvQuizResult.setText(getString(R.string.level_completed_both_passed, currentLevelNumber, nextLevel));
+                    binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
+                    binding.btnNextQuestion.setText(getString(R.string.btn_next_level, nextLevel));
+                    binding.btnNextQuestion.setOnClickListener(v -> loadLevel(nextLevel));
+                } else {
+                    binding.tvQuizResult.setText(R.string.toast_all_levels_completed);
+                    binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
+                    binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+                    binding.btnNextQuestion.setOnClickListener(v -> resetTest());
+                }
+            }
         } else {
             binding.btnNextQuestion.setText(R.string.practice_next_question);
+            binding.btnNextQuestion.setOnClickListener(v -> onNextQuestionClicked());
             binding.tvQuizResult.setVisibility(View.VISIBLE);
             binding.btnNextQuestion.setVisibility(View.VISIBLE);
         }

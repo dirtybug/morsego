@@ -85,6 +85,17 @@
     <string name="receive_test_passed">🎉 Receive Test Completed! (Score: %1$d/%2$d)</string>
     <string name="receive_test_failed">❌ Receive Test Failed: Exceeded 3 mistakes.</string>
     <string name="btn_restart_receive">Restart Receive Test 🔄</string>
+    <string name="receive_passed_need_send">🎉 Level %1$d Receive Test Passed!\nComplete the Transmit test to level up.</string>
+    <string name="btn_go_to_send">GO TO TRANSMIT ▶</string>
+    <string name="send_passed_title">TRANSMIT COMPLETED!</string>
+    <string name="send_passed_need_receive_summary">Transmission Test (Send): Passed!\n\nNow complete the Receive Test (Listen) to unlock the next level.</string>
+    <string name="send_passed_need_receive_msg">Pass the Receive test on Level %1$d to level up.</string>
+    <string name="btn_go_to_receive">GO TO RECEIVE ▶</string>
+    <string name="level_completed_both_passed">🎉 Congratulations! Level %1$d fully mastered (Receive &amp; Transmit)! Level %2$d unlocked!</string>
+    <string name="btn_next_level">ADVANCE TO LEVEL %1$d ▶</string>
+    <string name="level_mode_status_format">Receive: %1$s • Transmit: %2$s</string>
+    <string name="status_passed">✅</string>
+    <string name="status_pending">⏳</string>
 
     <!-- Radio Words -->
     <string name="radio_words_title">Amateur Radio CW Words</string>

@@ -94,10 +94,24 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
                 switchFragment(new TreeFragment());
                 return true;
             } else if (itemId == R.id.nav_send || itemId == R.id.nav_learn) {
-                switchFragment(new SendFragment());
+                SendFragment fragment = new SendFragment();
+                if (pendingTargetLevel > 0) {
+                    Bundle args = new Bundle();
+                    args.putInt("target_level", pendingTargetLevel);
+                    fragment.setArguments(args);
+                    pendingTargetLevel = -1;
+                }
+                switchFragment(fragment);
                 return true;
             } else if (itemId == R.id.nav_receive || itemId == R.id.nav_practice) {
-                switchFragment(new ReceiveFragment());
+                ReceiveFragment fragment = new ReceiveFragment();
+                if (pendingTargetLevel > 0) {
+                    Bundle args = new Bundle();
+                    args.putInt("target_level", pendingTargetLevel);
+                    fragment.setArguments(args);
+                    pendingTargetLevel = -1;
+                }
+                switchFragment(fragment);
                 return true;
             } else if (itemId == R.id.nav_hardware) {
                 switchFragment(new HardwareFragment());
@@ -344,6 +358,40 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     public void navigateToTab(int tabId) {
         binding.bottomNavigation.setSelectedItemId(tabId);
+    }
+
+    private int pendingTargetLevel = -1;
+
+    public void navigateToSend(int level) {
+        runOnUiThread(() -> {
+            this.pendingTargetLevel = level;
+            if (binding.bottomNavigation.getSelectedItemId() == R.id.nav_send) {
+                SendFragment fragment = new SendFragment();
+                Bundle args = new Bundle();
+                args.putInt("target_level", level);
+                fragment.setArguments(args);
+                this.pendingTargetLevel = -1;
+                switchFragment(fragment);
+            } else {
+                binding.bottomNavigation.setSelectedItemId(R.id.nav_send);
+            }
+        });
+    }
+
+    public void navigateToReceive(int level) {
+        runOnUiThread(() -> {
+            this.pendingTargetLevel = level;
+            if (binding.bottomNavigation.getSelectedItemId() == R.id.nav_receive) {
+                ReceiveFragment fragment = new ReceiveFragment();
+                Bundle args = new Bundle();
+                args.putInt("target_level", level);
+                fragment.setArguments(args);
+                this.pendingTargetLevel = -1;
+                switchFragment(fragment);
+            } else {
+                binding.bottomNavigation.setSelectedItemId(R.id.nav_receive);
+            }
+        });
     }
 
     private void switchFragment(Fragment fragment) {

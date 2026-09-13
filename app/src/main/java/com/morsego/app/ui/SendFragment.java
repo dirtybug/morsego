@@ -83,7 +83,11 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         super.onViewCreated(view, savedInstanceState);
 
         MainActivity activity = (MainActivity) requireActivity();
-        currentLevelNumber = activity.getSettings().getCurrentUnlockedLevel();
+        if (getArguments() != null && getArguments().containsKey("target_level")) {
+            currentLevelNumber = getArguments().getInt("target_level");
+        } else {
+            currentLevelNumber = activity.getSettings().getCurrentUnlockedLevel();
+        }
 
         testOptionButtons.clear();
         testOptionButtons.add(binding.btnTestOpt1);
@@ -138,12 +142,17 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         binding.btnResultAction.setOnClickListener(v -> {
             boolean passed = (sendingTotalFailures < MAX_ALLOWED_FAILURES);
             if (passed) {
-                int nextLevel = currentLevelNumber + 1;
-                if (nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
-                    loadLevel(nextLevel);
+                boolean isReceivePassed = activity.getSettings().isReceivePassed(currentLevelNumber);
+                if (!isReceivePassed) {
+                    activity.navigateToReceive(currentLevelNumber);
                 } else {
-                    Toast.makeText(getContext(), R.string.toast_all_levels_completed, Toast.LENGTH_LONG).show();
-                    loadLevel(currentLevelNumber);
+                    int nextLevel = currentLevelNumber + 1;
+                    if (nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
+                        loadLevel(nextLevel);
+                    } else {
+                        Toast.makeText(getContext(), R.string.toast_all_levels_completed, Toast.LENGTH_LONG).show();
+                        loadLevel(currentLevelNumber);
+                    }
                 }
             } else {
                 startExam();
@@ -274,13 +283,18 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         binding.tvNewChar2.setText(currentLevel.getChar2());
         binding.tvNewMorse2.setText(currentLevel.getMorse2());
 
+        KeyerSettings settings = (activity != null) ? activity.getSettings() : null;
+        String recvStatus = (settings != null && settings.isReceivePassed(levelNum)) ? getString(R.string.status_passed) : getString(R.string.status_pending);
+        String sendStatus = (settings != null && settings.isSendPassed(levelNum)) ? getString(R.string.status_passed) : getString(R.string.status_pending);
+        String statusStr = getString(R.string.level_mode_status_format, recvStatus, sendStatus);
+
         List<String> pool = currentLevel.getAllCharacters();
         StringBuilder poolSb = new StringBuilder();
         for (int i = 0; i < pool.size(); i++) {
             poolSb.append(pool.get(i));
             if (i < pool.size() - 1) poolSb.append(", ");
         }
-        binding.tvPoolDescription.setText(getString(R.string.characters_in_test, pool.size(), poolSb.toString()));
+        binding.tvPoolDescription.setText(getString(R.string.characters_in_test, pool.size(), poolSb.toString()) + " • " + statusStr);
 
         // Update Next button indicator
         int nextLevel = levelNum + 1;
@@ -914,6 +928,11 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
      * to verify the level release and unlock flow.
      */
     public void simulateExamPassForTesting() {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.getSettings().setReceivePassed(currentLevelNumber, true);
+            activity.getSettings().setSendPassed(currentLevelNumber, true);
+        }
         listeningTotalFailures = 0;
         sendingTotalFailures = 0;
         showExamResults(true, "");
@@ -1012,17 +1031,54 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         MainActivity activity = (MainActivity) getActivity();
 
         if (passed) {
-            String resultTitle = getString(R.string.exam_result_title_completed, currentLevelNumber);
-            binding.tvResultTitle.setText(resultTitle);
-            binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
-
-            String summary = getString(R.string.exam_result_summary_passed, sendingTotalFailures);
-            binding.tvResultSummary.setText(summary);
-
+            boolean isReceivePassed = false;
             if (activity != null) {
-                boolean newlyUnlocked = activity.getSettings().unlockNextLevel(currentLevelNumber);
+                activity.getSettings().setSendPassed(currentLevelNumber, true);
+                isReceivePassed = activity.getSettings().isReceivePassed(currentLevelNumber);
+            }
+
+            if (!isReceivePassed) {
+                // Send passed, but Receive is still needed to level up!
+                String resultTitle = getString(R.string.send_passed_title);
+                binding.tvResultTitle.setText(resultTitle);
+                binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
+
+                binding.tvResultSummary.setText(R.string.send_passed_need_receive_summary);
+                String unlockMsg = getString(R.string.send_passed_need_receive_msg, currentLevelNumber);
+                binding.tvResultUnlockMsg.setText(unlockMsg);
+                binding.tvResultUnlockMsg.setVisibility(View.VISIBLE);
+
+                binding.btnResultAction.setText(R.string.btn_go_to_receive);
+                binding.btnResultAction.setBackgroundColor(Color.parseColor("#00E5FF"));
+                binding.btnResultAction.setOnClickListener(v -> {
+                    if (activity != null) {
+                        activity.navigateToReceive(currentLevelNumber);
+                    }
+                });
+
+                final int lvl = currentLevelNumber;
+                binding.getRoot().postDelayed(() -> {
+                    if (isAdded() && currentStage == TestStage.RESULT && activity != null) {
+                        activity.navigateToReceive(lvl);
+                    }
+                }, 2500);
+            } else {
+                // Both Send and Receive are passed!
+                boolean newlyUnlocked = false;
+                if (activity != null) {
+                    newlyUnlocked = activity.getSettings().unlockNextLevel(currentLevelNumber);
+                }
                 int nextLevel = currentLevelNumber + 1;
-                if (newlyUnlocked && nextLevel <= MorseBinaryTree.getInstance().getTotalLevels()) {
+                int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
+
+                String resultTitle = getString(R.string.exam_result_title_completed, currentLevelNumber);
+                binding.tvResultTitle.setText(resultTitle);
+                binding.tvResultTitle.setTextColor(Color.parseColor("#00E676"));
+
+                String summary = getString(R.string.exam_result_summary_passed, sendingTotalFailures);
+                binding.tvResultSummary.setText(summary);
+
+                if (newlyUnlocked && nextLevel <= maxLevels) {
                     String unlockMsg = getString(R.string.exam_result_unlocked_new, nextLevel);
                     binding.tvResultUnlockMsg.setText(unlockMsg);
                     binding.tvResultUnlockMsg.setVisibility(View.VISIBLE);
@@ -1031,10 +1087,18 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
                     binding.tvResultUnlockMsg.setText(unlockMsg);
                     binding.tvResultUnlockMsg.setVisibility(View.VISIBLE);
                 }
-            }
 
-            binding.btnResultAction.setText(R.string.exam_result_btn_advance);
-            binding.btnResultAction.setBackgroundColor(Color.parseColor("#FFB300"));
+                binding.btnResultAction.setText(R.string.exam_result_btn_advance);
+                binding.btnResultAction.setBackgroundColor(Color.parseColor("#FFB300"));
+                binding.btnResultAction.setOnClickListener(v -> {
+                    if (nextLevel <= maxLevels) {
+                        loadLevel(nextLevel);
+                    } else {
+                        Toast.makeText(getContext(), R.string.toast_all_levels_completed, Toast.LENGTH_LONG).show();
+                        loadLevel(currentLevelNumber);
+                    }
+                });
+            }
         } else {
             binding.tvResultTitle.setText(R.string.exam_result_title_failed);
             binding.tvResultTitle.setTextColor(Color.parseColor("#FF5252"));
@@ -1044,6 +1108,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             binding.tvResultUnlockMsg.setVisibility(View.GONE);
             binding.btnResultAction.setText(R.string.exam_result_btn_retry);
             binding.btnResultAction.setBackgroundColor(Color.parseColor("#FF5252"));
+            binding.btnResultAction.setOnClickListener(v -> startExam());
         }
     }
 

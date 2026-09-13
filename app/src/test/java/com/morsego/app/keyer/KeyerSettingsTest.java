@@ -85,12 +85,26 @@ public class KeyerSettingsTest {
         assertTrue("Level 1 must be unlocked initially", settings.isLevelUnlocked(1));
         assertFalse("Level 2 must be locked initially", settings.isLevelUnlocked(2));
 
-        // Unlock next level after completing Level 1
+        // Unlock next level after completing Level 1 requires both receive and send
+        assertFalse("Cannot unlock if neither receive nor send is passed", settings.unlockNextLevel(1));
+        settings.setReceivePassed(1, true);
+        assertTrue("Receive should now be recorded passed", settings.isReceivePassed(1));
+        assertFalse("Send is still pending", settings.isSendPassed(1));
+        assertFalse("Cannot unlock if send not passed yet", settings.unlockNextLevel(1));
+
+        settings.setSendPassed(1, true);
+        assertTrue("Send should now be recorded passed", settings.isSendPassed(1));
+        assertTrue("Now both receive and send are passed", settings.canUnlockNextLevel(1));
+
         boolean unlocked = settings.unlockNextLevel(1);
         assertTrue("Unlocking level 2 from level 1 completion must succeed", unlocked);
         assertEquals(2, settings.getCurrentUnlockedLevel());
         assertTrue("Level 2 must now be unlocked", settings.isLevelUnlocked(2));
         assertFalse("Level 3 must still be locked", settings.isLevelUnlocked(3));
+
+        // Past levels automatically count as passed
+        assertTrue("Past level receive is passed", settings.isReceivePassed(1));
+        assertTrue("Past level send is passed", settings.isSendPassed(1));
 
         // Attempting to unlock from a level lower than current should not regress
         boolean invalidUnlock = settings.unlockNextLevel(0);
