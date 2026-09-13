@@ -75,6 +75,37 @@ jobs:
           echo "🚀 Is Tag Release:        $IS_TAG_RELEASE"
           echo "====================================================="
 
+      - name: Validate Tag Uniqueness
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME="${{ env.TAG_NAME }}"
+          echo "Verifying if tag '${TAG_NAME}' already exists..."
+
+          # 1. Check if release directory already exists in git repository
+          if git ls-tree -d HEAD release/ | grep -q "release/${TAG_NAME}$" || [ -d "release/${TAG_NAME}" ]; then
+            echo "::error::❌ ERROR: Release folder 'release/${TAG_NAME}' already exists in repository!"
+            echo "Tag and release names must be unique. Aborting CI."
+            exit 1
+          fi
+
+          # 2. Check if GitHub release already exists
+          if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "::error::❌ ERROR: GitHub Release '${TAG_NAME}' already exists on GitHub!"
+            echo "Tag and release names must be unique. Aborting CI."
+            exit 1
+          fi
+
+          # 3. Check if tag already exists in RELEASES.md
+          if [ -f "RELEASES.md" ] && grep -F -q "## [${TAG_NAME}]" RELEASES.md; then
+            echo "::error::❌ ERROR: Release '${TAG_NAME}' is already recorded in RELEASES.md!"
+            echo "Tag and release names must be unique. Aborting CI."
+            exit 1
+          fi
+
+          echo "✓ Tag '${TAG_NAME}' is unique and valid for new release."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update Android Manifest XML for Google Play Store
         run: |
           echo ">>> Updating app/src/main/AndroidManifest.xml with Play Store version ${{ env.APP_VERSION_NAME }} (code: ${{ env.APP_VERSION_CODE }})..."
@@ -226,3 +257,72 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync New Release to Main Branch
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo ">>> Syncing new release ${{ env.VERSION }} back to main branch..."
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Determine target branch (main or master)
+          git fetch origin main:main 2>/dev/null || git fetch origin master:master 2>/dev/null || true
+          TARGET_BRANCH="main"
+          if ! git rev-parse --verify main >/dev/null 2>&1; then
+            TARGET_BRANCH="master"
+          fi
+
+          git checkout "$TARGET_BRANCH"
+
+          # 1. Update RELEASES.md with new release entry using python
+          python3 -c "
+import sys, os
+version = '${{ env.VERSION }}'
+app_version = '${{ env.APP_VERSION_NAME }}'
+app_code = '${{ env.APP_VERSION_CODE }}'
+entry = f'''## [{version}] - $(date -u +'%Y-%m-%d')
+
+### 📱 Metadados Google Play Store
+- **Nome da Versão (\`versionName\`):** \`{app_version}\`
+- **Código da Versão (\`versionCode\`):** \`{app_code}\`
+- **Ambiente de Build:** Docker Hermético (OpenJDK 17 + Android SDK 34)
+
+### 🧪 Testes e Qualidade
+- **Suíte de Testes:** 100% de Aprovação
+- **Relatório de Testes:** [Dashboard](release/{version}/reports/index.html)
+- **Galeria Visual:** [Screenshots](release/{version}/screenshots/)
+
+### 📥 Artefatos de Instalação
+| Artefato | Ficheiro | Descrição |
+| :--- | :--- | :--- |
+| **APK Release** | [\`morseGO-{version}-release.apk\`](release/{version}/morseGO-{version}-release.apk) | Binário de produção Google Play Store |
+| **APK Debug** | [\`morseGO-{version}-debug.apk\`](release/{version}/morseGO-{version}-debug.apk) | Binário de depuração com logging |
+| **Manifesto JSON** | [\`release-manifest.json\`](release/{version}/release-manifest.json) | Metadados da release |
+| **Sumário de Testes** | [\`test-summary.json\`](release/{version}/test-summary.json) | Registo dos testes |
+| **Checksums** | [\`SHA256SUMS.txt\`](release/{version}/SHA256SUMS.txt) | Assinaturas de integridade SHA256 |
+
+---
+
+'''
+if os.path.exists('RELEASES.md'):
+    with open('RELEASES.md', 'r', encoding='utf-8') as f:
+        content = f.read()
+    marker = '<!-- RELEASES_LIST_START -->\n'
+    if marker in content and f'## [{version}]' not in content:
+        idx = content.index(marker) + len(marker)
+        new_content = content[:idx] + entry + content[idx:]
+        with open('RELEASES.md', 'w', encoding='utf-8') as f:
+            f.write(new_content)
+"
+
+          # 2. Update AndroidManifest.xml
+          sed -i -E "s/android:versionName=\"[^\"]*\"/android:versionName=\"${{ env.APP_VERSION_NAME }}\"/g" app/src/main/AndroidManifest.xml
+          sed -i -E "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${{ env.APP_VERSION_CODE }}\"/g" app/src/main/AndroidManifest.xml
+
+          # 3. Add release folder and updated files to git
+          git add RELEASES.md README.md app/src/main/AndroidManifest.xml "release/${{ env.VERSION }}"
+          git commit -m "chore(release): add ${{ env.VERSION }} to releases list and release folder [skip ci]" || true
+          git push origin "$TARGET_BRANCH" || echo "Note: Push to $TARGET_BRANCH completed or skipped."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

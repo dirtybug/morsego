@@ -172,24 +172,34 @@ run-docker-tests.bat all
 
 ---
 
+## 📦 Lista de Releases (Releases List)
+
+Todas as versões oficiais do MorseGO são validadas e compiladas em Docker através do GitHub Actions:
+
+| Versão (Tag) | Data | Play Store Name / Code | Testes | Artefatos | Estado |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [**v1.0.0**](release/v1.0.0/) | 2026-09-11 | `1.0.0` (código `10000`) | 135 testes (100% Pass) | [APK Release](release/v1.0.0/morseGO-v1.0.0-release.apk) • [APK Debug](release/v1.0.0/morseGO-v1.0.0-debug.apk) • [Relatórios](release/v1.0.0/reports/index.html) | ✅ Oficial |
+
+Consulte o histórico detalhado, changelog completo e checksums no documento [`RELEASES.md`](RELEASES.md).
+
+---
+
 ## 🚀 Pipeline de CI/CD Automatizado (GitHub Actions)
 
-O processo de **Release Oficial** é totalmente automatizado via [`.github/workflows/ci.yml`](file:///C:/Users/JúlioAndrade/morseGo/.github/workflows/ci.yml):
+O processo de testes e releases é totalmente automatizado via [`.github/workflows/ci.yml`](file:///C:/Users/JúlioAndrade/morseGo/.github/workflows/ci.yml):
 
-1. **Gatilho por Tag:** Basta criar e enviar uma tag de versão:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-2. **Execução Obrigatória de Testes:**
-   - Executa os 79 testes unitários no OpenJDK 17.
-   - Dispara um emulador Android (Pixel 6 / API 30) e corre os 49 testes de comportamento instrumentados, capturando screenshots do ecrã real.
-3. **Build em Docker:**
-   - Constrói o container Docker oficial e gera os APKs (`Release` e `Debug`).
-4. **Publicação do Release:**
-   - Se e apenas se **todos os testes passarem a 100%**, o GitHub Actions:
-     - Organiza os artefatos nas pastas versionadas `releases/v1.0.0/` e `tests/v1.0.0/`.
-     - Gera os checksums `SHA256SUMS.txt` e o `release-manifest.json`.
-     - Publica o GitHub Release oficial com download direto do APK e do arquivo zip dos relatórios.
-   - Se algum teste falhar, o release é automaticamente abortado e nada é publicado.
+1. **Gatilhos de Execução no Servidor:**
+   - **No Push / Commit:** Sempre que é feito `git push` para qualquer branch, a suíte de testes e o build correm dentro do Docker no servidor.
+   - **No Merge / Pull Request:** Testes e builds são validados automaticamente no PR e após a conclusão do merge no branch principal.
+   - **No Tag Push:** Executa o pipeline de release oficial.
+2. **Validação de Unicidade da Tag:**
+   - **Se o nome da tag já existir** (na pasta `release/`, no GitHub Releases ou no `RELEASES.md`), o pipeline **falha imediatamente** (`exit 1`), impedindo a sobreposição acidental de versões.
+3. **Execução Estritamente em Docker:**
+   - O container Docker compila o APK de Release, APK de Debug, executa a suíte de testes unitários e gera todas as capturas de ecrã visuais.
+4. **Atualização Automática da Lista de Releases na Branch `main`:**
+   - O pipeline atualiza o [AndroidManifest.xml](file:///C:/Users/JúlioAndrade/morseGo/app/src/main/AndroidManifest.xml) com `versionName` e `versionCode` para a Google Play Store.
+   - Organiza os binários e relatórios em `release/${VERSION}/`.
+   - Adiciona a nova versão à lista de releases em [`RELEASES.md`](RELEASES.md) e na branch `main`.
+   - Publica o release oficial no GitHub Releases com os ficheiros APK e checksums.
+
 
