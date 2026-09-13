@@ -9,6 +9,27 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Keystores and private signing keys (NEVER commit to git)
+*.keystore
+*.jks
+*.p12
+*.key
+release.keystore
+key.jks
+release/release.keystore
+release/key.jks
+app/release.keystore
+
+# Signing passwords and properties (NEVER commit to git)
+keystore.properties
+key.properties
+keystore-pass.txt
+key-password.txt
+release/keystore.properties
+release/keystore-pass.txt
+release/key.properties
+release/key-password.txt
 app/build/
 scratch/
 /build-apks/

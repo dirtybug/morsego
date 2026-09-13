@@ -327,11 +327,22 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             android:background="@color/radio_surface"
             android:fontFamily="monospace"
             android:padding="12dp"
             android:text="A aguardar toques no manipulador USB..."
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvHardwareVersionBuild"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="MorseGO v1.0.0 • Build: 2026-09-13"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 

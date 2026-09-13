@@ -121,6 +121,8 @@ public class SettingsDialogFragment extends DialogFragment {
         });
 
         binding.btnCloseSettings.setOnClickListener(v -> dismiss());
+
+        binding.tvSettingsVersionBuild.setText("MorseGO v" + com.morsego.app.BuildConfig.VERSION_NAME + " • Build: " + com.morsego.app.BuildConfig.BUILD_TIME);
     }
 
     @Override

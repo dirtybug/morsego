@@ -385,10 +385,12 @@ In production, **official releases are never compiled manually on local PCs**. T
   1. **Unsigned Release APK** (`INSTALL_PARSE_FAILED_NO_CERTIFICATES`): Prior release builds had no `signingConfig` defined in `app/build.gradle`, producing an unsigned APK which Android Package Installer rejects automatically.
   2. **Malformed Intent Filter** (`INSTALL_PARSE_FAILED_MANIFEST_MALFORMED`): `AndroidManifest.xml` had `<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />` under `<activity>` without the mandatory `<meta-data>` resource.
 - **Fix Applied**:
-  - Generated dedicated release keystore (`app/release.keystore`).
+  - Generated dedicated release keystore (`release/release.keystore`, gitignored).
   - Added `signingConfigs.release` in `app/build.gradle` with both v1 (JAR signing) and v2 (APK Signature Scheme) enabled.
   - Removed the unnecessary USB intent-filter from `AndroidManifest.xml` (physical CW keyers connect as standard HID OTG keyboard devices).
   - Both `morseGO-v1.0.0-release.apk` and `morseGO-v1.0.0-debug.apk` are fully signed and validated with `apksigner`.
+  - Added automated signed AAB build scripts (`release/build-signed-aab.bat`, `.ps1`, `.sh`) storing release bundles into `release/v<VERSION>/`.
+  - Keys and passwords (`release/release.keystore`, `keystore-pass.txt`) are excluded via `.gitignore`.
 
 ---
 

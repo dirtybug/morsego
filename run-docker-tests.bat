@@ -33,6 +33,10 @@ if "%TARGET%"=="clean" (
     docker compose run --rm build-apk
 ) else if "%TARGET%"=="release" (
     docker compose run --rm build-release
+) else if "%TARGET%"=="aab" (
+    docker compose run --rm test-unit bundle
+) else if "%TARGET%"=="bundle" (
+    docker compose run --rm test-unit bundle
 ) else if "%TARGET%"=="instrumented" (
     docker compose run --rm test-instrumented
 ) else if "%TARGET%"=="all" (
@@ -58,9 +62,16 @@ if "%TARGET%"=="all" (
     echo [INFO] Debug APK built successfully!
 ) else if "%TARGET%"=="release" (
     echo [INFO] Release APK built successfully!
+) else if "%TARGET%"=="aab" (
+    echo [INFO] Signed Release AAB built successfully!
+) else if "%TARGET%"=="bundle" (
+    echo [INFO] Signed Release AAB built successfully!
 )
 echo.
 echo Available files in directory: .\release\development\
+if exist ".\release\v1.0.0\morseGO-release.aab" (
+    echo   - AAB Signed (Play Store): .\release\v1.0.0\morseGO-release.aab
+)
 if exist ".\release\development\morseGO-release.apk" (
     echo   - APK Release:           .\release\development\morseGO-release.apk
 ) else (

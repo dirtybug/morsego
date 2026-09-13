@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         initVibrator();
 
         binding.tvTopWpm.setText(settings.getWpm() + " WPM");
+        binding.tvAppVersionBuild.setText("v" + BuildConfig.VERSION_NAME + " • " + BuildConfig.BUILD_TIME);
 
         binding.btnSettings.setOnClickListener(v -> {
             new SettingsDialogFragment().show(getSupportFragmentManager(), "settings_dialog");

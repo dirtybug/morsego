@@ -34,15 +34,45 @@ android {
         versionCode appVersionCode
         versionName appVersionName
 
+        def buildTimestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm 'UTC'").format(new Date(System.currentTimeMillis()))
+        buildConfigField "String", "BUILD_TIME", "\"${buildTimestamp}\""
+        resValue "string", "app_build_time", "\"${buildTimestamp}\""
+        resValue "string", "app_version_name", "\"${appVersionName}\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         release {
-            storeFile file("release.keystore")
-            storePassword(System.getenv("KEYSTORE_PASSWORD") ?: "morsego123")
-            keyAlias(System.getenv("KEY_ALIAS") ?: "morsego")
-            keyPassword(System.getenv("KEY_PASSWORD") ?: "morsego123")
+            def passFile = rootProject.file("release/keystore-pass.txt")
+            if (!passFile.exists()) passFile = rootProject.file("keystore-pass.txt")
+            if (!passFile.exists()) passFile = file("keystore-pass.txt")
+            def passFromFile = passFile.exists() ? passFile.text.trim() : null
+
+            def keystorePropsFile = rootProject.file("release/keystore.properties")
+            if (!keystorePropsFile.exists()) keystorePropsFile = rootProject.file("keystore.properties")
+            def appPropsFile = file("keystore.properties")
+            def keyProps = new Properties()
+            if (keystorePropsFile.exists()) {
+                keyProps.load(new FileInputStream(keystorePropsFile))
+            } else if (appPropsFile.exists()) {
+                keyProps.load(new FileInputStream(appPropsFile))
+            }
+
+            def finalPassword = passFromFile ?: keyProps.getProperty("storePassword", System.getenv("KEYSTORE_PASSWORD") ?: "morsego123")
+            def finalKeyPassword = passFromFile ?: keyProps.getProperty("keyPassword", System.getenv("KEY_PASSWORD") ?: finalPassword)
+
+            def storeFilePath = keyProps.getProperty("storeFile", "release/release.keystore")
+            def storeF = rootProject.file(storeFilePath)
+            if (!storeF.exists()) storeF = file(storeFilePath)
+            if (!storeF.exists()) storeF = rootProject.file("release/release.keystore")
+            if (!storeF.exists()) storeF = file("release.keystore")
+            if (!storeF.exists()) storeF = rootProject.file("app/release.keystore")
+
+            storeFile storeF
+            storePassword finalPassword
+            keyAlias(keyProps.getProperty("keyAlias", System.getenv("KEY_ALIAS") ?: "morsego"))
+            keyPassword finalKeyPassword
             v1SigningEnabled true
             v2SigningEnabled true
         }
@@ -61,6 +91,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 

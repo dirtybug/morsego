@@ -68,6 +68,7 @@ public class HardwareFragment extends Fragment {
         });
 
         updateLogs();
+        binding.tvHardwareVersionBuild.setText("MorseGO v" + com.morsego.app.BuildConfig.VERSION_NAME + " • Build: " + com.morsego.app.BuildConfig.BUILD_TIME);
     }
 
     public void updatePaddleVisuals(boolean ditDown, boolean dahDown) {

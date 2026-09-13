@@ -109,6 +109,24 @@ case "$ACTION" in
         echo "✓ Release APK saved to $RELEASE_DIR/morseGO-release.apk"
         ;;
 
+    bundle|aab)
+        echo ">>> Building and Signing Release AAB (Android App Bundle for Google Play Store)..."
+        ./gradlew bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
+        AAB_FILE=$(find app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -n 1)
+        if [ -n "$AAB_FILE" ] && [ -f "$AAB_FILE" ]; then
+            TARGET_VER="${APP_VERSION_NAME:-1.0.0}"
+            TARGET_VER="${TARGET_VER#v}"
+            VERSION_DIR="/workspace/release/v${TARGET_VER}"
+            mkdir -p "$VERSION_DIR"
+            cp -f "$AAB_FILE" "$VERSION_DIR/morseGO-release.aab"
+            (cd "$VERSION_DIR" && sha256sum morseGO-release.aab > morseGO-release.aab.sha256 2>/dev/null || true)
+            echo "✓ Signed Release AAB saved to $VERSION_DIR/morseGO-release.aab"
+        else
+            echo "❌ Error: Release AAB file was not generated!"
+            exit 1
+        fi
+        ;;
+
     lint)
         echo ">>> Running Android Lint..."
         ./gradlew lintDebug || true
@@ -156,10 +174,11 @@ case "$ACTION" in
         ;;
 
     all)
-        echo ">>> Running Full Test Suite (Unit Tests + Build + Release)..."
+        echo ">>> Running Full Test Suite (Unit Tests + Build + Release + AAB)..."
         "$0" unit
         "$0" build
         "$0" release
+        "$0" bundle
         DEVICE_COUNT=$(adb devices 2>/dev/null | grep -v "List" | grep "device$" | wc -l || echo 0)
         if [ "$DEVICE_COUNT" -gt 0 ]; then
             "$0" connected
