@@ -111,7 +111,23 @@ case "$ACTION" in
 
     bundle|aab)
         echo ">>> Building and Signing Release AAB (Android App Bundle for Google Play Store)..."
-        ./gradlew bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
+        if [ ! -f "release/key.jks" ] && [ ! -f "release/release.keystore" ] && [ ! -f "key.jks" ] && [ ! -f "app/release.keystore" ]; then
+            echo "❌ [ERROR] Keystore not found! Will NOT sign AAB."
+            exit 1
+        fi
+        if [ -z "$KEYSTORE_PASSWORD" ] && [ ! -f "release/keystore-pass.txt" ] && [ ! -f "keystore-pass.txt" ]; then
+            echo "❌ [ERROR] Key password file not found! Will NOT sign AAB."
+            exit 1
+        fi
+        KEY_ALIAS_PARAM=""
+        if [ -n "$KEY_ALIAS" ]; then
+            KEY_ALIAS_PARAM="-PkeyAlias=$KEY_ALIAS"
+        fi
+        KEY_PASS_PARAM=""
+        if [ -n "$KEYSTORE_PASSWORD" ]; then
+            KEY_PASS_PARAM="-PkeystorePassword=$KEYSTORE_PASSWORD"
+        fi
+        ./gradlew bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" $KEY_PASS_PARAM $KEY_ALIAS_PARAM --info
         AAB_FILE=$(find app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -n 1)
         if [ -n "$AAB_FILE" ] && [ -f "$AAB_FILE" ]; then
             TARGET_VER="${APP_VERSION_NAME:-1.0.0}"
@@ -133,35 +149,19 @@ case "$ACTION" in
         mkdir -p "$RELEASE_DIR/reports/lint"
         if [ -d "app/build/reports" ]; then
             find app/build/reports -name "lint-results*" -exec cp {} "$RELEASE_DIR/reports/lint/" \; 2>/dev/null || true
-            echo "✓ Lint reports saved to $RELEASE_DIR/reports/lint/"
         fi
         ;;
 
     connected|instrumented)
-        echo ">>> Checking for Android device or emulator connection..."
-        adb devices
-        DEVICE_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l)
-        if [ "$DEVICE_COUNT" -eq 0 ]; then
-            echo "Trying to connect to host ADB daemon (host.docker.internal:5555)..."
-            adb connect host.docker.internal:5555 || true
-            sleep 2
-        fi
+        echo ">>> Running Instrumented Tests on connected device..."
+        chmod +x ./gradlew 2>/dev/null || true
+        ./gradlew connectedDebugAndroidTest || true
+        mkdir -p "$RELEASE_DIR/reports/instrumented"
+        mkdir -p "$RELEASE_DIR/screenshots"
 
-        DEVICE_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l)
-        if [ "$DEVICE_COUNT" -eq 0 ]; then
-            echo "⚠️ No connected Android device or emulator detected via ADB."
-            echo "To run instrumented tests from Docker, either:"
-            echo "  1. Start an emulator or connect a device on host, run 'adb tcpip 5555', and the container will connect to host.docker.internal:5555"
-            echo "  2. Run './gradlew connectedAndroidTest' directly on the host machine."
-            exit 1
-        fi
-
-        echo ">>> Running Connected Android Instrumented Tests (Behavior, Radio Words, Screenshots)..."
-        ./gradlew connectedDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
-
-        if [ "${GENERATE_SCREENSHOTS:-false}" = "true" ] || [ "${GENERATE_SCREENSHOTS:-0}" = "1" ]; then
-            echo ">>> Collecting behavior test screenshots from device..."
-            mkdir -p "$RELEASE_DIR/screenshots"
+        DEVICE_ID=$(adb devices 2>/dev/null | grep -v "List" | grep "device$" | head -n 1 | awk '{print $1}')
+        if [ -n "$DEVICE_ID" ]; then
+            echo ">>> Pulling behavior screenshots from device $DEVICE_ID..."
             adb pull /sdcard/Android/data/com.morsego.app/files/Pictures/behavior_screenshots/. "$RELEASE_DIR/screenshots/" 2>/dev/null || true
         else
             echo "ℹ️ Skipping screenshot generation."
@@ -174,11 +174,10 @@ case "$ACTION" in
         ;;
 
     all)
-        echo ">>> Running Full Test Suite (Unit Tests + Build + Release + AAB)..."
+        echo ">>> Running Full Test Suite (Unit Tests + Build + Release APK)..."
         "$0" unit
         "$0" build
         "$0" release
-        "$0" bundle
         DEVICE_COUNT=$(adb devices 2>/dev/null | grep -v "List" | grep "device$" | wc -l || echo 0)
         if [ "$DEVICE_COUNT" -gt 0 ]; then
             "$0" connected

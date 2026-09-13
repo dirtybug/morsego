@@ -13,37 +13,73 @@ echo ====================================================
 set SCRIPT_DIR=%~dp0
 cd /d "%SCRIPT_DIR%.."
 
-REM 1. Read signing password from release\keystore-pass.txt, keystore-pass.txt, or keystore.properties
+REM 1. Verify Key Password File Exists
 set KEY_PASS=
+set KEY_FOUND=0
 if exist "release\keystore-pass.txt" (
     set /p KEY_PASS=<release\keystore-pass.txt
+    set KEY_FOUND=1
 ) else if exist "keystore-pass.txt" (
     set /p KEY_PASS=<keystore-pass.txt
+    set KEY_FOUND=1
 ) else if exist "release\keystore.properties" (
     for /f "tokens=2 delims==" %%A in ('findstr "storePassword" release\keystore.properties') do set KEY_PASS=%%A
+    set KEY_FOUND=1
 ) else if exist "keystore.properties" (
     for /f "tokens=2 delims==" %%A in ('findstr "storePassword" keystore.properties') do set KEY_PASS=%%A
+    set KEY_FOUND=1
 )
-if "%KEY_PASS%"=="" set KEY_PASS=morsego123
 
-REM 2. Verify or Generate Keystore
-set KEYSTORE_PATH=release\release.keystore
-if not exist "%KEYSTORE_PATH%" (
-    if exist "app\release.keystore" (
-        set KEYSTORE_PATH=app\release.keystore
-    ) else (
-        echo [INFO] Keystore '%KEYSTORE_PATH%' not found. Creating a new release keystore...
-        if not exist "release" mkdir "release"
-        keytool -genkeypair -v -keystore "%KEYSTORE_PATH%" -alias morsego -keyalg RSA -keysize 2048 -validity 10000 -storepass "%KEY_PASS%" -keypass "%KEY_PASS%" -dname "CN=morseGO, OU=Android, O=morseGO, L=City, ST=State, C=US" >nul 2>nul
-        if not exist "%KEYSTORE_PATH%" (
-            echo [ERROR] Could not find or create release keystore '%KEYSTORE_PATH%'!
-            exit /b 1
-        )
-        echo [SUCCESS] Generated new release keystore at '%KEYSTORE_PATH%'.
+if %KEY_FOUND% equ 0 (
+    echo [ERROR] Key password file not found!
+    echo [INFO] Expected 'release\keystore-pass.txt' or 'keystore-pass.txt'.
+    echo [INFO] Key does not exist. AAB will NOT be signed.
+    exit /b 1
+)
+if "%KEY_PASS%"=="" (
+    echo [ERROR] Key password in file is empty! AAB will NOT be signed.
+    exit /b 1
+)
+
+REM 2. Verify Keystore File Exists
+set KEYSTORE_PATH=
+if exist "release\key.jks" (
+    set KEYSTORE_PATH=release\key.jks
+) else if exist "release\release.keystore" (
+    set KEYSTORE_PATH=release\release.keystore
+) else if exist "key.jks" (
+    set KEYSTORE_PATH=key.jks
+) else if exist "release.keystore" (
+    set KEYSTORE_PATH=release.keystore
+) else if exist "app\release.keystore" (
+    set KEYSTORE_PATH=app\release.keystore
+)
+
+if "%KEYSTORE_PATH%"=="" (
+    echo [ERROR] Keystore file not found!
+    echo [INFO] Expected 'release\key.jks' or 'release\release.keystore'.
+    echo [INFO] Keystore does not exist. AAB will NOT be signed.
+    exit /b 1
+)
+
+REM 3. Verify Key and Keystore match with keytool before running
+set KEY_ALIAS=
+for /f "tokens=1 delims=," %%A in ('keytool -list -keystore "%KEYSTORE_PATH%" -storepass "%KEY_PASS%" 2^>nul ^| findstr "PrivateKeyEntry"') do (
+    set KEY_ALIAS=%%A
+)
+if "%KEY_ALIAS%"=="" (
+    for /f "tokens=1 delims=," %%A in ('keytool -list -keystore "%KEYSTORE_PATH%" -storepass "%KEY_PASS%" 2^>nul ^| findstr "trustedCertEntry"') do (
+        set KEY_ALIAS=%%A
     )
 )
 
-REM 3. Determine Latest Version & VersionCode
+if "%KEY_ALIAS%"=="" (
+    echo [ERROR] Keystore '%KEYSTORE_PATH%' could not be unlocked with password!
+    echo [INFO] Key does not match keystore. AAB will NOT be signed.
+    exit /b 1
+)
+
+REM 4. Determine Latest Version & VersionCode
 set VERSION=%~1
 if "%VERSION%"=="" (
     for /f tokens^=2^ delims^=^"^" %%A in ('findstr "android:versionName" app\src\main\AndroidManifest.xml') do (
@@ -62,11 +98,14 @@ if "%CODE%"=="" set CODE=10000
 
 echo [INFO] Target Version:     %VERSION%
 echo [INFO] Target VersionCode: %CODE%
-echo [INFO] Keystore:           %KEYSTORE_PATH% [Alias: morsego]
-echo [INFO] Keystore Password:  Loaded securely (gitignored)
+echo [INFO] Keystore:           %KEYSTORE_PATH% [Alias: !KEY_ALIAS!]
+echo [INFO] Keystore Password:  Verified successfully with keytool
 echo.
 
-REM 3. Check if Docker is available & running
+REM Clean prior intermediate bundle files so failures are not masked
+if exist "app\build\outputs\bundle\release\app-release.aab" del /f /q "app\build\outputs\bundle\release\app-release.aab" >nul 2>nul
+
+REM 5. Check if Docker is available & running
 set USE_DOCKER=0
 where docker >nul 2>nul
 if %errorlevel% equ 0 (
@@ -76,17 +115,17 @@ if %errorlevel% equ 0 (
     )
 )
 
-if %USE_DOCKER% equ 1 (
+if !USE_DOCKER! equ 1 (
     echo [INFO] Building and signing AAB inside Docker container...
-    docker compose run --rm -e APP_VERSION_NAME=%VERSION% -e APP_VERSION_CODE=%CODE% -e KEYSTORE_PASSWORD=%KEY_PASS% -e KEY_PASSWORD=%KEY_PASS% test-unit bundle
-    if %errorlevel% neq 0 (
+    docker compose run --rm -e APP_VERSION_NAME=%VERSION% -e APP_VERSION_CODE=%CODE% -e KEYSTORE_PASSWORD=%KEY_PASS% -e KEY_PASSWORD=%KEY_PASS% -e KEY_ALIAS=!KEY_ALIAS! test-unit bundle
+    if !errorlevel! neq 0 (
         echo [ERROR] Docker AAB build failed.
         exit /b 1
     )
 ) else (
     echo [INFO] Docker not active. Building and signing AAB with local Gradle...
-    call gradlew.bat bundleRelease -PversionName=%VERSION% -PversionCode=%CODE% -PkeystorePassword=%KEY_PASS% --info
-    if %errorlevel% neq 0 (
+    call gradlew.bat bundleRelease -PversionName=%VERSION% -PversionCode=%CODE% -PkeystorePassword=%KEY_PASS% -PkeyAlias=!KEY_ALIAS! --info
+    if !errorlevel! neq 0 (
         echo [ERROR] Gradle bundleRelease failed.
         exit /b 1
     )
@@ -140,7 +179,7 @@ echo ====================================================
 echo   - App Version:           %VERSION% [Code: %CODE%]
 echo   - Signed AAB (Release):  %VERSION_DIR%\morseGO-release.aab
 echo   - SHA256 Checksum:       %VERSION_DIR%\morseGO-release.aab.sha256
-echo   - Signing Status:        SIGNED with %KEYSTORE_PATH% [Alias: morsego]
+echo   - Signing Status:        SIGNED with %KEYSTORE_PATH% [Alias: !KEY_ALIAS!]
 echo ====================================================
 echo Ready for Google Play Console upload!
 echo.

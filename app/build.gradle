@@ -59,28 +59,60 @@ android {
                 keyProps.load(new FileInputStream(appPropsFile))
             }
 
-            def finalPassword = passFromFile ?: keyProps.getProperty("storePassword", System.getenv("KEYSTORE_PASSWORD") ?: "morsego123")
-            def finalKeyPassword = passFromFile ?: keyProps.getProperty("keyPassword", System.getenv("KEY_PASSWORD") ?: finalPassword)
+            def finalPassword = passFromFile ?: (keyProps.getProperty("storePassword") ?: (project.hasProperty("keystorePassword") ? project.property("keystorePassword").toString() : System.getenv("KEYSTORE_PASSWORD")))
+            def finalKeyPassword = passFromFile ?: (keyProps.getProperty("keyPassword") ?: (project.hasProperty("keyPassword") ? project.property("keyPassword").toString() : System.getenv("KEY_PASSWORD") ?: finalPassword))
 
-            def storeFilePath = keyProps.getProperty("storeFile", "release/release.keystore")
-            def storeF = rootProject.file(storeFilePath)
-            if (!storeF.exists()) storeF = file(storeFilePath)
-            if (!storeF.exists()) storeF = rootProject.file("release/release.keystore")
-            if (!storeF.exists()) storeF = file("release.keystore")
-            if (!storeF.exists()) storeF = rootProject.file("app/release.keystore")
+            def candidateFiles = [
+                rootProject.file("release/key.jks"),
+                rootProject.file("release/release.keystore"),
+                rootProject.file("key.jks"),
+                rootProject.file("release.keystore"),
+                file("key.jks"),
+                file("release.keystore"),
+                file("release/release.keystore")
+            ]
+            if (keyProps.getProperty("storeFile")) {
+                candidateFiles.add(0, rootProject.file(keyProps.getProperty("storeFile")))
+                candidateFiles.add(1, file(keyProps.getProperty("storeFile")))
+            }
 
-            storeFile storeF
-            storePassword finalPassword
-            keyAlias(keyProps.getProperty("keyAlias", System.getenv("KEY_ALIAS") ?: "morsego"))
-            keyPassword finalKeyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
+            def storeF = candidateFiles.find { it != null && it.exists() }
+            def defaultAlias = (storeF?.name?.endsWith(".jks") ? "key0" : "morsego")
+            def alias = (project.hasProperty("keyAlias") ? project.property("keyAlias").toString() : null) ?: (System.getenv("KEY_ALIAS") ?: (keyProps.getProperty("keyAlias") ?: defaultAlias))
+
+            if (storeF != null && storeF.exists() && finalPassword) {
+                storeFile storeF
+                storePassword finalPassword
+                keyAlias alias
+                keyPassword finalKeyPassword
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            def passFile = rootProject.file("release/keystore-pass.txt")
+            if (!passFile.exists()) passFile = rootProject.file("keystore-pass.txt")
+            def candidateFiles = [
+                rootProject.file("release/key.jks"),
+                rootProject.file("release/release.keystore"),
+                rootProject.file("key.jks"),
+                rootProject.file("release.keystore")
+            ]
+            def storeF = candidateFiles.find { it != null && it.exists() }
+
+            def hasKey = (passFile != null && passFile.exists() && passFile.text.trim().length() > 0) || project.hasProperty("keystorePassword") || System.getenv("KEYSTORE_PASSWORD") != null
+            def hasKeystore = storeF != null && storeF.exists()
+            def isBundleTask = gradle.startParameter.taskNames.any { it.toLowerCase().contains("bundle") }
+
+            // Only sign when creating the AAB (bundle) AND both key and keystore exist
+            if (isBundleTask && hasKey && hasKeystore) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig null
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
