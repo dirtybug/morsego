@@ -48,7 +48,7 @@ public class ListeningExamFixer {
     public static void main(String[] args) {
         String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
                 ? new String[]{args[0]}
-                : new String[]{"release/v1.0.0/screenshots", "release/development/screenshots"};
+                : new String[]{"release/development/screenshots"};
         for (String d : dirs) {
             File dir = new File(d);
             if (!dir.exists()) dir.mkdirs();

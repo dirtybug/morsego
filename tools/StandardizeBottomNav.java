@@ -26,7 +26,7 @@ public class StandardizeBottomNav {
     public static void main(String[] args) {
         String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
                 ? new String[]{args[0]}
-                : new String[]{"release/v1.0.0/screenshots", "release/development/screenshots"};
+                : new String[]{"release/development/screenshots"};
         for (String dirPath : dirs) {
             File dir = new File(dirPath);
             if (!dir.exists() || !dir.isDirectory()) continue;

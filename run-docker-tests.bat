@@ -77,24 +77,6 @@ if exist ".\release\development\screenshots\" (
 if exist ".\release\development\reports\" (
     echo   - Test Reports:          .\release\development\reports\
 )
-echo.
-echo Available files in directory: .\release\v1.0.0\
-if exist ".\release\v1.0.0\morseGO-v1.0.0-release.apk" (
-    echo   - APK Release:           .\release\v1.0.0\morseGO-v1.0.0-release.apk
-) else if exist ".\release\v1.0.0\morseGO-release.apk" (
-    echo   - APK Release:           .\release\v1.0.0\morseGO-release.apk
-)
-if exist ".\release\v1.0.0\morseGO-v1.0.0-debug.apk" (
-    echo   - APK Debug:             .\release\v1.0.0\morseGO-v1.0.0-debug.apk
-) else if exist ".\release\v1.0.0\morseGO-debug.apk" (
-    echo   - APK Debug:             .\release\v1.0.0\morseGO-debug.apk
-)
-if exist ".\release\v1.0.0\screenshots\" (
-    echo   - Screenshots:           .\release\v1.0.0\screenshots\
-)
-if exist ".\release\v1.0.0\reports\" (
-    echo   - Test Reports:          .\release\v1.0.0\reports\
-)
 if exist ".\index.html" (
     echo.
     echo Central Portal:            .\index.html

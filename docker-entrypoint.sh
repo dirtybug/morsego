@@ -60,11 +60,6 @@ case "$ACTION" in
         echo ""
         echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
-            cp -n /workspace/release/v1.0.0/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
-        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/development/screenshots" ]; then
-            cp -n /workspace/release/development/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
-        fi
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.TreeScreenshotFixer "$RELEASE_DIR/screenshots" || true
@@ -72,43 +67,12 @@ case "$ACTION" in
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.StandardizeBottomNav "$RELEASE_DIR/screenshots" || true
         rm -f tools/*.class 2>/dev/null || true
 
-        # Full two-way synchronization between development and v1.0.0
-        if [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
-            mkdir -p /workspace/release/development/screenshots
-            cp -r /workspace/release/v1.0.0/screenshots/* /workspace/release/development/screenshots/ 2>/dev/null || true
-            mkdir -p /workspace/release/development/reports
-            cp -r /workspace/release/v1.0.0/reports/* /workspace/release/development/reports/ 2>/dev/null || true
-        else
-            mkdir -p /workspace/release/v1.0.0/screenshots
-            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
-            mkdir -p /workspace/release/v1.0.0/reports
-            cp -r "$RELEASE_DIR/reports/"* /workspace/release/v1.0.0/reports/ 2>/dev/null || true
-            if [ -f /workspace/release/v1.0.0/reports/behavior-tests.html ]; then
-                cp /workspace/release/v1.0.0/reports/behavior-tests.html "$RELEASE_DIR/reports/" 2>/dev/null || true
-            fi
-            if [ -d /workspace/release/v1.0.0/reports/behavior-tests ]; then
-                cp -r /workspace/release/v1.0.0/reports/behavior-tests "$RELEASE_DIR/reports/" 2>/dev/null || true
-            fi
-            # Sync existing APKs between directories
-            if [ -f /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk ] && [ ! -f "$RELEASE_DIR/morseGO-debug.apk" ]; then
-                cp /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk "$RELEASE_DIR/morseGO-debug.apk" 2>/dev/null || true
-            fi
-            if [ -f /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk ] && [ ! -f "$RELEASE_DIR/morseGO-release.apk" ]; then
-                cp /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk "$RELEASE_DIR/morseGO-release.apk" 2>/dev/null || true
-                cp /workspace/release/v1.0.0/SHA256SUMS.txt "$RELEASE_DIR/SHA256SUMS.txt" 2>/dev/null || true
-            fi
-        fi
-        echo "✓ All unit tests, reports, and screenshots generated successfully in $RELEASE_DIR and synced to release/v1.0.0!"
+        echo "✓ All unit tests, reports, and screenshots generated successfully in $RELEASE_DIR!"
         ;;
 
     screenshots)
         echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
-            cp -n /workspace/release/v1.0.0/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
-        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/development/screenshots" ]; then
-            cp -n /workspace/release/development/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
-        fi
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.TreeScreenshotFixer "$RELEASE_DIR/screenshots" || true
@@ -116,25 +80,7 @@ case "$ACTION" in
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.StandardizeBottomNav "$RELEASE_DIR/screenshots" || true
         rm -f tools/*.class 2>/dev/null || true
 
-        # Full two-way synchronization between development and v1.0.0
-        if [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
-            mkdir -p /workspace/release/development/screenshots
-            cp -r /workspace/release/v1.0.0/screenshots/* /workspace/release/development/screenshots/ 2>/dev/null || true
-            mkdir -p /workspace/release/development/reports
-            cp -r /workspace/release/v1.0.0/reports/* /workspace/release/development/reports/ 2>/dev/null || true
-        else
-            mkdir -p /workspace/release/v1.0.0/screenshots
-            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
-            mkdir -p /workspace/release/v1.0.0/reports
-            cp -r "$RELEASE_DIR/reports/"* /workspace/release/v1.0.0/reports/ 2>/dev/null || true
-            if [ -f /workspace/release/v1.0.0/reports/behavior-tests.html ]; then
-                cp /workspace/release/v1.0.0/reports/behavior-tests.html "$RELEASE_DIR/reports/" 2>/dev/null || true
-            fi
-            if [ -d /workspace/release/v1.0.0/reports/behavior-tests ]; then
-                cp -r /workspace/release/v1.0.0/reports/behavior-tests "$RELEASE_DIR/reports/" 2>/dev/null || true
-            fi
-        fi
-        echo "✓ All screenshots saved to $RELEASE_DIR/screenshots/ and synced to release/v1.0.0!"
+        echo "✓ All screenshots saved to $RELEASE_DIR/screenshots/!"
         ;;
 
     build|assemble)
@@ -142,14 +88,6 @@ case "$ACTION" in
         ./gradlew assembleDebug assembleDebugAndroidTest -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
         find app/build/outputs/apk/debug -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-debug.apk" \; 2>/dev/null || true
         cp -f "$RELEASE_DIR/morseGO-debug.apk" "$RELEASE_DIR/morseGO-development-debug.apk" 2>/dev/null || true
-        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0" ]; then
-            cp -f "$RELEASE_DIR/morseGO-debug.apk" /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk 2>/dev/null || true
-            cp -f "$RELEASE_DIR/morseGO-debug.apk" /workspace/release/v1.0.0/morseGO-debug.apk 2>/dev/null || true
-        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
-            mkdir -p /workspace/release/development
-            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk /workspace/release/development/morseGO-debug.apk 2>/dev/null || true
-            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk /workspace/release/development/morseGO-development-debug.apk 2>/dev/null || true
-        fi
         echo "✓ Debug APK saved to $RELEASE_DIR/morseGO-debug.apk"
         ;;
 
@@ -159,16 +97,6 @@ case "$ACTION" in
         find app/build/outputs/apk/release -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-release.apk" \; 2>/dev/null || true
         cp -f "$RELEASE_DIR/morseGO-release.apk" "$RELEASE_DIR/morseGO-development-release.apk" 2>/dev/null || true
         (cd "$RELEASE_DIR" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
-        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0" ]; then
-            cp -f "$RELEASE_DIR/morseGO-release.apk" /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk 2>/dev/null || true
-            cp -f "$RELEASE_DIR/morseGO-release.apk" /workspace/release/v1.0.0/morseGO-release.apk 2>/dev/null || true
-            cp -f "$RELEASE_DIR/SHA256SUMS.txt" /workspace/release/v1.0.0/ 2>/dev/null || true
-        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
-            mkdir -p /workspace/release/development
-            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk /workspace/release/development/morseGO-release.apk 2>/dev/null || true
-            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk /workspace/release/development/morseGO-development-release.apk 2>/dev/null || true
-            cp -f /workspace/release/v1.0.0/SHA256SUMS.txt /workspace/release/development/ 2>/dev/null || true
-        fi
         echo "✓ Release APK saved to $RELEASE_DIR/morseGO-release.apk"
         ;;
 
@@ -229,7 +157,7 @@ case "$ACTION" in
         else
             echo "ℹ️ Note: Skipping connected tests because no ADB device is connected."
         fi
-        echo "✓ Full suite finished! All artifacts saved to $RELEASE_DIR/ and synced to /workspace/release/v1.0.0/!"
+        echo "✓ Full suite finished! All artifacts saved to $RELEASE_DIR/!"
         ;;
 
     *)
