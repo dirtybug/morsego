@@ -54,7 +54,6 @@ if "%TARGET%"=="all" (
     echo        - APK Debug:   run-docker-tests.bat build
     echo        - APK Release: run-docker-tests.bat release
     echo        - All:         run-docker-tests.bat all
-    echo        - Signed AAB:  .\release\build-signed-aab.bat
 ) else if "%TARGET%"=="build" (
     echo [INFO] Debug APK built successfully!
 ) else if "%TARGET%"=="release" (
@@ -62,6 +61,9 @@ if "%TARGET%"=="all" (
 )
 echo.
 echo Available files in directory: .\release\development\
+if exist ".\release\development\morseGO-release.aab" (
+    echo   - AAB Release:           .\release\development\morseGO-release.aab
+)
 if exist ".\release\development\morseGO-release.apk" (
     echo   - APK Release:           .\release\development\morseGO-release.apk
 ) else (

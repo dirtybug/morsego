@@ -101,12 +101,14 @@ case "$ACTION" in
         ;;
 
     release)
-        echo ">>> Building Release APK for Google Play Store (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
-        ./gradlew assembleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
+        echo ">>> Building Release Deliverables (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
+        ./gradlew assembleRelease bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
         find app/build/outputs/apk/release -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-release.apk" \; 2>/dev/null || true
         cp -f "$RELEASE_DIR/morseGO-release.apk" "$RELEASE_DIR/morseGO-development-release.apk" 2>/dev/null || true
-        (cd "$RELEASE_DIR" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
+        find app/build/outputs/bundle/release -name "*.aab" -exec cp {} "$RELEASE_DIR/morseGO-release.aab" \; 2>/dev/null || true
+        (cd "$RELEASE_DIR" && sha256sum *.apk *.aab > SHA256SUMS.txt 2>/dev/null || true)
         echo "✓ Release APK saved to $RELEASE_DIR/morseGO-release.apk"
+        [ -f "$RELEASE_DIR/morseGO-release.aab" ] && echo "✓ Development AAB saved to $RELEASE_DIR/morseGO-release.aab"
         ;;
 
     bundle|aab)
@@ -134,9 +136,12 @@ case "$ACTION" in
             TARGET_VER="${TARGET_VER#v}"
             VERSION_DIR="/workspace/release/v${TARGET_VER}"
             mkdir -p "$VERSION_DIR"
+            mkdir -p "/workspace/release/development"
             cp -f "$AAB_FILE" "$VERSION_DIR/morseGO-release.aab"
+            cp -f "$AAB_FILE" "/workspace/release/development/morseGO-release.aab"
             (cd "$VERSION_DIR" && sha256sum morseGO-release.aab > morseGO-release.aab.sha256 2>/dev/null || true)
             echo "✓ Signed Release AAB saved to $VERSION_DIR/morseGO-release.aab"
+            echo "✓ Development AAB saved to /workspace/release/development/morseGO-release.aab"
         else
             echo "❌ Error: Release AAB file was not generated!"
             exit 1

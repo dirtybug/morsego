@@ -389,7 +389,7 @@ In production, **official releases are never compiled manually on local PCs**. T
   - Added `signingConfigs.release` in `app/build.gradle` with both v1 (JAR signing) and v2 (APK Signature Scheme) enabled.
   - Removed the unnecessary USB intent-filter from `AndroidManifest.xml` (physical CW keyers connect as standard HID OTG keyboard devices).
   - Both `morseGO-v1.0.0-release.apk` and `morseGO-v1.0.0-debug.apk` are fully signed and validated with `apksigner`.
-  - Added automated signed AAB build scripts (`release/build-signed-aab.bat`, `.ps1`, `.sh`) storing release bundles into `release/v<VERSION>/`.
+  - Release AAB bundle is generated into `release/development/morseGO-release.aab` and versioned release folder.
   - Keys and passwords (`release/release.keystore`, `keystore-pass.txt`) are excluded via `.gitignore`.
 
 ---
