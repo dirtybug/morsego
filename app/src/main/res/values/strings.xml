@@ -20,7 +20,6 @@
     <string name="tree_header_title">MORSE BINARY TREE</string>
     <string name="tree_header_subtitle">Level %1$d: %2$s\nLeft = Dah (—) | Right = Dit (•)</string>
     <string name="tree_instruction">Tap any glowing node to hear its CW code and trace its binary path.</string>
-    <string name="tree_practice_level">Practice This Level ▶</string>
     <string name="tree_code_label">Code: %s</string>
     <string name="tree_listen_button">Listen</string>
     <string name="tree_interactive_title">INTERACTIVE TREE</string>
@@ -38,8 +37,47 @@
     <string name="advance_next_level_button">ADVANCE TO NEXT LEVEL ▶</string>
     <string name="review_level_button">Review This Level</string>
     <string name="exam_stage_listening">Receive Test: Acoustic Listening (Hear &amp; Identify)</string>
-    <string name="exam_stage_transmission">Send Test: Keying Transmission (Key with Paddles)</string>
-    <string name="exam_lives_label">Lives:</string>
+    <!-- Exam Stages & UI Strings -->
+    <string name="exam_stage1_banner">STAGE 1 OF 2: CW LISTENING TRAINING (RECEIVE)</string>
+    <string name="exam_stage2_banner">STAGE 2 OF 2: TRANSMISSION TEST (SENDING)</string>
+    <string name="exam_transmit_letter">TRANSMIT LETTER:</string>
+    <string name="exam_transmit_word">TRANSMIT WORD (SEPARATED LETTERS):</string>
+    <string name="keyer_input_empty">Input: —</string>
+    <string name="keyer_input_prefix">Input: %s</string>
+    <string name="exam_loading_next_char">Loading next character...</string>
+    <string name="paddle_dit_label">DIT (•)\n[LEFT]</string>
+    <string name="paddle_dah_label">DAH (—)\n[RIGHT]</string>
+    <string name="btn_restart_test">Restart Test</string>
+    <string name="btn_reset_word">🔄 Clear / Restart Word</string>
+    <string name="prompt_listen_again">Tap to listen again</string>
+    <string name="prompt_listen_sound">Listen 🔊</string>
+    <string name="exam_fail_listening_exceeded">Exceeded limit of 3 failures in Listening Stage.</string>
+    <string name="exam_pass_send_msg">Congratulations! Passed the Send Test!</string>
+    <string name="toast_level_locked">🔒 Level locked! Pass this level\'s test to unlock.</string>
+    <string name="toast_all_levels_completed">🏆 Congratulations! You completed all levels of the Morse Tree!</string>
+    <string name="penalty_lost_life">Penalty: lost 1 life!</string>
+    <string name="feedback_correct_recovery">✓ Correct! Recovered successfully.</string>
+    <string name="exam_progress_letters">Characters (%1$d/%2$d)</string>
+    <string name="characters_in_test">Characters in test (%1$d): %2$s</string>
+    <string name="exam_progress_words">Words</string>
+    <string name="exam_progress_queue">Remaining: %1$d in queue | Done: %2$d</string>
+    <string name="exam_result_title_completed">🎉 LEVEL %1$d COMPLETED!</string>
+    <string name="exam_result_title_failed">❌ TRANSMISSION EXAM FAILED</string>
+    <string name="exam_result_summary_passed">Transmission Exam (Send): Passed (Mistakes: %1$d/3)\n\nMastered the new characters and vocabulary of this level!</string>
+    <string name="exam_result_summary_failed">%1$s\n\nRule: The transmission exam allows up to 3 mistakes total.\nPractice your timing cadence and try again!</string>
+    <string name="exam_result_unlocked_new">🔓 Unlocked Level %1$d in the Morse Binary Tree!</string>
+    <string name="exam_result_already_unlocked">Level previously unlocked.</string>
+    <string name="exam_result_btn_advance">ADVANCE TO NEXT LEVEL ▶</string>
+    <string name="exam_result_btn_retry">RETRY TRANSMISSION 🔄</string>
+
+    <!-- Receive Fragment Strings -->
+    <string name="receive_test_header">RECEIVE TEST (LISTENING)</string>
+    <string name="receive_unlocked_info_format">Level %1$d • %2$d characters in listening test</string>
+    <string name="receive_unlocked_info_radio_format">Level %1$d • %2$d characters • Ham Radio Words Active</string>
+    <string name="receive_unlocked_info_simple">Level %1$d • %2$d characters</string>
+    <string name="receive_correct_result">✓ Correct! The transmitted character was \'%1$s\'.</string>
+    <string name="receive_incorrect_result">✗ Incorrect. Selected \'%1$s\', but the character was \'%2$s\'.</string>
+    <string name="receive_score_format">Score: %1$d / %2$d</string>
 
     <!-- Radio Words -->
     <string name="radio_words_title">Amateur Radio CW Words</string>

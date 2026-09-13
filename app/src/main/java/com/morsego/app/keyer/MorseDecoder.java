@@ -72,6 +72,7 @@ public class MorseDecoder {
 
     public synchronized void onToneStarted() {
         cancelMaxLetterPauseWatcher();
+        cancelPauseWatchers();
         long now = System.currentTimeMillis();
 
         if (lastToneStopTime > 0) {
@@ -130,7 +131,7 @@ public class MorseDecoder {
         cancelPauseWatchers();
 
         int wpm = settings.getWpm();
-        long charPause = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 1.6f), 450L);
+        long charPause = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 2.0f), 800L);
         long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm), charPause + 300L);
 
         charPauseRunnable = () -> {
@@ -165,10 +166,7 @@ public class MorseDecoder {
         long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 5.0f) + 200L, 2200L);
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
-                boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-                String feedback = isPt ?
-                        "Falha: Pausa excessiva entre letras (> máx 5.0x)" :
-                        "Failure: Excessive pause between letters (> max 5.0x)";
+                String feedback = "Failure: Excessive pause between letters (> max 5.0x)";
                 MorseTiming.PauseEvaluation eval = new MorseTiming.PauseEvaluation(
                         false, true, feedback, 5.1f);
                 notifyTimingFeedback(eval);

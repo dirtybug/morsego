@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.morsego.app.audio.MorseAudioSynthesizer;
+import com.morsego.app.audio.MorseSignalDispatcher;
 import com.morsego.app.databinding.ActivityMainBinding;
 import com.morsego.app.keyer.IambicKeyerEngine;
 import com.morsego.app.keyer.KeyerInputManager;
@@ -30,8 +31,6 @@ import com.morsego.app.keyer.MorseDecoder;
 import com.morsego.app.keyer.MorseTiming;
 import com.morsego.app.ui.FreeKeyerFragment;
 import com.morsego.app.ui.HardwareFragment;
-import com.morsego.app.ui.LearnFragment;
-import com.morsego.app.ui.PracticeFragment;
 import com.morsego.app.ui.ReceiveFragment;
 import com.morsego.app.ui.SendFragment;
 import com.morsego.app.ui.SettingsDialogFragment;
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     private ActivityMainBinding binding;
 
     private MorseAudioSynthesizer synthesizer;
+    private MorseSignalDispatcher signalDispatcher;
     private KeyerSettings settings;
     private KeyerInputManager inputManager;
     private IambicKeyerEngine iambicEngine;
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         synthesizer = new MorseAudioSynthesizer();
         settings = new KeyerSettings(this);
         synthesizer.setFrequency(settings.getPitchHz());
+        signalDispatcher = new MorseSignalDispatcher(this, settings, synthesizer);
+        signalDispatcher.setSilentMode(isDeviceInSilentMode());
 
         inputManager = new KeyerInputManager(settings);
         inputManager.setPaddleListener(this);
@@ -221,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         if (binding == null) return;
         runOnUiThread(() -> {
             boolean isSilent = isDeviceInSilentMode();
+            if (signalDispatcher != null) {
+                signalDispatcher.setSilentMode(isSilent);
+            }
             int targetVisibility = isSilent ? View.VISIBLE : View.GONE;
             if (binding.bannerSilentMode.getVisibility() != targetVisibility) {
                 binding.bannerSilentMode.setVisibility(targetVisibility);
@@ -229,11 +234,14 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     }
 
     public void playMorse(String pattern, int wpm, Runnable onFinished) {
-        if (isDeviceInSilentMode()) {
-            lastMorsePlayType = "VIBRATION";
+        boolean silent = isDeviceInSilentMode();
+        lastMorsePlayType = silent ? "VIBRATION" : "AUDIO";
+        if (signalDispatcher != null) {
+            signalDispatcher.setSilentMode(silent);
+            signalDispatcher.playPattern(pattern, wpm, onFinished);
+        } else if (silent) {
             vibrateMorsePattern(pattern, wpm, onFinished);
         } else {
-            lastMorsePlayType = "AUDIO";
             synthesizer.playMorsePattern(pattern, wpm, onFinished);
         }
     }
@@ -321,9 +329,13 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     }
 
     private void triggerHaptic() {
-        if (isDeviceInSilentMode()) return;
-        if (!settings.isHapticsEnabled() || vibrator == null) return;
-        vibrate(15);
+        if (signalDispatcher != null) {
+            signalDispatcher.triggerHaptic(15);
+        } else {
+            if (isDeviceInSilentMode()) return;
+            if (!settings.isHapticsEnabled() || vibrator == null) return;
+            vibrate(15);
+        }
     }
 
     public void updateTopWpm(int wpm) {
@@ -398,11 +410,14 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public void onToneStart() {
-        if (isDeviceInSilentMode()) {
-            lastMorsePlayType = "VIBRATION";
+        boolean silent = isDeviceInSilentMode();
+        lastMorsePlayType = silent ? "VIBRATION" : "AUDIO";
+        if (signalDispatcher != null) {
+            signalDispatcher.setSilentMode(silent);
+            signalDispatcher.startTone();
+        } else if (silent) {
             startToneVibration();
         } else if (settings.isSoundEnabled()) {
-            lastMorsePlayType = "AUDIO";
             synthesizer.startTone();
         }
         decoder.onToneStarted();
@@ -415,10 +430,14 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     @Override
     public void onToneStop() {
-        if (isVibratingTone) {
-            stopToneVibration();
+        if (signalDispatcher != null) {
+            signalDispatcher.stopTone();
+        } else {
+            if (isVibratingTone) {
+                stopToneVibration();
+            }
+            synthesizer.stopTone();
         }
-        synthesizer.stopTone();
         decoder.onToneStopped();
         runOnUiThread(() -> {
             if (currentFragment instanceof FreeKeyerFragment) {
@@ -434,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
     // Getters for fragments
     public MorseAudioSynthesizer getSynthesizer() { return synthesizer; }
+    public MorseSignalDispatcher getSignalDispatcher() { return signalDispatcher; }
     public KeyerSettings getSettings() { return settings; }
     public KeyerInputManager getInputManager() { return inputManager; }
     public MorseDecoder getDecoder() { return decoder; }
@@ -442,6 +462,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     protected void onDestroy() {
         super.onDestroy();
         unregisterSilentModeObserver();
+        if (signalDispatcher != null) signalDispatcher.release();
         if (iambicEngine != null) iambicEngine.release();
         if (synthesizer != null) synthesizer.release();
     }

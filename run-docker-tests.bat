@@ -1,28 +1,28 @@
 @echo off
-REM morseGO - Executar testes no Docker Container
+REM morseGO - Run tests in Docker Container
 echo ====================================================
 echo             morseGO - Docker Test Runner             
 echo ====================================================
 
 where docker >nul 2>nul
 if %errorlevel% neq 0 (
-    echo [ERRO] Docker nao encontrado no PATH. Por favor, instale o Docker Desktop.
+    echo [ERROR] Docker not found in PATH. Please install Docker Desktop.
     exit /b 1
 )
 
 docker info >nul 2>nul
 if %errorlevel% neq 0 (
-    echo [ERRO] O Docker Desktop nao esta em execucao ou a engine ainda esta iniciando.
-    echo Por favor, abra o Docker Desktop e aguarde o status "Engine running" antes de executar os testes.
+    echo [ERROR] Docker Desktop is not running or the engine is still initializing.
+    echo Please open Docker Desktop and wait for "Engine running" status before running tests.
     exit /b 1
 )
 
 set TARGET=%1
 if "%TARGET%"=="" set TARGET=unit
 
-echo Executando container Docker para o alvo: %TARGET%...
+echo Running Docker container for target: %TARGET%...
 if "%TARGET%"=="clean" (
-    echo [INFO] Limpando cache do Gradle, pastas .gradle, .idea e build...
+    echo [INFO] Cleaning Gradle cache, .gradle, .idea, and build folders...
     call clean.bat
     exit /b 0
 ) else if "%TARGET%"=="screenshots" (
@@ -43,22 +43,22 @@ if "%TARGET%"=="clean" (
 
 echo.
 echo ====================================================
-echo                   morseGO - Resumo
+echo                   morseGO - Summary
 echo ====================================================
 if "%TARGET%"=="unit" (
-    echo [INFO] Testes unitarios e geracao de screenshots concluidos com sucesso!
-    echo [DICA] Comandos adicionais disponiveis:
+    echo [INFO] Unit tests and screenshot generation completed successfully!
+    echo [TIP] Additional available commands:
     echo        - Screenshots: run-docker-tests.bat screenshots
     echo        - APK Debug:   run-docker-tests.bat build
     echo        - APK Release: run-docker-tests.bat release
-    echo        - Todos:       run-docker-tests.bat all
+    echo        - All:         run-docker-tests.bat all
 )
 echo.
-echo Ficheiros disponiveis na pasta: .\release\development\
+echo Available files in directory: .\release\development\
 echo   - APK Release:           .\release\development\morseGO-release.apk
 echo   - APK Debug:             .\release\development\morseGO-debug.apk
 echo   - Screenshots:           .\release\development\screenshots\
-echo   - Relatorios de Testes:  .\release\development\reports\
-echo   - Portal Central MorseGO:.\index.html
+echo   - Test Reports:          .\release\development\reports\
+echo   - Central Portal:        .\index.html
 echo ====================================================
-echo Concluido com sucesso!
+echo Completed successfully!

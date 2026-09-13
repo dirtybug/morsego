@@ -6,7 +6,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests specifically testing the Level Release (Desbloqueio progressivo de níveis)
+ * Unit tests specifically testing the Level Release (Progressive unlocking of levels)
  * in the Morse Binary Tree and student progression.
  */
 public class MorseLevelReleaseUnitTest {

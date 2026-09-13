@@ -17,9 +17,9 @@ public class KeyerSettings {
     private static final String KEY_LEVEL = "current_level";
 
     public enum Mode {
-        IAMBIC_B("Iambic B", "Modo padrão com inserção alternada ao soltar (Curtis)."),
-        IAMBIC_A("Iambic A", "Modo clássico, sem elemento extra ao soltar as pás."),
-        STRAIGHT_KEY("Manual / Straight", "Chave manual ou cadência gerada pelo próprio hardware.");
+        IAMBIC_B("Iambic B", "Standard mode with alternate insertion on release (Curtis)."),
+        IAMBIC_A("Iambic A", "Classic mode, no extra element on paddle release."),
+        STRAIGHT_KEY("Manual / Straight", "Manual straight key or hardware-generated cadence.");
 
         private final String label;
         private final String description;

@@ -4,4 +4,8 @@
     <item name="nav_practice" type="id" />
     <item name="nav_send" type="id" />
     <item name="nav_receive" type="id" />
+    <item name="nav_tree" type="id" />
+    <item name="nav_hardware" type="id" />
+    <item name="nav_settings" type="id" />
+    <item name="nav_keyer" type="id" />
 </resources>

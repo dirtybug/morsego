@@ -389,52 +389,52 @@ public class MorseOrientationAndRotationTest {
      * Validates layout adaptation, horizontal screen expansion, and tree node separation.
      */
     @Test
-    public void testVirarTelemovel90Graus_LayoutAdaptationAndStateInvariance() {
-        // Estado Inicial: Telemóvel em Modo Retrato (0 graus)
-        int anguloInicial = 0; // 0 graus
-        int larguraRetrato = 1080;
-        int alturaRetrato = 2400;
-        float densidade = 2.625f;
+    public void testRotatePhone90Degrees_LayoutAdaptationAndStateInvariance() {
+        // Initial State: Phone in Portrait Mode (0 degrees)
+        int initialAngle = 0; // 0 degrees
+        int portraitWidth = 1080;
+        int portraitHeight = 2400;
+        float density = 2.625f;
 
-        // Raio base e espaçamento no modo Retrato
-        float espacamentoRetratoNivel1 = larguraRetrato / 4.0f; // 270 px
+        // Base radius and spacing in Portrait mode
+        float portraitSpacingLevel1 = portraitWidth / 4.0f; // 270 px
 
-        // AÇÃO: Virar o telemóvel 90 graus (Transição Retrato -> Paisagem)
-        int anguloAposRotacao = 90; // 90 graus
-        int diferencaAngulo = anguloAposRotacao - anguloInicial;
-        assertEquals("Diferença de rotação deve ser exatamente 90 graus", 90, diferencaAngulo);
+        // ACTION: Rotate phone 90 degrees (Transition Portrait -> Landscape)
+        int angleAfterRotation = 90; // 90 degrees
+        int angleDifference = angleAfterRotation - initialAngle;
+        assertEquals("Rotation difference must be exactly 90 degrees", 90, angleDifference);
 
-        int larguraPaisagem = alturaRetrato;  // 2400 px
-        int alturaPaisagem = larguraRetrato;  // 1080 px
+        int landscapeWidth = portraitHeight;  // 2400 px
+        int landscapeHeight = portraitWidth;  // 1080 px
 
-        // Espaçamento no modo Paisagem após virar 90 graus
-        float espacamentoPaisagemNivel1 = larguraPaisagem / 4.0f; // 600 px
+        // Spacing in Landscape mode after rotating 90 degrees
+        float landscapeSpacingLevel1 = landscapeWidth / 4.0f; // 600 px
 
-        assertTrue("Espaçamento horizontal em paisagem deve ser significativamente maior que em retrato",
-                espacamentoPaisagemNivel1 > espacamentoRetratoNivel1);
-        assertEquals(600.0f, espacamentoPaisagemNivel1, 0.1f);
+        assertTrue("Horizontal spacing in landscape must be significantly larger than portrait",
+                landscapeSpacingLevel1 > portraitSpacingLevel1);
+        assertEquals(600.0f, landscapeSpacingLevel1, 0.1f);
 
-        // Verificar integridade da Árvore Binária Morse
+        // Verify Morse Binary Tree integrity
         tree.unlockNodesUpToLevel(11);
-        MorseTreeNode raiz = tree.getRoot();
-        assertNotNull("Raiz da árvore não pode ser nula após rotação de 90 graus", raiz);
-        assertEquals("", raiz.getMorseCode());
+        MorseTreeNode root = tree.getRoot();
+        assertNotNull("Tree root must not be null after 90 degree rotation", root);
+        assertEquals("", root.getMorseCode());
 
-        // Validar nós E (.) e T (-)
-        MorseTreeNode noE = raiz.getDitChild();
-        MorseTreeNode noT = raiz.getDahChild();
-        assertNotNull("Nó E deve existir", noE);
-        assertNotNull("Nó T deve existir", noT);
-        assertEquals("E", noE.getCharacter());
-        assertEquals("T", noT.getCharacter());
-        assertTrue("Nó E deve estar desbloqueado após rotação de 90 graus", noE.isUnlocked());
-        assertTrue("Nó T deve estar desbloqueado após rotação de 90 graus", noT.isUnlocked());
+        // Validate nodes E (.) and T (-)
+        MorseTreeNode nodeE = root.getDitChild();
+        MorseTreeNode nodeT = root.getDahChild();
+        assertNotNull("Node E must exist", nodeE);
+        assertNotNull("Node T must exist", nodeT);
+        assertEquals("E", nodeE.getCharacter());
+        assertEquals("T", nodeT.getCharacter());
+        assertTrue("Node E must be unlocked after 90 degree rotation", nodeE.isUnlocked());
+        assertTrue("Node T must be unlocked after 90 degree rotation", nodeT.isUnlocked());
 
-        // Validar nós de Nível 11: X (-..-) e B (-...)
-        MorseTreeNode noX = tree.findNodeByCharacter("X");
-        MorseTreeNode noB = tree.findNodeByCharacter("B");
-        assertTrue("Nó X deve permanecer desbloqueado após rotação de 90 graus", noX.isUnlocked());
-        assertTrue("Nó B deve permanecer desbloqueado após rotação de 90 graus", noB.isUnlocked());
+        // Validate Level 11 nodes: X (-..-) and B (-...)
+        MorseTreeNode nodeX = tree.findNodeByCharacter("X");
+        MorseTreeNode nodeB = tree.findNodeByCharacter("B");
+        assertTrue("Node X must remain unlocked after 90 degree rotation", nodeX.isUnlocked());
+        assertTrue("Node B must remain unlocked after 90 degree rotation", nodeB.isUnlocked());
     }
 }
 

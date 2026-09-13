@@ -48,27 +48,18 @@ public class MorseTiming {
     public static PauseEvaluation evaluateIntraElementPause(long pauseMs, int wpm) {
         long ideal = ditDurationMs(wpm);
         float ratio = (float) pauseMs / ideal;
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
         if (ratio < 0.45f) {
-            String feedback = isPt ?
-                    "Falha: Pausa muito curta entre ponto/traço (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.45x)" :
-                    "Failure: Pause too short between dit/dah (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.45x)";
+            String feedback = "Failure: Pause too short between dit/dah (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.45x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio > 2.0f) {
-            String feedback = isPt ?
-                    "Falha: Pausa excessiva dentro da mesma letra (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 2.0x)" :
-                    "Failure: Excessive pause inside same character (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 2.0x)";
+            String feedback = "Failure: Excessive pause inside same character (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 2.0x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio >= 0.5f && ratio <= 1.8f) {
-            String feedback = isPt ?
-                    "Cadência correta entre ponto/traço (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)" :
-                    "Correct cadence between dit/dah (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
+            String feedback = "Correct cadence between dit/dah (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
             return new PauseEvaluation(true, false, feedback, ratio);
         } else {
-            String feedback = isPt ?
-                    "Cadência aceitável entre elementos (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)" :
-                    "Acceptable cadence between elements (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
+            String feedback = "Acceptable cadence between elements (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
             return new PauseEvaluation(true, false, feedback, ratio);
         }
     }
@@ -80,27 +71,18 @@ public class MorseTiming {
     public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm) {
         long ideal = interCharSpaceMs(wpm);
         float ratio = (float) pauseMs / ideal;
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
 
         if (ratio < 0.35f) {
-            String feedback = isPt ?
-                    "Falha: Pausa insuficiente entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < mín 0.35x)" :
-                    "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.35x)";
+            String feedback = "Failure: Insufficient pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x < min 0.35x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio > 5.0f) {
-            String feedback = isPt ?
-                    "Falha: Pausa excessiva entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > máx 5.0x)" :
-                    "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 5.0x)";
+            String feedback = "Failure: Excessive pause between letters (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x > max 5.0x)";
             return new PauseEvaluation(false, true, feedback, ratio);
         } else if (ratio >= 0.7f && ratio <= 1.8f) {
-            String feedback = isPt ?
-                    "Excelente separação de letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)" :
-                    "Excellent letter spacing (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
+            String feedback = "Excellent letter spacing (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
             return new PauseEvaluation(true, false, feedback, ratio);
         } else {
-            String feedback = isPt ?
-                    "Separação aceitável entre letras (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)" :
-                    "Acceptable letter spacing (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
+            String feedback = "Acceptable letter spacing (" + String.format(java.util.Locale.US, "%.1f", ratio) + "x)";
             return new PauseEvaluation(true, false, feedback, ratio);
         }
     }

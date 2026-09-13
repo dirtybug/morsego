@@ -117,22 +117,23 @@ public class MorseGoSilentVibrationScreenshotTest {
     }
 
     /**
-     * TEST 3: Free Keyer Paddle Interaction in both modes with Screenshots.
-     * Keyer paddles must vibrate when in silent mode and play sound when in sound mode.
+    /**
+     * TEST 3: Send Tab Touch Paddle Keying in Silent Vibration Mode and Sound Mode with Screenshots.
+     * Dedicated paddles must vibrate when in silent mode and play sound when in sound mode.
      */
     @Test
-    public void test03_FreeKeyerPaddle_SilentAndSound_Screenshots() throws InterruptedException {
-        // Navigate to Keyer tab
-        onView(withId(R.id.nav_keyer)).perform(click());
+    public void test03_SendPaddles_SilentAndSound_Screenshots() throws InterruptedException {
+        // Navigate to Send tab (transmission exam)
+        onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(500);
 
-        // 1. Silent mode paddle keying
+        // 1. Silent mode paddle keying (Vibration without sound)
         activityRule.getScenario().onActivity(activity -> activity.setSilentModeForced(true));
         Thread.sleep(400);
         onView(withId(R.id.bannerSilentMode)).check(matches(isDisplayed()));
 
-        // Tap Dit paddle
-        onView(withId(R.id.btnFreeDit)).perform(click());
+        // Tap Dit paddle in silent mode
+        onView(withId(R.id.btnTouchDit)).perform(click());
         Thread.sleep(300);
         ScreenshotHelper.capture("screenshot_keyer_silent_vibration_mode");
 
@@ -141,10 +142,43 @@ public class MorseGoSilentVibrationScreenshotTest {
         Thread.sleep(400);
         onView(withId(R.id.bannerSilentMode)).check(matches(not(isDisplayed())));
 
-        // Tap Dah paddle
-        onView(withId(R.id.btnFreeDah)).perform(click());
+        // Tap Dah paddle in sound mode
+        onView(withId(R.id.btnTouchDah)).perform(click());
         Thread.sleep(300);
         ScreenshotHelper.capture("screenshot_keyer_sound_mode");
+
+        // Clean up override
+        activityRule.getScenario().onActivity(activity -> activity.setSilentModeForced(null));
+    }
+
+    /**
+     * TEST 4: Receive Tab Acoustic Practice in Silent Mode: Vibration without Sound.
+     * Verifies that in silent mode, acoustic reception question is delivered via haptic vibration.
+     */
+    @Test
+    public void test04_ReceiveExam_SilentMode_VibrationWithoutSound_Screenshot() throws InterruptedException {
+        // Force silent / vibration mode
+        activityRule.getScenario().onActivity(activity -> activity.setSilentModeForced(true));
+        Thread.sleep(400);
+
+        // Navigate directly to Receive tab
+        onView(withId(R.id.nav_receive)).perform(click());
+        Thread.sleep(500);
+
+        // Verify banner is visible
+        onView(withId(R.id.bannerSilentMode)).check(matches(isDisplayed()));
+
+        // Tap play question audio in silent mode - must trigger vibration without sound
+        onView(withId(R.id.btnPlayQuestionAudio)).perform(click());
+        Thread.sleep(300);
+
+        activityRule.getScenario().onActivity(activity -> {
+            Assert.assertTrue("Phone must be in silent mode", activity.isDeviceInSilentMode());
+            Assert.assertEquals("Question audio in silent mode must be routed to VIBRATION", "VIBRATION", activity.getLastMorsePlayType());
+        });
+
+        // Capture screenshot of Receive stage in silent vibration mode
+        ScreenshotHelper.capture("screenshot_receive_silent_vibration_mode");
 
         // Clean up override
         activityRule.getScenario().onActivity(activity -> activity.setSilentModeForced(null));

@@ -69,73 +69,91 @@ public class IambicKeyerEngine {
         }
     }
 
-    private synchronized void startLoopIfNeeded() {
-        if (isRunning.get()) return;
+    private final Object loopLock = new Object();
 
-        isRunning.set(true);
-        executor.execute(() -> {
-            char lastElement = ' ';
+    private void startLoopIfNeeded() {
+        synchronized (loopLock) {
+            if (isRunning.get()) return;
+            isRunning.set(true);
+            executor.execute(this::runLoop);
+        }
+    }
 
-            while (isRunning.get()) {
-                boolean curDit = (!ditNeedsRelease && ditPressed) || ditMemory;
-                boolean curDah = (!dahNeedsRelease && dahPressed) || dahMemory;
+    private void runLoop() {
+        char lastElement = ' ';
+
+        while (true) {
+            boolean curDit;
+            boolean curDah;
+
+            synchronized (loopLock) {
+                curDit = (!ditNeedsRelease && ditPressed) || ditMemory;
+                curDah = (!dahNeedsRelease && dahPressed) || dahMemory;
 
                 if (!curDit && !curDah) {
                     isRunning.set(false);
                     break;
                 }
-
-                int wpm = settings.getWpm();
-                long ditDuration = MorseTiming.ditDurationMs(wpm);
-                long dahDuration = MorseTiming.dahDurationMs(wpm);
-                long elementSpace = MorseTiming.intraCharSpaceMs(wpm);
-
-                boolean sendDit;
-                if (curDit && curDah) {
-                    sendDit = (lastElement != '.');
-                } else if (curDit) {
-                    sendDit = true;
-                } else {
-                    sendDit = false;
-                }
-
-                if (sendDit) {
-                    ditMemory = false;
-                    ditNeedsRelease = true; // Consumed: requires releasing paddle before another dit
-                    lastElement = '.';
-                    if (listener != null) {
-                        listener.onToneStart();
-                        listener.onElementEmitted('.');
-                    }
-                    sleep(ditDuration);
-                    if (listener != null) listener.onToneStop();
-                } else {
-                    dahMemory = false;
-                    dahNeedsRelease = true; // Consumed: requires releasing paddle before another dah
-                    lastElement = '-';
-                    if (listener != null) {
-                        listener.onToneStart();
-                        listener.onElementEmitted('-');
-                    }
-                    sleep(dahDuration);
-                    if (listener != null) listener.onToneStop();
-                }
-
-                // Intra-element spacing (1 dit unit)
-                long startPause = System.currentTimeMillis();
-                while (System.currentTimeMillis() - startPause < elementSpace) {
-                    if (ditPressed && !ditNeedsRelease) ditMemory = true;
-                    if (dahPressed && !dahNeedsRelease) dahMemory = true;
-                    sleep(5);
-                }
-
-                // In Mode A, clear memory if paddle was already released
-                if (settings.getMode() == KeyerSettings.Mode.IAMBIC_A) {
-                    if (!ditPressed) ditMemory = false;
-                    if (!dahPressed) dahMemory = false;
-                }
             }
-        });
+
+            int wpm = settings.getWpm();
+            long ditDuration = MorseTiming.ditDurationMs(wpm);
+            long dahDuration = MorseTiming.dahDurationMs(wpm);
+            long elementSpace = MorseTiming.intraCharSpaceMs(wpm);
+
+            boolean sendDit;
+            if (curDit && curDah) {
+                sendDit = (lastElement != '.');
+            } else if (curDit) {
+                sendDit = true;
+            } else {
+                sendDit = false;
+            }
+
+            if (sendDit) {
+                ditMemory = false;
+                ditNeedsRelease = true; // Consumed: requires releasing paddle before another dit
+                lastElement = '.';
+                if (listener != null) {
+                    listener.onToneStart();
+                    listener.onElementEmitted('.');
+                }
+                long startDit = System.currentTimeMillis();
+                while (System.currentTimeMillis() - startDit < ditDuration) {
+                    if (dahPressed) dahMemory = true;
+                    sleep(2);
+                }
+                if (listener != null) listener.onToneStop();
+            } else {
+                dahMemory = false;
+                dahNeedsRelease = true; // Consumed: requires releasing paddle before another dah
+                lastElement = '-';
+                if (listener != null) {
+                    listener.onToneStart();
+                    listener.onElementEmitted('-');
+                }
+                long startDah = System.currentTimeMillis();
+                while (System.currentTimeMillis() - startDah < dahDuration) {
+                    if (ditPressed) ditMemory = true;
+                    sleep(2);
+                }
+                if (listener != null) listener.onToneStop();
+            }
+
+            // Intra-element spacing (1 dit unit)
+            long startPause = System.currentTimeMillis();
+            while (System.currentTimeMillis() - startPause < elementSpace) {
+                if (ditPressed && !ditNeedsRelease) ditMemory = true;
+                if (dahPressed && !dahNeedsRelease) dahMemory = true;
+                sleep(2);
+            }
+
+            // In Mode A, clear memory if paddle was already released
+            if (settings.getMode() == KeyerSettings.Mode.IAMBIC_A) {
+                if (!ditPressed) ditMemory = false;
+                if (!dahPressed) dahMemory = false;
+            }
+        }
     }
 
     private void sleep(long ms) {

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.morsego.app.MainActivity;
+import com.morsego.app.R;
 import com.morsego.app.databinding.FragmentReceiveBinding;
 import com.morsego.app.tree.MorseBinaryTree;
 import com.morsego.app.tree.TreeLevel;
@@ -68,10 +69,9 @@ public class ReceiveFragment extends Fragment {
 
     private void applyLocalization() {
         if (binding == null) return;
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-        binding.tvPracticeHeaderTitle.setText(isPt ? "TESTE DE RECEÇÃO (RECEIVE)" : "RECEIVE TEST (LISTENING)");
-        binding.tvPracticeTapPrompt.setText(isPt ? "Toque para ouvir o sinal Morse" : "Tap to listen to Morse signal");
-        binding.btnNextQuestion.setText(isPt ? "Próxima Pergunta ▶" : "Next Question ▶");
+        binding.tvPracticeHeaderTitle.setText(R.string.receive_test_header);
+        binding.tvPracticeTapPrompt.setText(R.string.practice_tap_to_listen);
+        binding.btnNextQuestion.setText(R.string.practice_next_question);
     }
 
     @Override
@@ -82,11 +82,7 @@ public class ReceiveFragment extends Fragment {
         if (activity != null && binding != null) {
             int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
             TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
-            boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
-            String info = isPt ?
-                    ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + level.getAllCharacters().size() + " caracteres") :
-                    ("Testing unlocked characters in tree (Level " + currentLevel + "): " + level.getAllCharacters().size() + " characters");
-            binding.tvPracticeUnlockedInfo.setText(info);
+            binding.tvPracticeUnlockedInfo.setText(getString(R.string.receive_unlocked_info_format, currentLevel, level.getAllCharacters().size()));
         }
     }
 
@@ -98,11 +94,10 @@ public class ReceiveFragment extends Fragment {
         TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
         List<String> pool = new ArrayList<>(level.getAllCharacters());
 
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         boolean radioUnlocked = com.morsego.app.tree.MorseRadioWords.isUnlocked(currentLevel);
-        String info = isPt ?
-                ("Testando letras desbloqueadas na árvore (Nível " + currentLevel + "): " + pool.size() + " caracteres" + (radioUnlocked ? " • Palavras de Rádio CW Ativas" : "")) :
-                ("Testing unlocked characters in tree (Level " + currentLevel + "): " + pool.size() + " characters" + (radioUnlocked ? " • Ham Radio Words Active" : ""));
+        String info = radioUnlocked ?
+                getString(R.string.receive_unlocked_info_radio_format, currentLevel, pool.size()) :
+                getString(R.string.receive_unlocked_info_simple, currentLevel, pool.size());
         binding.tvPracticeUnlockedInfo.setText(info);
 
         boolean pickRadioWord = radioUnlocked && (Math.random() < 0.35);
@@ -169,18 +164,13 @@ public class ReceiveFragment extends Fragment {
         enableOptionButtons(false);
         scoreTotal++;
 
-        boolean isPt = java.util.Locale.getDefault().getLanguage().equalsIgnoreCase("pt");
         boolean isCorrect = selected.equalsIgnoreCase(currentAnswer);
         if (isCorrect) {
             scoreCorrect++;
-            binding.tvQuizResult.setText(isPt ?
-                    "✓ Correto! A letra transmitida era '" + currentAnswer + "'." :
-                    "✓ Correct! The transmitted character was '" + currentAnswer + "'.");
+            binding.tvQuizResult.setText(getString(R.string.receive_correct_result, currentAnswer));
             binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
         } else {
-            binding.tvQuizResult.setText(isPt ?
-                    "✗ Incorreto. Escolheu '" + selected + "', mas a letra era '" + currentAnswer + "'." :
-                    "✗ Incorrect. Selected '" + selected + "', but the character was '" + currentAnswer + "'.");
+            binding.tvQuizResult.setText(getString(R.string.receive_incorrect_result, selected, currentAnswer));
             binding.tvQuizResult.setTextColor(Color.parseColor("#FF5252"));
         }
 
@@ -193,9 +183,7 @@ public class ReceiveFragment extends Fragment {
             }
         }
 
-        binding.tvPracticeScore.setText(isPt ?
-                "Pontos: " + scoreCorrect + " / " + scoreTotal :
-                "Score: " + scoreCorrect + " / " + scoreTotal);
+        binding.tvPracticeScore.setText(getString(R.string.receive_score_format, scoreCorrect, scoreTotal));
         binding.tvQuizResult.setVisibility(View.VISIBLE);
         binding.btnNextQuestion.setVisibility(View.VISIBLE);
     }

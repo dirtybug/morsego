@@ -46,19 +46,19 @@ public class HardwareFragment extends Fragment {
 
         binding.btnCalibrateDit.setOnClickListener(v -> {
             activity.getInputManager().startCalibration(KeyerInputManager.CalibrationState.DIT);
-            binding.btnCalibrateDit.setText("Toque na pá DIT...");
+            binding.btnCalibrateDit.setText("Tap DIT paddle...");
         });
 
         binding.btnCalibrateDah.setOnClickListener(v -> {
             activity.getInputManager().startCalibration(KeyerInputManager.CalibrationState.DAH);
-            binding.btnCalibrateDah.setText("Toque na pá DAH...");
+            binding.btnCalibrateDah.setText("Tap DAH paddle...");
         });
 
         binding.btnResetVband.setOnClickListener(v -> {
             activity.getSettings().setDitKeyCode(KeyEvent.KEYCODE_CTRL_LEFT);
             activity.getSettings().setDahKeyCode(KeyEvent.KEYCODE_CTRL_RIGHT);
-            binding.btnCalibrateDit.setText("Calibrar Dit (Ctrl Esq)");
-            binding.btnCalibrateDah.setText("Calibrar Dah (Ctrl Dir)");
+            binding.btnCalibrateDit.setText("Calibrate Dit (Ctrl Left)");
+            binding.btnCalibrateDah.setText("Calibrate Dah (Ctrl Right)");
         });
 
         activity.getInputManager().setOnLogUpdated(() -> {
@@ -80,22 +80,22 @@ public class HardwareFragment extends Fragment {
         boolean rightDown = !reversed ? dahDown : ditDown;
 
         binding.cardLeftPaddle.setBackgroundColor(leftDown ? Color.parseColor("#FFB300") : Color.parseColor("#21262D"));
-        binding.tvLeftPaddleState.setText(leftDown ? "PRESSIONADA" : "LIVRE");
+        binding.tvLeftPaddleState.setText(leftDown ? "PRESSED" : "RELEASED");
         binding.tvLeftPaddleState.setTextColor(leftDown ? Color.parseColor("#0E1117") : Color.parseColor("#8B949E"));
 
         binding.cardRightPaddle.setBackgroundColor(rightDown ? Color.parseColor("#00E5FF") : Color.parseColor("#21262D"));
-        binding.tvRightPaddleState.setText(rightDown ? "PRESSIONADA" : "LIVRE");
+        binding.tvRightPaddleState.setText(rightDown ? "PRESSED" : "RELEASED");
         binding.tvRightPaddleState.setTextColor(rightDown ? Color.parseColor("#0E1117") : Color.parseColor("#8B949E"));
     }
 
     private void updateReverseLabels(boolean reversed) {
         if (binding == null) return;
         binding.tvReverseDesc.setText(reversed ?
-                "Esquerda = Dah (—) | Direita = Dit (•)" :
-                "Esquerda = Dit (•) | Direita = Dah (—)");
+                "Left = Dah (—) | Right = Dit (•)" :
+                "Left = Dit (•) | Right = Dah (—)");
 
-        binding.tvLeftPaddleName.setText(reversed ? "PÁ ESQUERDA (DAH —)" : "PÁ ESQUERDA (DIT •)");
-        binding.tvRightPaddleName.setText(reversed ? "PÁ DIREITA (DIT •)" : "PÁ DIREITA (DAH —)");
+        binding.tvLeftPaddleName.setText(reversed ? "LEFT PADDLE (DAH —)" : "LEFT PADDLE (DIT •)");
+        binding.tvRightPaddleName.setText(reversed ? "RIGHT PADDLE (DIT •)" : "RIGHT PADDLE (DAH —)");
     }
 
     private void updateLogs() {
@@ -105,7 +105,7 @@ public class HardwareFragment extends Fragment {
 
         List<KeyerInputManager.HardwareLog> logs = activity.getInputManager().getRecentLogs();
         if (logs.isEmpty()) {
-            binding.tvHardwareLogs.setText("A aguardar eventos USB do manipulador...");
+            binding.tvHardwareLogs.setText("Waiting for USB keyer events...");
             return;
         }
 
@@ -120,8 +120,8 @@ public class HardwareFragment extends Fragment {
 
         // Also reset calibration button labels if calibration finished
         if (activity.getInputManager().getCalibrationState() == KeyerInputManager.CalibrationState.NONE) {
-            binding.btnCalibrateDit.setText("Calibrar Dit (" + KeyEvent.keyCodeToString(activity.getSettings().getDitKeyCode()) + ")");
-            binding.btnCalibrateDah.setText("Calibrar Dah (" + KeyEvent.keyCodeToString(activity.getSettings().getDahKeyCode()) + ")");
+            binding.btnCalibrateDit.setText("Calibrate Dit (" + KeyEvent.keyCodeToString(activity.getSettings().getDitKeyCode()) + ")");
+            binding.btnCalibrateDah.setText("Calibrate Dah (" + KeyEvent.keyCodeToString(activity.getSettings().getDahKeyCode()) + ")");
         }
     }
 

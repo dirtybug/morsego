@@ -18,9 +18,8 @@
 
     <!-- Tree View -->
     <string name="tree_header_title">ÁRVORE BINÁRIA DE MORSE</string>
-    <string name="tree_header_subtitle">Nível %1$d: %2$s\nEsquerda = Traço (—) | Direita = Ponto (•)</string>
-    <string name="tree_instruction">Toque em qualquer nó iluminado para ouvir o som CW e ver o caminho na árvore.</string>
-    <string name="tree_practice_level">Praticar Este Nível ▶</string>
+    <string name="tree_header_subtitle">Nível %1$d: %2$s\nEsquerda = Dah (—) | Direita = Dit (•)</string>
+    <string name="tree_instruction">Toque em qualquer nó para ouvir o código CW e navegar na árvore.</string>
     <string name="tree_code_label">Código: %s</string>
     <string name="tree_listen_button">Ouvir</string>
     <string name="tree_interactive_title">ÁRVORE INTERATIVA</string>
@@ -38,8 +37,47 @@
     <string name="advance_next_level_button">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
     <string name="review_level_button">Rever Este Nível</string>
     <string name="exam_stage_listening">Teste de Receive: Audição Acústica (Ouvir &amp; Identificar)</string>
-    <string name="exam_stage_transmission">Teste de Send: Transmissão CW (Mandar com Pás)</string>
-    <string name="exam_lives_label">Vidas:</string>
+    <!-- Exam Stages & UI Strings -->
+    <string name="exam_stage1_banner">ETAPA 1 DE 2: TREINO DE ESCUTA EM CW (OUVIR)</string>
+    <string name="exam_stage2_banner">ETAPA 2 DE 2: TESTE DE SEND (TRANSMISSÃO)</string>
+    <string name="exam_transmit_letter">TRANSMITA A LETRA:</string>
+    <string name="exam_transmit_word">TRANSMITA A PALAVRA (LETRAS SEPARADAS):</string>
+    <string name="keyer_input_empty">A introduzir: —</string>
+    <string name="keyer_input_prefix">A introduzir: %s</string>
+    <string name="exam_loading_next_char">A preparar próxima letra...</string>
+    <string name="paddle_dit_label">DI (•)\n[ESQ]</string>
+    <string name="paddle_dah_label">DAH (—)\n[DIR]</string>
+    <string name="btn_restart_test">Reiniciar Teste</string>
+    <string name="btn_reset_word">🔄 Limpar / Recomeçar Palavra</string>
+    <string name="prompt_listen_again">Toque para ouvir novamente</string>
+    <string name="prompt_listen_sound">Ouvir som 🔊</string>
+    <string name="exam_fail_listening_exceeded">Excedeu o limite de 3 falhas no Teste de Escuta (Ouvir).</string>
+    <string name="exam_pass_send_msg">Parabéns! Passou no teste de Send!</string>
+    <string name="toast_level_locked">🔒 Nível bloqueado! Passe o teste deste nível para desbloquear.</string>
+    <string name="toast_all_levels_completed">🏆 Parabéns! Concluiu todos os níveis da Árvore de Morse!</string>
+    <string name="penalty_lost_life">Penalização: perdeu 1 vida!</string>
+    <string name="feedback_correct_recovery">✓ Correto! Recuperação com sucesso.</string>
+    <string name="exam_progress_letters">Letras (%1$d/%2$d)</string>
+    <string name="characters_in_test">Letras no teste (%1$d): %2$s</string>
+    <string name="exam_progress_words">Palavras</string>
+    <string name="exam_progress_queue">Restam: %1$d na fila | Feitas: %2$d</string>
+    <string name="exam_result_title_completed">🎉 NÍVEL %1$d CONCLUÍDO!</string>
+    <string name="exam_result_title_failed">❌ TESTE DE ENVIO FALHADO</string>
+    <string name="exam_result_summary_passed">Teste de Transmissão (Mandar): Aprovado (Falhas: %1$d/3)\n\nDominou as letras novas e palavras formadas com o vocabulário deste nível!</string>
+    <string name="exam_result_summary_failed">%1$s\n\nRegra: O teste de envio tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!</string>
+    <string name="exam_result_unlocked_new">🔓 Desbloqueou o Nível %1$d na Árvore Binária de Morse!</string>
+    <string name="exam_result_already_unlocked">Nível já desbloqueado anteriormente.</string>
+    <string name="exam_result_btn_advance">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
+    <string name="exam_result_btn_retry">REPETIR ENVIO (MANDAR) 🔄</string>
+
+    <!-- Receive Fragment Strings -->
+    <string name="receive_test_header">TESTE DE RECEÇÃO (RECEIVE)</string>
+    <string name="receive_unlocked_info_format">Nível %1$d • %2$d caracteres no teste de escuta</string>
+    <string name="receive_unlocked_info_radio_format">Nível %1$d • %2$d caracteres • Palavras de Rádio CW Ativas</string>
+    <string name="receive_unlocked_info_simple">Nível %1$d • %2$d caracteres</string>
+    <string name="receive_correct_result">✓ Correto! A letra transmitida era \'%1$s\'.</string>
+    <string name="receive_incorrect_result">✗ Incorreto. Escolheu \'%1$s\', mas a letra era \'%2$s\'.</string>
+    <string name="receive_score_format">Pontos: %1$d / %2$d</string>
 
     <!-- Radio Words -->
     <string name="radio_words_title">Palavras de Rádio CW</string>

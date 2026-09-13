@@ -299,7 +299,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:gravity="center"
-                    android:text="❤️❤️❤️"
+                    android:text="❤️❤️❤️   1/20 questions"
                     android:textColor="@color/morse_amber"
                     android:textSize="18sp"
                     android:textStyle="bold"
