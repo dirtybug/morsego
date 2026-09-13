@@ -19,6 +19,15 @@ fi
 RELEASE_DIR="${RELEASE_DIR:-/workspace/release/development}"
 mkdir -p "$RELEASE_DIR/reports/unit-tests"
 mkdir -p "$RELEASE_DIR/reports/instrumented"
+
+# Update AndroidManifest.xml with Play Store version if APP_VERSION_NAME is provided
+if [ -n "$APP_VERSION_NAME" ] && [ -f /workspace/app/src/main/AndroidManifest.xml ]; then
+    CLEAN_VER="${APP_VERSION_NAME#v}"
+    sed -i -E "s/android:versionName=\"[^\"]*\"/android:versionName=\"${CLEAN_VER}\"/g" /workspace/app/src/main/AndroidManifest.xml 2>/dev/null || true
+    if [ -n "$APP_VERSION_CODE" ]; then
+        sed -i -E "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${APP_VERSION_CODE}\"/g" /workspace/app/src/main/AndroidManifest.xml 2>/dev/null || true
+    fi
+fi
 [ -f /workspace/gradlew ] && chmod +x /workspace/gradlew 2>/dev/null || true
 rm -f /root/.gradle/caches/journal-1/*.lock 2>/dev/null || true
 rm -f /root/.gradle/caches/*.lock 2>/dev/null || true

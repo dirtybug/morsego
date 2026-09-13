@@ -31,18 +31,29 @@ jobs:
         run: |
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             TAG_NAME="${GITHUB_REF#refs/tags/}"
+            IS_TAG_RELEASE="true"
           else
-            TAG_NAME="v1.0.0"
+            TAG_NAME="development"
+            IS_TAG_RELEASE="false"
           fi
 
           # Clean version without leading 'v' for Google Play Store (e.g. "1.0.0")
           CLEAN_VERSION="${TAG_NAME#v}"
+          if [[ "$CLEAN_VERSION" == "development" ]]; then
+            CLEAN_VERSION="1.0.0"
+          fi
 
           # Calculate integer versionCode: Major * 10000 + Minor * 100 + Patch
           IFS='.' read -r -a PARTS <<< "$CLEAN_VERSION"
           MAJOR="${PARTS[0]:-1}"
           MINOR="${PARTS[1]:-0}"
           PATCH="${PARTS[2]:-0}"
+          MAJOR=$(echo "$MAJOR" | sed 's/[^0-9]//g')
+          MINOR=$(echo "$MINOR" | sed 's/[^0-9]//g')
+          PATCH=$(echo "$PATCH" | sed 's/[^0-9]//g')
+          MAJOR="${MAJOR:-1}"
+          MINOR="${MINOR:-0}"
+          PATCH="${PATCH:-0}"
           MAJOR=$((10#$MAJOR))
           MINOR=$((10#$MINOR))
           PATCH=$((10#$PATCH))
@@ -52,12 +63,22 @@ jobs:
           echo "VERSION=$TAG_NAME" >> $GITHUB_ENV
           echo "APP_VERSION_NAME=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "APP_VERSION_CODE=$CODE" >> $GITHUB_ENV
+          echo "IS_TAG_RELEASE=$IS_TAG_RELEASE" >> $GITHUB_ENV
 
           echo "====================================================="
-          echo "🏷️ Git Tag:             $TAG_NAME"
-          echo "📱 Android Store Name:   $CLEAN_VERSION"
-          echo "🔢 Android Store Code:   $CODE"
+          echo "🏷️ Git Tag / Version:     $TAG_NAME"
+          echo "📱 Android Store Name:    $CLEAN_VERSION"
+          echo "🔢 Android Store Code:    $CODE"
+          echo "🚀 Is Tag Release:        $IS_TAG_RELEASE"
           echo "====================================================="
+
+      - name: Update Android Manifest XML for Google Play Store
+        run: |
+          echo ">>> Updating app/src/main/AndroidManifest.xml with Play Store version ${{ env.APP_VERSION_NAME }} (code: ${{ env.APP_VERSION_CODE }})..."
+          sed -i -E "s/android:versionName=\"[^\"]*\"/android:versionName=\"${{ env.APP_VERSION_NAME }}\"/g" app/src/main/AndroidManifest.xml
+          sed -i -E "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${{ env.APP_VERSION_CODE }}\"/g" app/src/main/AndroidManifest.xml
+          echo "Verified app/src/main/AndroidManifest.xml:"
+          head -n 6 app/src/main/AndroidManifest.xml
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -107,9 +128,10 @@ jobs:
           APP_VERSION_NAME="${{ env.APP_VERSION_NAME }}" APP_VERSION_CODE="${{ env.APP_VERSION_CODE }}" docker compose run --rm build-apk
 
       - name: Organize Consolidated Release Package
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           VERSION="${{ env.VERSION }}"
-          echo "Organizing consolidated release for Version: ${VERSION}"
+          echo "Organizing consolidated release for Tag Version: ${VERSION}"
           echo "Android Store Version Name: ${{ env.APP_VERSION_NAME }}, Code: ${{ env.APP_VERSION_CODE }}"
 
           RELEASE_DIR="release/${VERSION}"
@@ -120,16 +142,20 @@ jobs:
           # 1. Copy APKs from release/development/ (or build outputs) into release/${VERSION}/
           if [ -f "release/development/morseGO-release.apk" ]; then
             cp "release/development/morseGO-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
+            cp "release/development/morseGO-release.apk" "${RELEASE_DIR}/morseGO-release.apk"
           elif [ -f "release/development/morseGO-development-release.apk" ]; then
             cp "release/development/morseGO-development-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
+            cp "release/development/morseGO-development-release.apk" "${RELEASE_DIR}/morseGO-release.apk"
           elif [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
             cp "app/build/outputs/apk/release/app-release-unsigned.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
           fi
 
           if [ -f "release/development/morseGO-debug.apk" ]; then
             cp "release/development/morseGO-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
+            cp "release/development/morseGO-debug.apk" "${RELEASE_DIR}/morseGO-debug.apk"
           elif [ -f "release/development/morseGO-development-debug.apk" ]; then
             cp "release/development/morseGO-development-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
+            cp "release/development/morseGO-development-debug.apk" "${RELEASE_DIR}/morseGO-debug.apk"
           elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
             cp "app/build/outputs/apk/debug/app-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
           fi
@@ -186,8 +212,7 @@ jobs:
             },
             "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
             "gitCommit": "${GITHUB_SHA}",
-            "unitTests": { "total": 79, "passed": 79, "coverage": "100%" },
-            "behaviorTests": { "total": 49, "passed": 49, "screenshots": 49 },
+            "unitTests": { "total": 107, "passed": 107, "coverage": "100%" },
             "status": "PASSED"
           }
           EOF
@@ -201,12 +226,21 @@ jobs:
           ls -lh "${RELEASE_DIR}/screenshots/"
 
       - name: Upload Consolidated Release Artifact
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-release-${{ env.VERSION }}
           path: release/${{ env.VERSION }}/**
           retention-days: 60
           if-no-files-found: error
+
+      - name: Upload Development Build Artifact (on Branch push)
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: morseGO-development-build
+          path: release/development/**
+          retention-days: 14
 
       - name: Create GitHub Release (on Tag push)
         if: startsWith(github.ref, 'refs/tags/')
