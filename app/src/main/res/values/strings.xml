@@ -29,17 +29,17 @@
     <!-- Send & Receive Tests -->
     <string name="level_number_format">LEVEL %1$d / %2$d</string>
     <string name="new_letters_title">2 NEW CHARACTERS IN THIS LEVEL:</string>
-    <string name="level_requirements_title">SEND TEST ADVANCEMENT REQUIREMENTS:</string>
+    <string name="level_requirements_title">TRANSMISSION TEST ADVANCEMENT REQUIREMENTS:</string>
     <string name="level_requirements_desc">• Characters in test: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the vocabulary pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass the transmission test to unlock the next level.</string>
-    <string name="start_exam_button">START SEND TEST ▶</string>
+    <string name="start_exam_button">START TRANSMISSION TEST ▶</string>
     <string name="exam_completed_title">🎉 LEVEL COMPLETED!</string>
     <string name="exam_unlocked_msg">Unlocked Level %1$d in the Morse Binary Tree!</string>
     <string name="advance_next_level_button">ADVANCE TO NEXT LEVEL ▶</string>
     <string name="review_level_button">Review This Level</string>
     <string name="exam_stage_listening">Receive Test: Acoustic Listening (Hear &amp; Identify)</string>
-    <!-- Exam Stages & UI Strings -->
-    <string name="exam_stage1_banner">STAGE 1 OF 2: CW LISTENING TRAINING (RECEIVE)</string>
-    <string name="exam_stage2_banner">STAGE 2 OF 2: TRANSMISSION TEST (SENDING)</string>
+    <!-- Exam UI Strings -->
+    <string name="exam_stage1_banner">RECEIVE TEST (LISTEN)</string>
+    <string name="exam_stage2_banner">TRANSMISSION TEST (SEND)</string>
     <string name="exam_transmit_letter">TRANSMIT LETTER:</string>
     <string name="exam_transmit_word">TRANSMIT WORD (SEPARATED LETTERS):</string>
     <string name="keyer_input_empty">Input: —</string>
@@ -51,8 +51,8 @@
     <string name="btn_reset_word">🔄 Clear / Restart Word</string>
     <string name="prompt_listen_again">Tap to listen again</string>
     <string name="prompt_listen_sound">Listen 🔊</string>
-    <string name="exam_fail_listening_exceeded">Exceeded limit of 3 failures in Listening Stage.</string>
-    <string name="exam_pass_send_msg">Congratulations! Passed the Send Test!</string>
+    <string name="exam_fail_listening_exceeded">Exceeded limit of 3 failures in Receive Test.</string>
+    <string name="exam_pass_send_msg">Congratulations! Passed the Transmission Test!</string>
     <string name="toast_level_locked">🔒 Level locked! Pass this level\'s test to unlock.</string>
     <string name="toast_all_levels_completed">🏆 Congratulations! You completed all levels of the Morse Tree!</string>
     <string name="penalty_lost_life">Penalty: lost 1 life!</string>
@@ -62,17 +62,17 @@
     <string name="exam_progress_words">Words</string>
     <string name="exam_progress_queue">Remaining: %1$d in queue | Done: %2$d</string>
     <string name="exam_result_title_completed">🎉 LEVEL %1$d COMPLETED!</string>
-    <string name="exam_result_title_failed">❌ TRANSMISSION EXAM FAILED</string>
-    <string name="exam_result_summary_passed">Transmission Exam (Send): Passed (Mistakes: %1$d/3)\n\nMastered the new characters and vocabulary of this level!</string>
-    <string name="exam_result_summary_failed">%1$s\n\nRule: The transmission exam allows up to 3 mistakes total.\nPractice your timing cadence and try again!</string>
+    <string name="exam_result_title_failed">❌ TRANSMISSION TEST FAILED</string>
+    <string name="exam_result_summary_passed">Transmission Test (Send): Passed (Mistakes: %1$d/3)\n\nMastered the new characters and vocabulary of this level!</string>
+    <string name="exam_result_summary_failed">%1$s\n\nRule: The transmission test allows up to 3 mistakes total.\nPractice your timing cadence and try again!</string>
     <string name="exam_result_unlocked_new">🔓 Unlocked Level %1$d in the Morse Binary Tree!</string>
     <string name="exam_result_already_unlocked">Level previously unlocked.</string>
     <string name="exam_result_btn_advance">ADVANCE TO NEXT LEVEL ▶</string>
-    <string name="exam_result_btn_retry">RETRY TRANSMISSION 🔄</string>
+    <string name="exam_result_btn_retry">RETRY TRANSMISSION TEST 🔄</string>
 
     <!-- Receive Fragment Strings -->
-    <string name="receive_test_header">RECEIVE TEST (LISTENING)</string>
-    <string name="receive_unlocked_info_format">Level %1$d • %2$d characters in listening test</string>
+    <string name="receive_test_header">RECEIVE TEST (LISTEN)</string>
+    <string name="receive_unlocked_info_format">Level %1$d • %2$d characters in test</string>
     <string name="receive_unlocked_info_radio_format">Level %1$d • %2$d characters • Ham Radio Words Active</string>
     <string name="receive_unlocked_info_simple">Level %1$d • %2$d characters</string>
     <string name="receive_correct_result">✓ Correct! The transmitted character was \'%1$s\'.</string>

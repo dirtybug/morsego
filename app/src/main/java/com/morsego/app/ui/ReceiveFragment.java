@@ -30,6 +30,8 @@ public class ReceiveFragment extends Fragment {
     private static final int DEFAULT_TOTAL_QUESTIONS = 20;
 
     private FragmentReceiveBinding binding;
+    private int currentLevelNumber = 1;
+    private TreeLevel currentLevel;
     private String currentAnswer = "E";
     private int scoreCorrect = 0;
     private int questionsAnswered = 0;
@@ -74,9 +76,51 @@ public class ReceiveFragment extends Fragment {
             }
         });
 
+        binding.btnPrevLevel.setOnClickListener(v -> {
+            if (currentLevelNumber > 1) {
+                loadLevel(currentLevelNumber - 1);
+            }
+        });
+
+        binding.btnNextLevel.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) getActivity();
+            int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
+            if (currentLevelNumber < maxLevels) {
+                boolean nextUnlocked = activity != null && activity.getSettings().isLevelUnlocked(currentLevelNumber + 1);
+                if (nextUnlocked) {
+                    loadLevel(currentLevelNumber + 1);
+                } else if (activity != null) {
+                    android.widget.Toast.makeText(activity, R.string.toast_level_locked, android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         applyLocalization();
-        updateLivesAndProgressUi();
-        setupNewQuestion();
+        MainActivity activity = (MainActivity) getActivity();
+        int initialLevel = (activity != null) ? activity.getSettings().getCurrentUnlockedLevel() : 1;
+        loadLevel(initialLevel);
+    }
+
+    public void loadLevel(int levelNum) {
+        applyLocalization();
+        this.currentLevelNumber = levelNum;
+        this.currentLevel = MorseBinaryTree.getInstance().getLevel(levelNum);
+
+        MainActivity activity = (MainActivity) getActivity();
+        boolean isUnlocked = activity != null && activity.getSettings().isLevelUnlocked(levelNum);
+
+        int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
+        if (binding != null) {
+            binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), maxLevels) + (isUnlocked ? "" : " 🔒"));
+            binding.tvLevelTitle.setText(currentLevel.getTitle());
+
+            int nextLevel = levelNum + 1;
+            boolean nextUnlocked = activity != null && activity.getSettings().isLevelUnlocked(nextLevel);
+            binding.btnNextLevel.setAlpha(nextUnlocked ? 1.0f : 0.4f);
+            binding.btnPrevLevel.setAlpha(levelNum > 1 ? 1.0f : 0.4f);
+        }
+
+        resetTest();
     }
 
     private void resetTest() {
@@ -84,8 +128,10 @@ public class ReceiveFragment extends Fragment {
         questionsAnswered = 0;
         scoreCorrect = 0;
         testFinished = false;
-        binding.btnNextQuestion.setVisibility(View.GONE);
-        binding.tvQuizResult.setVisibility(View.GONE);
+        if (binding != null) {
+            binding.btnNextQuestion.setVisibility(View.GONE);
+            binding.tvQuizResult.setVisibility(View.GONE);
+        }
         enableOptionButtons(true);
         setupNewQuestion();
         updateLivesAndProgressUi();
@@ -124,26 +170,27 @@ public class ReceiveFragment extends Fragment {
         super.onResume();
         applyLocalization();
         MainActivity activity = (MainActivity) getActivity();
-        if (activity != null && binding != null) {
-            int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
-            TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
-            binding.tvPracticeUnlockedInfo.setText(getString(R.string.receive_unlocked_info_format, currentLevel, level.getAllCharacters().size()));
+        if (activity != null) {
+            int unlocked = activity.getSettings().getCurrentUnlockedLevel();
+            if (currentLevel == null) {
+                loadLevel(unlocked);
+            } else {
+                loadLevel(currentLevelNumber);
+            }
         }
-        updateLivesAndProgressUi();
     }
 
     private void setupNewQuestion() {
         MainActivity activity = (MainActivity) getActivity();
-        if (activity == null) return;
+        if (activity == null || currentLevel == null) return;
 
-        int currentLevel = activity.getSettings().getCurrentUnlockedLevel();
-        TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
-        List<String> pool = new ArrayList<>(level.getAllCharacters());
+        int currentLevelNum = currentLevel.getLevelNumber();
+        List<String> pool = new ArrayList<>(currentLevel.getAllCharacters());
 
-        boolean radioUnlocked = com.morsego.app.tree.MorseRadioWords.isUnlocked(currentLevel);
+        boolean radioUnlocked = com.morsego.app.tree.MorseRadioWords.isUnlocked(currentLevelNum);
         String info = radioUnlocked ?
-                getString(R.string.receive_unlocked_info_radio_format, currentLevel, pool.size()) :
-                getString(R.string.receive_unlocked_info_simple, currentLevel, pool.size());
+                getString(R.string.receive_unlocked_info_radio_format, currentLevelNum, pool.size()) :
+                getString(R.string.receive_unlocked_info_format, currentLevelNum, pool.size());
         binding.tvPracticeUnlockedInfo.setText(info);
 
         boolean pickRadioWord = radioUnlocked && (Math.random() < 0.35);

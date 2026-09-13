@@ -4,11 +4,11 @@
 
     <!-- Navigation -->
     <string name="tree_title">Árvore</string>
-    <string name="send_title">Send</string>
-    <string name="listen_title">Receive</string>
-    <string name="receive_title">Receive</string>
-    <string name="learn_title">Send</string>
-    <string name="practice_title">Receive</string>
+    <string name="send_title">Transmitir</string>
+    <string name="listen_title">Ouvir</string>
+    <string name="receive_title">Ouvir</string>
+    <string name="learn_title">Transmitir</string>
+    <string name="practice_title">Ouvir</string>
     <string name="hardware_title">USB</string>
     <string name="settings_title">Configurações</string>
 
@@ -29,17 +29,17 @@
     <!-- Send & Receive Tests -->
     <string name="level_number_format">NÍVEL %1$d / %2$d</string>
     <string name="new_letters_title">2 NOVOS CARACTERES DESTE NÍVEL:</string>
-    <string name="level_requirements_title">REQUISITOS DO TESTE DE SEND (TRANSMISSÃO):</string>
+    <string name="level_requirements_title">REQUISITOS DO TESTE DE TRANSMISSÃO:</string>
     <string name="level_requirements_desc">• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete a transmissão com pás para desbloquear o próximo nível.</string>
-    <string name="start_exam_button">INICIAR TESTE DE SEND ▶</string>
+    <string name="start_exam_button">INICIAR TESTE DE TRANSMISSÃO ▶</string>
     <string name="exam_completed_title">🎉 NÍVEL CONCLUÍDO!</string>
     <string name="exam_unlocked_msg">Desbloqueou o Nível %1$d na Árvore Binária de Morse!</string>
     <string name="advance_next_level_button">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
     <string name="review_level_button">Rever Este Nível</string>
-    <string name="exam_stage_listening">Teste de Receive: Audição Acústica (Ouvir &amp; Identificar)</string>
-    <!-- Exam Stages & UI Strings -->
-    <string name="exam_stage1_banner">ETAPA 1 DE 2: TREINO DE ESCUTA EM CW (OUVIR)</string>
-    <string name="exam_stage2_banner">ETAPA 2 DE 2: TESTE DE SEND (TRANSMISSÃO)</string>
+    <string name="exam_stage_listening">Teste de Receção: Audição Acústica (Ouvir &amp; Identificar)</string>
+    <!-- Exam UI Strings -->
+    <string name="exam_stage1_banner">TESTE DE RECEÇÃO (OUVIR)</string>
+    <string name="exam_stage2_banner">TESTE DE TRANSMISSÃO (ENVIAR)</string>
     <string name="exam_transmit_letter">TRANSMITA A LETRA:</string>
     <string name="exam_transmit_word">TRANSMITA A PALAVRA (LETRAS SEPARADAS):</string>
     <string name="keyer_input_empty">A introduzir: —</string>
@@ -51,8 +51,8 @@
     <string name="btn_reset_word">🔄 Limpar / Recomeçar Palavra</string>
     <string name="prompt_listen_again">Toque para ouvir novamente</string>
     <string name="prompt_listen_sound">Ouvir som 🔊</string>
-    <string name="exam_fail_listening_exceeded">Excedeu o limite de 3 falhas no Teste de Escuta (Ouvir).</string>
-    <string name="exam_pass_send_msg">Parabéns! Passou no teste de Send!</string>
+    <string name="exam_fail_listening_exceeded">Excedeu o limite de 3 falhas no Teste de Receção (Ouvir).</string>
+    <string name="exam_pass_send_msg">Parabéns! Passou no Teste de Transmissão!</string>
     <string name="toast_level_locked">🔒 Nível bloqueado! Passe o teste deste nível para desbloquear.</string>
     <string name="toast_all_levels_completed">🏆 Parabéns! Concluiu todos os níveis da Árvore de Morse!</string>
     <string name="penalty_lost_life">Penalização: perdeu 1 vida!</string>
@@ -62,17 +62,17 @@
     <string name="exam_progress_words">Palavras</string>
     <string name="exam_progress_queue">Restam: %1$d na fila | Feitas: %2$d</string>
     <string name="exam_result_title_completed">🎉 NÍVEL %1$d CONCLUÍDO!</string>
-    <string name="exam_result_title_failed">❌ TESTE DE ENVIO FALHADO</string>
-    <string name="exam_result_summary_passed">Teste de Transmissão (Mandar): Aprovado (Falhas: %1$d/3)\n\nDominou as letras novas e palavras formadas com o vocabulário deste nível!</string>
-    <string name="exam_result_summary_failed">%1$s\n\nRegra: O teste de envio tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!</string>
+    <string name="exam_result_title_failed">❌ TESTE DE TRANSMISSÃO FALHADO</string>
+    <string name="exam_result_summary_passed">Teste de Transmissão (Enviar): Aprovado (Falhas: %1$d/3)\n\nDominou as letras novas e palavras formadas com o vocabulário deste nível!</string>
+    <string name="exam_result_summary_failed">%1$s\n\nRegra: O teste de transmissão tolera até 3 falhas no total.\nPratique a cadência de pausa e tente novamente!</string>
     <string name="exam_result_unlocked_new">🔓 Desbloqueou o Nível %1$d na Árvore Binária de Morse!</string>
     <string name="exam_result_already_unlocked">Nível já desbloqueado anteriormente.</string>
     <string name="exam_result_btn_advance">AVANÇAR PARA O PRÓXIMO NÍVEL ▶</string>
-    <string name="exam_result_btn_retry">REPETIR ENVIO (MANDAR) 🔄</string>
+    <string name="exam_result_btn_retry">REPETIR TESTE DE TRANSMISSÃO 🔄</string>
 
     <!-- Receive Fragment Strings -->
-    <string name="receive_test_header">TESTE DE RECEÇÃO (RECEIVE)</string>
-    <string name="receive_unlocked_info_format">Nível %1$d • %2$d caracteres no teste de escuta</string>
+    <string name="receive_test_header">TESTE DE RECEÇÃO (OUVIR)</string>
+    <string name="receive_unlocked_info_format">Nível %1$d • %2$d caracteres no teste</string>
     <string name="receive_unlocked_info_radio_format">Nível %1$d • %2$d caracteres • Palavras de Rádio CW Ativas</string>
     <string name="receive_unlocked_info_simple">Nível %1$d • %2$d caracteres</string>
     <string name="receive_correct_result">✓ Correto! A letra transmitida era \'%1$s\'.</string>

@@ -7,9 +7,62 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Level Navigation Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnPrevLevel"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@color/radio_surface_variant"
+            android:contentDescription="Nível Anterior"
+            android:src="@android:drawable/ic_media_previous" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvLevelNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="NÍVEL 1 / 21"
+                android:textColor="@color/morse_amber"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLevelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A Raiz da Árvore"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnNextLevel"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@color/radio_surface_variant"
+            android:contentDescription="Próximo Nível"
+            android:src="@android:drawable/ic_media_next" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
@@ -17,95 +70,85 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Title & Score Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Test Header Banner -->
+            <TextView
+                android:id="@+id/tvPracticeHeaderTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/radio_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/radio_surface_variant"
-                app:strokeWidth="1dp">
+                android:background="@color/morse_amber"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/receive_test_header"
+                android:textColor="@color/radio_dark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+            <!-- Lives Hearts Indicator -->
+            <TextView
+                android:id="@+id/tvReceiveLives"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="❤️❤️❤️"
+                android:textColor="@color/morse_amber"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <!-- Questions Progress (Question X/20 • Done: Y/20) -->
+            <TextView
+                android:id="@+id/tvReceiveProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:fontFamily="monospace"
+                android:text="Question 1/20 • Done: 0/20"
+                android:textColor="@color/morse_cyan"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/pbReceiveProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:max="20"
+                android:progress="0"
+                android:progressTint="@color/morse_amber" />
+
+            <!-- Score and Unlocked Info Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvPracticeUnlockedInfo"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_weight="1"
+                    android:text="Characters in test: E, T"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tvPracticeHeaderTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="monospace"
-                            android:text="@string/cw_listening_practice_title"
-                            android:textColor="@color/morse_cyan"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvPracticeScore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="monospace"
-                            android:text="Score: 0 / 20"
-                            android:textColor="@color/morse_amber"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Lives Hearts Indicator -->
-                    <TextView
-                        android:id="@+id/tvReceiveLives"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:text="❤️❤️❤️"
-                        android:textColor="@color/morse_amber"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <!-- Questions Progress (Question X/20 • Done: Y/20) -->
-                    <TextView
-                        android:id="@+id/tvReceiveProgress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:gravity="center"
-                        android:fontFamily="monospace"
-                        android:text="Question 1/20 • Done: 0/20"
-                        android:textColor="@color/morse_cyan"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <ProgressBar
-                        android:id="@+id/pbReceiveProgress"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="4dp"
-                        android:max="20"
-                        android:progress="0"
-                        android:progressTint="@color/morse_amber" />
-
-                    <TextView
-                        android:id="@+id/tvPracticeUnlockedInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="A testar letras desbloqueadas na árvore: E, T"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/tvPracticeScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:text="Score: 0 / 20"
+                    android:textColor="@color/morse_amber"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <!-- Play Audio Big Button Card -->
             <com.google.android.material.card.MaterialCardView
