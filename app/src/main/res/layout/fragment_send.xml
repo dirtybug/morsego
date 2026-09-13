@@ -47,6 +47,17 @@
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvNewCharacters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="monospace"
+                android:text="Novas Letras: E (•)  T (—)"
+                android:textColor="@color/morse_cyan"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageButton

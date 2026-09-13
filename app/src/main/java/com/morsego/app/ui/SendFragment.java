@@ -263,6 +263,11 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
         binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), maxLevels) + (isUnlocked ? "" : " 🔒"));
         binding.tvLevelTitle.setText(currentLevel.getTitle());
+        String morse1Visual = currentLevel.getMorse1().replace('.', '•').replace('-', '—');
+        String morse2Visual = currentLevel.getMorse2().replace('.', '•').replace('-', '—');
+        binding.tvNewCharacters.setText(getString(R.string.new_characters_format,
+                currentLevel.getChar1(), morse1Visual,
+                currentLevel.getChar2(), morse2Visual));
 
         binding.tvNewChar1.setText(currentLevel.getChar1());
         binding.tvNewMorse1.setText(currentLevel.getMorse1());
@@ -1061,6 +1066,12 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             if (currentLevel != null) {
                 boolean isUnlocked = activity.getSettings().isLevelUnlocked(currentLevelNumber);
                 binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), MorseBinaryTree.getInstance().getTotalLevels()) + (isUnlocked ? "" : " 🔒"));
+                binding.tvLevelTitle.setText(currentLevel.getTitle());
+                String morse1Visual = currentLevel.getMorse1().replace('.', '•').replace('-', '—');
+                String morse2Visual = currentLevel.getMorse2().replace('.', '•').replace('-', '—');
+                binding.tvNewCharacters.setText(getString(R.string.new_characters_format,
+                        currentLevel.getChar1(), morse1Visual,
+                        currentLevel.getChar2(), morse2Visual));
                 int nextLevel = currentLevelNumber + 1;
                 boolean nextUnlocked = activity.getSettings().isLevelUnlocked(nextLevel);
                 binding.btnNextLevel.setAlpha(nextUnlocked ? 1.0f : 0.4f);

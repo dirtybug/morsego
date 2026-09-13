@@ -28,6 +28,7 @@
 
     <!-- Send & Receive Tests -->
     <string name="level_number_format">LEVEL %1$d / %2$d</string>
+    <string name="new_characters_format">New Characters: %1$s (%2$s)  %3$s (%4$s)</string>
     <string name="new_letters_title">2 NEW CHARACTERS IN THIS LEVEL:</string>
     <string name="level_requirements_title">TRANSMISSION TEST ADVANCEMENT REQUIREMENTS:</string>
     <string name="level_requirements_desc">• Characters in test: all available characters × 4.\n• 4 words featuring new characters.\n• 4 random words from the vocabulary pool.\n• 100% dynamic &amp; randomized questions.\n• Up to 3 mistakes allowed (3 lives ❤️❤️❤️).\n• Each mistake queues the item + 2 random items!\n• Pass the transmission test to unlock the next level.</string>

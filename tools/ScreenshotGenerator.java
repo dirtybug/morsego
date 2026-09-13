@@ -174,6 +174,97 @@ public class ScreenshotGenerator {
     }
 
     /**
+     * Draws the standardized Level Navigation Bar and Test Banner
+     * ensuring 100% visual parity between Receive (Listening) and Send (Transmission) screens.
+     */
+    private static int drawStandardLevelHeaderAndBanner(Graphics2D g, int startY, boolean isReceive) {
+        int curY = startY;
+
+        // Level navigation container background
+        int navH = 68;
+        g.setColor(new Color(0x13, 0x19, 0x22));
+        g.fillRect(0, curY, WIDTH, navH);
+        g.setColor(new Color(0x21, 0x28, 0x36));
+        g.drawLine(0, curY + navH, WIDTH, curY + navH);
+
+        // Previous Level Button (<)
+        int btnY = curY + 12;
+        g.setColor(new Color(0x1E, 0x26, 0x33));
+        g.fillRoundRect(20, btnY, 44, 44, 10, 10);
+        g.setColor(new Color(0x35, 0x40, 0x52));
+        g.drawRoundRect(20, btnY, 44, 44, 10, 10);
+        g.setColor(COLOR_TEXT_SEC);
+        g.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g.drawString("◀", 33, btnY + 28);
+
+        // Next Level Button (>)
+        g.setColor(new Color(0x1E, 0x26, 0x33));
+        g.fillRoundRect(WIDTH - 64, btnY, 44, 44, 10, 10);
+        g.setColor(new Color(0x35, 0x40, 0x52));
+        g.drawRoundRect(WIDTH - 64, btnY, 44, 44, 10, 10);
+        g.setColor(COLOR_TEXT_SEC);
+        g.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g.drawString("▶", WIDTH - 51, btnY + 28);
+
+        // Center Level Info: Number, Title, New Characters
+        // 1. Level Number
+        g.setColor(COLOR_AMBER);
+        g.setFont(new Font("Monospaced", Font.BOLD, 14));
+        String levelNumStr = "LEVEL 1 / 21";
+        int nw = g.getFontMetrics().stringWidth(levelNumStr);
+        g.drawString(levelNumStr, WIDTH / 2 - nw / 2, curY + 20);
+
+        // 2. Level Title
+        g.setColor(COLOR_TEXT_PRI);
+        g.setFont(new Font("SansSerif", Font.BOLD, 15));
+        String titleStr = "A Raiz da Árvore";
+        int tw = g.getFontMetrics().stringWidth(titleStr);
+        g.drawString(titleStr, WIDTH / 2 - tw / 2, curY + 40);
+
+        // 3. New Characters Badge / Text
+        g.setColor(new Color(0x00, 0xE5, 0xFF)); // cyan
+        g.setFont(new Font("Monospaced", Font.BOLD, 12));
+        String newCharsStr = "New Characters: E (•)  T (—)";
+        int cw = g.getFontMetrics().stringWidth(newCharsStr);
+        g.drawString(newCharsStr, WIDTH / 2 - cw / 2, curY + 58);
+
+        curY += navH + 12;
+
+        // Standard Amber Banner
+        int bannerH = 36;
+        g.setColor(COLOR_AMBER);
+        g.fillRoundRect(20, curY, WIDTH - 40, bannerH, 8, 8);
+
+        g.setColor(new Color(0x1A, 0x0A, 0x00));
+        g.setFont(new Font("Monospaced", Font.BOLD, 14));
+        String bannerText = isReceive ? "RECEIVE TEST (LISTEN)" : "TRANSMISSION TEST (SEND)";
+        int bw = g.getFontMetrics().stringWidth(bannerText);
+        g.drawString(bannerText, WIDTH / 2 - bw / 2, curY + 23);
+
+        curY += bannerH + 12;
+
+        // Lives and Questions Row
+        int heartStartX = 24;
+        for (int i = 0; i < 3; i++) {
+            drawHeart(g, heartStartX + (i * 22), curY + 2, 18);
+        }
+
+        g.setColor(COLOR_AMBER);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        g.drawString("1/20 questions", heartStartX + 72, curY + 16);
+
+        // Right side: Progress indicator
+        g.setColor(new Color(0x00, 0xE5, 0xFF));
+        g.setFont(new Font("Monospaced", Font.BOLD, 12));
+        String progStr = "Done: 0/20";
+        int pw = g.getFontMetrics().stringWidth(progStr);
+        g.drawString(progStr, WIDTH - 24 - pw, curY + 16);
+
+        curY += 28;
+        return curY;
+    }
+
+    /**
      * 1. SILENT / VIBRATION MODE SCREENSHOT
      */
     public static void generateSilentVibrationMode(File file) throws Exception {
@@ -200,25 +291,11 @@ public class ScreenshotGenerator {
         g.drawLine(0, curY + bannerH, WIDTH, curY + bannerH);
         curY += bannerH;
 
-        // Header info: Level, Lives & Progress (1/20 questions)
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("LEVEL 1 / 13: E & T", 20, curY + 35);
-        for (int i = 0; i < 3; i++) {
-            drawHeart(g, WIDTH - 215 + (i * 22), curY + 20, 18);
-        }
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("1/20 questions", WIDTH - 140, curY + 34);
-
-        // Subtitle
-        g.setColor(COLOR_TEXT_SEC);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("TRANSMISSION TEST (SEND)", 20, curY + 60);
+        curY = drawStandardLevelHeaderAndBanner(g, curY, false);
 
         // Exam Question Card
-        int cardY = curY + 80;
-        int cardH = 220;
+        int cardY = curY + 6;
+        int cardH = 210;
         g.setColor(COLOR_SURFACE);
         g.fillRoundRect(20, cardY, WIDTH - 40, cardH, 16, 16);
         g.setColor(new Color(0x30, 0x36, 0x42));
@@ -228,24 +305,24 @@ public class ScreenshotGenerator {
         // Prompt text
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("TRANSMIT LETTER:", WIDTH / 2 - 65, cardY + 40);
+        g.drawString("TRANSMIT LETTER:", WIDTH / 2 - 65, cardY + 36);
 
         // Letter
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.BOLD, 72));
-        g.drawString("E", WIDTH / 2 - 22, cardY + 120);
+        g.setFont(new Font("Monospaced", Font.BOLD, 68));
+        g.drawString("E", WIDTH / 2 - 20, cardY + 105);
 
         // Morse code preview
         g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 28));
-        g.drawString(". (Dit)", WIDTH / 2 - 45, cardY + 165);
+        g.setFont(new Font("Monospaced", Font.BOLD, 26));
+        g.drawString("• (Dit)", WIDTH / 2 - 45, cardY + 145);
 
         // Mode Status Badge (VIBRATION ACTIVE)
         g.setColor(new Color(0x4A, 0x2A, 0x00));
-        g.fillRoundRect(35, cardY + 180, WIDTH - 70, 26, 8, 8);
+        g.fillRoundRect(35, cardY + 165, WIDTH - 70, 26, 8, 8);
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("SansSerif", Font.BOLD, 11));
-        g.drawString("[VIBRATION ACTIVE] PARIS haptic pulse feedback (silent)", 50, cardY + 197);
+        g.drawString("[VIBRATION ACTIVE] PARIS haptic pulse feedback (silent)", 50, cardY + 182);
 
         // Keyer Paddles
         int paddleY = HEIGHT - 275;
@@ -304,28 +381,12 @@ public class ScreenshotGenerator {
         drawSystemStatusBar(g);
         drawTopAppBar(g, "15 WPM");
 
-        // NO BANNER: Content starts directly under top app bar
         int curY = 84;
-
-        // Header info: Level, Lives & Progress (1/20 questions)
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("LEVEL 1 / 13: E & T", 20, curY + 38);
-        for (int i = 0; i < 3; i++) {
-            drawHeart(g, WIDTH - 215 + (i * 22), curY + 23, 18);
-        }
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("1/20 questions", WIDTH - 140, curY + 37);
-
-        // Subtitle
-        g.setColor(COLOR_TEXT_SEC);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("TRANSMISSION TEST (SEND)", 20, curY + 65);
+        curY = drawStandardLevelHeaderAndBanner(g, curY, false);
 
         // Exam Question Card
-        int cardY = curY + 88;
-        int cardH = 220;
+        int cardY = curY + 15;
+        int cardH = 210;
         g.setColor(COLOR_SURFACE);
         g.fillRoundRect(20, cardY, WIDTH - 40, cardH, 16, 16);
         g.setColor(new Color(0x30, 0x36, 0x42));
@@ -335,24 +396,24 @@ public class ScreenshotGenerator {
         // Prompt text
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("TRANSMIT LETTER:", WIDTH / 2 - 65, cardY + 40);
+        g.drawString("TRANSMIT LETTER:", WIDTH / 2 - 65, cardY + 36);
 
         // Letter
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.BOLD, 72));
-        g.drawString("T", WIDTH / 2 - 22, cardY + 120);
+        g.setFont(new Font("Monospaced", Font.BOLD, 68));
+        g.drawString("T", WIDTH / 2 - 20, cardY + 105);
 
         // Morse code preview
         g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 28));
-        g.drawString("- (Dah)", WIDTH / 2 - 45, cardY + 165);
+        g.setFont(new Font("Monospaced", Font.BOLD, 26));
+        g.drawString("— (Dah)", WIDTH / 2 - 45, cardY + 145);
 
         // Mode Status Badge (SOUND ACTIVE)
         g.setColor(new Color(0x10, 0x3B, 0x20));
-        g.fillRoundRect(35, cardY + 180, WIDTH - 70, 26, 8, 8);
+        g.fillRoundRect(35, cardY + 165, WIDTH - 70, 26, 8, 8);
         g.setColor(COLOR_GREEN);
         g.setFont(new Font("SansSerif", Font.BOLD, 11));
-        g.drawString("[SOUND ACTIVE] Synthesized 700Hz CW audio with PARIS cadence", 45, cardY + 197);
+        g.drawString("[SOUND ACTIVE] Synthesized 700Hz CW audio with PARIS cadence", 45, cardY + 182);
 
         // Keyer Paddles
         int paddleY = HEIGHT - 275;
@@ -424,68 +485,57 @@ public class ScreenshotGenerator {
         drawTopAppBar(g, "15 WPM");
 
         int curY = 84;
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("RECEIVE TEST (LISTEN)", 20, curY + 30);
-
-        // Header info: Lives & Questions count (no mistakes)
-        for (int i = 0; i < 3; i++) {
-            drawHeart(g, 20 + (i * 22), curY + 40, 16);
-        }
-        g.setColor(COLOR_AMBER);
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString("1/20 questions", 95, curY + 53);
-
-        // Badge indicating active mode
-        g.setColor(new Color(0x1B, 0x38, 0x25));
-        g.fillRoundRect(WIDTH - 150, curY + 16, 130, 26, 8, 8);
-        g.setColor(COLOR_GREEN);
-        g.drawRoundRect(WIDTH - 150, curY + 16, 130, 26, 8, 8);
-        g.setFont(new Font("Monospaced", Font.BOLD, 11));
-        g.drawString("RECEIVE TEST", WIDTH - 138, curY + 33);
-
-        g.setColor(COLOR_TEXT_SEC);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("Listen to acoustic CW signal and select received letter:", 20, curY + 75);
+        curY = drawStandardLevelHeaderAndBanner(g, curY, true);
 
         // Acoustic Play Audio Card
-        int playCardY = curY + 92;
-        int playCardH = 150;
+        int playCardY = curY + 15;
+        int playCardH = 175;
         g.setColor(COLOR_SURFACE);
         g.fillRoundRect(20, playCardY, WIDTH - 40, playCardH, 16, 16);
+        g.setColor(new Color(0x30, 0x36, 0x42));
+        g.setStroke(new BasicStroke(1.5f));
+        g.drawRoundRect(20, playCardY, WIDTH - 40, playCardH, 16, 16);
 
         // Play Button Circle
         g.setColor(COLOR_AMBER);
-        g.fillOval(WIDTH / 2 - 35, playCardY + 25, 70, 70);
+        g.fillOval(WIDTH / 2 - 35, playCardY + 22, 70, 70);
         g.setColor(COLOR_BG);
         int[] tx = {WIDTH / 2 - 12, WIDTH / 2 - 12, WIDTH / 2 + 18};
-        int[] ty = {playCardY + 45, playCardY + 75, playCardY + 60};
+        int[] ty = {playCardY + 42, playCardY + 72, playCardY + 57};
         g.fillPolygon(tx, ty, 3);
 
         g.setColor(COLOR_TEXT_PRI);
-        g.setFont(new Font("SansSerif", Font.BOLD, 14));
-        g.drawString("Tap to Play CW Signal", WIDTH / 2 - 75, playCardY + 125);
+        g.setFont(new Font("SansSerif", Font.BOLD, 15));
+        String tapText = "Tap to Play CW Signal";
+        int ttw = g.getFontMetrics().stringWidth(tapText);
+        g.drawString(tapText, WIDTH / 2 - ttw / 2, playCardY + 125);
 
-        // 4 Options Grid (A, B, C, D) in alphabetical order
+        g.setColor(COLOR_TEXT_SEC);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        String hintText = "Listen to acoustic CW signal and select received letter";
+        int htw = g.getFontMetrics().stringWidth(hintText);
+        g.drawString(hintText, WIDTH / 2 - htw / 2, playCardY + 150);
+
+        // 4 Options Grid (A, E, N, T) in alphabetical order
         String[] options = {"A", "E", "N", "T"};
-        int optGridY = playCardY + playCardH + 30;
+        int optGridY = playCardY + playCardH + 25;
         int optW = (WIDTH - 55) / 2;
-        int optH = 75;
+        int optH = 95;
 
         for (int i = 0; i < 4; i++) {
             int ox = (i % 2 == 0) ? 20 : 35 + optW;
-            int oy = optGridY + (i / 2) * (optH + 15);
+            int oy = optGridY + (i / 2) * (optH + 18);
 
             boolean isCorrectHighlight = (i == 1); // Option E highlighted
-            g.setColor(isCorrectHighlight ? new Color(0x1B, 0x38, 0x25) : COLOR_SURFACE);
-            g.fillRoundRect(ox, oy, optW, optH, 12, 12);
+            g.setColor(isCorrectHighlight ? new Color(0x10, 0x3B, 0x20) : COLOR_SURFACE);
+            g.fillRoundRect(ox, oy, optW, optH, 14, 14);
             g.setColor(isCorrectHighlight ? COLOR_GREEN : new Color(0x35, 0x3D, 0x4A));
-            g.setStroke(new BasicStroke(1.5f));
-            g.drawRoundRect(ox, oy, optW, optH, 12, 12);
+            g.setStroke(new BasicStroke(isCorrectHighlight ? 2.5f : 1.5f));
+            g.drawRoundRect(ox, oy, optW, optH, 14, 14);
 
             g.setColor(isCorrectHighlight ? COLOR_GREEN : COLOR_TEXT_PRI);
-            g.setFont(new Font("Monospaced", Font.BOLD, 32));
-            g.drawString(options[i], ox + optW / 2 - 10, oy + 48);
+            g.setFont(new Font("Monospaced", Font.BOLD, 38));
+            g.drawString(options[i], ox + optW / 2 - 12, oy + 58);
         }
 
         drawBottomNav(g, 2); // Receive active

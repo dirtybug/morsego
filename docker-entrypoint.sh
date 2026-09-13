@@ -48,6 +48,10 @@ case "$ACTION" in
         if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
             cp -r app/build/reports/tests/testDebugUnitTest/* "$RELEASE_DIR/reports/unit-tests/"
             [ ! -f "$RELEASE_DIR/reports/index.html" ] && cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
+            if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/reports/unit-tests" ]; then
+                cp -r app/build/reports/tests/testDebugUnitTest/* /workspace/release/v1.0.0/reports/unit-tests/ 2>/dev/null || true
+                [ ! -f "/workspace/release/v1.0.0/reports/index.html" ] && cp "/workspace/release/v1.0.0/reports/unit-tests/index.html" "/workspace/release/v1.0.0/reports/index.html" 2>/dev/null || true
+            fi
             echo "✓ Unit test report saved to $RELEASE_DIR/reports/unit-tests/index.html"
         fi
         echo ""
@@ -55,6 +59,9 @@ case "$ACTION" in
         mkdir -p "$RELEASE_DIR/screenshots"
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
         rm -f tools/*.class 2>/dev/null || true
+        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
+            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+        fi
         echo "✓ All unit tests and screenshots generated successfully!"
         ;;
 
@@ -63,6 +70,9 @@ case "$ACTION" in
         mkdir -p "$RELEASE_DIR/screenshots"
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
         rm -f tools/*.class 2>/dev/null || true
+        if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
+            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+        fi
         echo "✓ Screenshots saved to $RELEASE_DIR/screenshots/"
         ;;
 

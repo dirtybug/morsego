@@ -109,10 +109,15 @@ public class ReceiveFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         boolean isUnlocked = activity != null && activity.getSettings().isLevelUnlocked(levelNum);
 
-        int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
         if (binding != null) {
+            int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
             binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), maxLevels) + (isUnlocked ? "" : " 🔒"));
             binding.tvLevelTitle.setText(currentLevel.getTitle());
+            String morse1Visual = currentLevel.getMorse1().replace('.', '•').replace('-', '—');
+            String morse2Visual = currentLevel.getMorse2().replace('.', '•').replace('-', '—');
+            binding.tvNewCharacters.setText(getString(R.string.new_characters_format,
+                    currentLevel.getChar1(), morse1Visual,
+                    currentLevel.getChar2(), morse2Visual));
 
             int nextLevel = levelNum + 1;
             boolean nextUnlocked = activity != null && activity.getSettings().isLevelUnlocked(nextLevel);

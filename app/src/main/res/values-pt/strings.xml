@@ -28,6 +28,7 @@
 
     <!-- Send & Receive Tests -->
     <string name="level_number_format">NÍVEL %1$d / %2$d</string>
+    <string name="new_characters_format">Novas Letras: %1$s (%2$s)  %3$s (%4$s)</string>
     <string name="new_letters_title">2 NOVOS CARACTERES DESTE NÍVEL:</string>
     <string name="level_requirements_title">REQUISITOS DO TESTE DE TRANSMISSÃO:</string>
     <string name="level_requirements_desc">• Caracteres no teste: todos os caracteres disponíveis × 4.\n• 4 palavras com os novos caracteres.\n• 4 palavras aleatórias formadas com o vocabulário disponível.\n• Perguntas 100% dinâmicas e aleatórias.\n• Só pode falhar no máximo 3 vezes (3 vidas ❤️❤️❤️).\n• Cada falha adiciona o item + 2 itens aleatórios à fila do teste!\n• Complete a transmissão com pás para desbloquear o próximo nível.</string>
