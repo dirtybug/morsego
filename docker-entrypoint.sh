@@ -53,14 +53,16 @@ case "$ACTION" in
         echo ""
         echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        java -Djava.awt.headless=true tools/ScreenshotGenerator.java "$RELEASE_DIR/screenshots" || true
+        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
+        rm -f tools/*.class 2>/dev/null || true
         echo "✓ All unit tests and screenshots generated successfully!"
         ;;
 
     screenshots)
         echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        java -Djava.awt.headless=true tools/ScreenshotGenerator.java "$RELEASE_DIR/screenshots"
+        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
+        rm -f tools/*.class 2>/dev/null || true
         echo "✓ Screenshots saved to $RELEASE_DIR/screenshots/"
         ;;
 

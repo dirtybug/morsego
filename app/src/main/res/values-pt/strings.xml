@@ -38,6 +38,8 @@
     <string name="review_level_button">Rever Este Nível</string>
     <string name="exam_stage_listening">Teste de Receção: Audição Acústica (Ouvir &amp; Identificar)</string>
     <!-- Exam UI Strings -->
+    <string name="exam_receive_banner">TESTE DE RECEÇÃO (OUVIR)</string>
+    <string name="exam_send_banner">TESTE DE TRANSMISSÃO (ENVIAR)</string>
     <string name="exam_stage1_banner">TESTE DE RECEÇÃO (OUVIR)</string>
     <string name="exam_stage2_banner">TESTE DE TRANSMISSÃO (ENVIAR)</string>
     <string name="exam_transmit_letter">TRANSMITA A LETRA:</string>

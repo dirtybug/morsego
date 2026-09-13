@@ -222,10 +222,21 @@ public class ListeningExamFixer {
             int w = img.getWidth();
             int h = img.getHeight();
 
-            // 1. Redraw Header Card (exact bounds y: 126 to 174)
+            // 0. Redraw clean amber banner (matches Transmission Test banner)
             int cardX = 16;
-            int cardY = 126;
             int cardW = w - 32;
+            int bannerY = 74;
+            int bannerH = 36;
+            g.setColor(COLOR_AMBER);
+            g.fillRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
+            g.setColor(new Color(0x1A, 0x0A, 0x00));
+            g.setFont(new Font("SansSerif", Font.BOLD, 13));
+            String bannerText = "RECEIVE TEST (LISTEN)";
+            int bw = g.getFontMetrics().stringWidth(bannerText);
+            g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
+
+            // 1. Redraw Header Card (exact bounds y: 126 to 174)
+            int cardY = 126;
             int cardH = 48;
 
             g.setColor(COLOR_CARD_BG);
@@ -402,7 +413,7 @@ public class ListeningExamFixer {
             g.fillRoundRect(16, bannerY, w - 32, bannerH, 8, 8);
             g.setColor(new Color(0x1A, 0x0A, 0x00));
             g.setFont(new Font("SansSerif", Font.BOLD, 13));
-            String bannerText = "STAGE 2 OF 2: TRANSMISSION TEST (SENDING)";
+            String bannerText = "TRANSMISSION TEST (SEND)";
             int bw = g.getFontMetrics().stringWidth(bannerText);
             g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
 
@@ -604,7 +615,7 @@ public class ListeningExamFixer {
             g.fillRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
             g.setColor(new Color(0x1A, 0x0A, 0x00));
             g.setFont(new Font("SansSerif", Font.BOLD, 12));
-            String bannerText = pass ? "STAGE 2 OF 2: TRANSMISSION TEST (PASS STATE)" : "STAGE 2 OF 2: TRANSMISSION TEST (FAIL STATE)";
+            String bannerText = pass ? "TRANSMISSION TEST (PASS STATE)" : "TRANSMISSION TEST (FAIL STATE)";
             int bw = g.getFontMetrics().stringWidth(bannerText);
             g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
 
@@ -703,7 +714,7 @@ public class ListeningExamFixer {
             g.fillRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
             g.setColor(new Color(0x1A, 0x0A, 0x00));
             g.setFont(new Font("SansSerif", Font.BOLD, 12));
-            String bannerText = "STAGE 2 OF 2: TRANSMISSION EXAM (WORD TRANSMISSION)";
+            String bannerText = "TRANSMISSION TEST (SEND)";
             int bw = g.getFontMetrics().stringWidth(bannerText);
             g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
 
@@ -986,7 +997,7 @@ public class ListeningExamFixer {
 
             g.setColor(COLOR_TEXT_SEC);
             g.setFont(new Font("Monospaced", Font.BOLD, 11));
-            g.drawString("TRANSMIT RADIO WORD (Stage 2 Transmit)", 32, cardY + 28);
+            g.drawString("TRANSMIT RADIO WORD (TRANSMISSION TEST)", 32, cardY + 28);
 
             g.setColor(COLOR_AMBER);
             g.setFont(new Font("SansSerif", Font.BOLD, 22));
@@ -1100,17 +1111,14 @@ public class ListeningExamFixer {
             int cardX = 16;
             int cardW = w - 32;
 
-            // 2. Cyan/Green Stage Banner
+            // 2. Amber Test Banner (identical to Transmit banner)
             int bannerY = 74;
             int bannerH = 36;
-            g.setColor(new Color(0x0C, 0x2A, 0x22));
+            g.setColor(COLOR_AMBER);
             g.fillRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
-            g.setColor(COLOR_GREEN);
-            g.setStroke(new BasicStroke(1.0f));
-            g.drawRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
-
-            g.setFont(new Font("SansSerif", Font.BOLD, 12));
-            String bannerText = "STAGE 1: RADIO WORD RECEPTION (ACOUSTIC EXAM)";
+            g.setColor(new Color(0x1A, 0x0A, 0x00));
+            g.setFont(new Font("SansSerif", Font.BOLD, 13));
+            String bannerText = "RECEIVE TEST (LISTEN)";
             int bw = g.getFontMetrics().stringWidth(bannerText);
             g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
 
@@ -1344,7 +1352,7 @@ public class ListeningExamFixer {
 
             g.setColor(COLOR_TEXT_SEC);
             g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            g.drawString("•  Level Exam  •  Stage 2: Transmission (Send)", 118, 48);
+            g.drawString("•  Transmission Test (Send)", 118, 48);
 
             // WPM & Pitch pills on right
             int pillY = 32;
@@ -1381,7 +1389,7 @@ public class ListeningExamFixer {
             g.drawRoundRect(16, banY, w - 32, banH, 6, 6);
             g.setColor(COLOR_AMBER);
             g.setFont(new Font("SansSerif", Font.BOLD, 11));
-            g.drawString("STAGE 2 OF 2: TRANSMISSION TEST (SENDING)", 26, banY + 17);
+            g.drawString("TRANSMISSION TEST (SEND)", 26, banY + 17);
 
             // 4. Subheader bar (y: 98, h: 32)
             int subY = 98;
@@ -1405,7 +1413,7 @@ public class ListeningExamFixer {
             // Middle stage info
             g.setColor(COLOR_TEXT_SEC);
             g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            g.drawString("Stage 2: Keyer Transmission Exam", 310, subY + 21);
+            g.drawString("Transmission Test (Send)", 310, subY + 21);
 
             // Right side: Progress
             g.setColor(COLOR_GREEN);
@@ -1554,7 +1562,7 @@ public class ListeningExamFixer {
                 g.drawRoundRect(16, banY, w - 32, banH, 6, 6);
                 g.setColor(COLOR_GREEN);
                 g.setFont(new Font("SansSerif", Font.BOLD, 11));
-                g.drawString("Step 4: Rotated 90\u00B0 CW \u2022 Exam Stage 1: Listening \u2022 State Invariant", 26, banY + 18);
+                g.drawString("Step 4: Rotated 90\u00B0 CW \u2022 Receive Test (Listen) \u2022 State Invariant", 26, banY + 18);
             }
 
             // 1. Subheader bar
@@ -1579,7 +1587,7 @@ public class ListeningExamFixer {
             // Middle stage info
             g.setColor(COLOR_TEXT_SEC);
             g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            g.drawString("Stage 1: Acoustic Reception (Listening)", 300, subY + 22);
+            g.drawString("Receive Test (Listen)", 300, subY + 22);
 
             // Right side: Progress: 1/20 questions
             g.setColor(COLOR_GREEN);

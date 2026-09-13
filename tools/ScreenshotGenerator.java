@@ -214,7 +214,7 @@ public class ScreenshotGenerator {
         // Subtitle
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("STAGE 2: TRANSMISSION TEST (SEND)", 20, curY + 60);
+        g.drawString("TRANSMISSION TEST (SEND)", 20, curY + 60);
 
         // Exam Question Card
         int cardY = curY + 80;
@@ -321,7 +321,7 @@ public class ScreenshotGenerator {
         // Subtitle
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        g.drawString("STAGE 2: TRANSMISSION TEST (SEND)", 20, curY + 65);
+        g.drawString("TRANSMISSION TEST (SEND)", 20, curY + 65);
 
         // Exam Question Card
         int cardY = curY + 88;
@@ -426,7 +426,7 @@ public class ScreenshotGenerator {
         int curY = 84;
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 18));
-        g.drawString("STAGE 1: LISTENING TEST (RECEIVE)", 20, curY + 30);
+        g.drawString("RECEIVE TEST (LISTEN)", 20, curY + 30);
 
         // Header info: Lives & Questions count (no mistakes)
         for (int i = 0; i < 3; i++) {

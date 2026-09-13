@@ -38,6 +38,8 @@
     <string name="review_level_button">Review This Level</string>
     <string name="exam_stage_listening">Receive Test: Acoustic Listening (Hear &amp; Identify)</string>
     <!-- Exam UI Strings -->
+    <string name="exam_receive_banner">RECEIVE TEST (LISTEN)</string>
+    <string name="exam_send_banner">TRANSMISSION TEST (SEND)</string>
     <string name="exam_stage1_banner">RECEIVE TEST (LISTEN)</string>
     <string name="exam_stage2_banner">TRANSMISSION TEST (SEND)</string>
     <string name="exam_transmit_letter">TRANSMIT LETTER:</string>

@@ -455,7 +455,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
     private void startListeningStage() {
         currentStage = TestStage.LISTENING;
-        binding.tvTestPhaseBanner.setText(R.string.exam_stage1_banner);
+        binding.tvTestPhaseBanner.setText(R.string.exam_receive_banner);
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#00E5FF"));
         binding.layoutStageListening.setVisibility(View.VISIBLE);
         binding.layoutStageSending.setVisibility(View.GONE);
@@ -618,7 +618,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
     private void startSendingStage() {
         currentStage = TestStage.SENDING;
-        binding.tvTestPhaseBanner.setText(R.string.exam_stage2_banner);
+        binding.tvTestPhaseBanner.setText(R.string.exam_send_banner);
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
         binding.layoutStageSending.setVisibility(View.VISIBLE);
