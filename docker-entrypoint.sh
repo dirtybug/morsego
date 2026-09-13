@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
+if [ "$ENTRYPOINT_RELOADED" != "1" ] && [ -f /workspace/docker-entrypoint.sh ] && [ "$0" != "/workspace/docker-entrypoint.sh" ]; then
+    export ENTRYPOINT_RELOADED=1
+    sed -i 's/\r$//' /workspace/docker-entrypoint.sh 2>/dev/null || true
+    chmod +x /workspace/docker-entrypoint.sh 2>/dev/null || true
+    exec /bin/bash /workspace/docker-entrypoint.sh "$@"
+fi
+
 echo "====================================================="
 echo "               MorseGO Test Runner                   "
 echo "====================================================="
@@ -137,9 +144,11 @@ case "$ACTION" in
         cp -f "$RELEASE_DIR/morseGO-debug.apk" "$RELEASE_DIR/morseGO-development-debug.apk" 2>/dev/null || true
         if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0" ]; then
             cp -f "$RELEASE_DIR/morseGO-debug.apk" /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk 2>/dev/null || true
+            cp -f "$RELEASE_DIR/morseGO-debug.apk" /workspace/release/v1.0.0/morseGO-debug.apk 2>/dev/null || true
         elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
             mkdir -p /workspace/release/development
             cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk /workspace/release/development/morseGO-debug.apk 2>/dev/null || true
+            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-debug.apk /workspace/release/development/morseGO-development-debug.apk 2>/dev/null || true
         fi
         echo "✓ Debug APK saved to $RELEASE_DIR/morseGO-debug.apk"
         ;;
@@ -152,10 +161,12 @@ case "$ACTION" in
         (cd "$RELEASE_DIR" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
         if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0" ]; then
             cp -f "$RELEASE_DIR/morseGO-release.apk" /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk 2>/dev/null || true
+            cp -f "$RELEASE_DIR/morseGO-release.apk" /workspace/release/v1.0.0/morseGO-release.apk 2>/dev/null || true
             cp -f "$RELEASE_DIR/SHA256SUMS.txt" /workspace/release/v1.0.0/ 2>/dev/null || true
         elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
             mkdir -p /workspace/release/development
             cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk /workspace/release/development/morseGO-release.apk 2>/dev/null || true
+            cp -f /workspace/release/v1.0.0/morseGO-v1.0.0-release.apk /workspace/release/development/morseGO-development-release.apk 2>/dev/null || true
             cp -f /workspace/release/v1.0.0/SHA256SUMS.txt /workspace/release/development/ 2>/dev/null || true
         fi
         echo "✓ Release APK saved to $RELEASE_DIR/morseGO-release.apk"
@@ -209,16 +220,16 @@ case "$ACTION" in
 
     all)
         echo ">>> Running Full Test Suite (Unit Tests + Build + Release)..."
-        $0 unit
-        $0 build
-        $0 release
-        DEVICE_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l)
+        "$0" unit
+        "$0" build
+        "$0" release
+        DEVICE_COUNT=$(adb devices 2>/dev/null | grep -v "List" | grep "device$" | wc -l || echo 0)
         if [ "$DEVICE_COUNT" -gt 0 ]; then
-            $0 connected
+            "$0" connected
         else
             echo "ℹ️ Note: Skipping connected tests because no ADB device is connected."
         fi
-        echo "✓ Full suite finished! All artifacts saved to $RELEASE_DIR/"
+        echo "✓ Full suite finished! All artifacts saved to $RELEASE_DIR/ and synced to /workspace/release/v1.0.0/!"
         ;;
 
     *)

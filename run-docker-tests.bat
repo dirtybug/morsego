@@ -18,7 +18,7 @@ if %errorlevel% neq 0 (
 )
 
 set TARGET=%1
-if "%TARGET%"=="" set TARGET=unit
+if "%TARGET%"=="" set TARGET=all
 
 echo Running Docker container for target: %TARGET%...
 if "%TARGET%"=="clean" (
@@ -45,14 +45,21 @@ echo.
 echo ====================================================
 echo                   morseGO - Summary
 echo ====================================================
-if "%TARGET%"=="unit" (
+if "%TARGET%"=="all" (
+    echo [INFO] Full test suite, screenshots, and fresh APKs built successfully!
+) else if "%TARGET%"=="unit" (
     echo [INFO] Unit tests and screenshot generation completed successfully!
     echo [TIP] Additional available commands:
     echo        - Screenshots: run-docker-tests.bat screenshots
     echo        - APK Debug:   run-docker-tests.bat build
     echo        - APK Release: run-docker-tests.bat release
     echo        - All:         run-docker-tests.bat all
+) else if "%TARGET%"=="build" (
+    echo [INFO] Debug APK built successfully!
+) else if "%TARGET%"=="release" (
+    echo [INFO] Release APK built successfully!
 )
+echo.
 echo Available files in directory: .\release\development\
 if exist ".\release\development\morseGO-release.apk" (
     echo   - APK Release:           .\release\development\morseGO-release.apk
@@ -70,8 +77,27 @@ if exist ".\release\development\screenshots\" (
 if exist ".\release\development\reports\" (
     echo   - Test Reports:          .\release\development\reports\
 )
+echo.
+echo Available files in directory: .\release\v1.0.0\
+if exist ".\release\v1.0.0\morseGO-v1.0.0-release.apk" (
+    echo   - APK Release:           .\release\v1.0.0\morseGO-v1.0.0-release.apk
+) else if exist ".\release\v1.0.0\morseGO-release.apk" (
+    echo   - APK Release:           .\release\v1.0.0\morseGO-release.apk
+)
+if exist ".\release\v1.0.0\morseGO-v1.0.0-debug.apk" (
+    echo   - APK Debug:             .\release\v1.0.0\morseGO-v1.0.0-debug.apk
+) else if exist ".\release\v1.0.0\morseGO-debug.apk" (
+    echo   - APK Debug:             .\release\v1.0.0\morseGO-debug.apk
+)
+if exist ".\release\v1.0.0\screenshots\" (
+    echo   - Screenshots:           .\release\v1.0.0\screenshots\
+)
+if exist ".\release\v1.0.0\reports\" (
+    echo   - Test Reports:          .\release\v1.0.0\reports\
+)
 if exist ".\index.html" (
-    echo   - Central Portal:        .\index.html
+    echo.
+    echo Central Portal:            .\index.html
 )
 echo ====================================================
 echo Completed successfully!
