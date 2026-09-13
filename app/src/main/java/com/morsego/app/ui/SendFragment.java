@@ -436,17 +436,18 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         if (total <= 0) total = 20;
         int currentQ = Math.min(questionsAnsweredInStage + 1, total);
 
-        // Display heart lives indicator along with test progress (e.g. 1/20 questions)
-        binding.tvTestLives.setText(hearts.toString().trim() + "   " + currentQ + "/" + total + " questions");
+        // Display heart lives indicator
+        binding.tvTestLives.setText(hearts.toString().trim());
         binding.tvTestLives.setVisibility(View.VISIBLE);
 
-        int totalLetters = (currentLevel != null) ? Math.min(40, currentLevel.getAllCharacters().size() * 4) : 8;
-        String typeStr = (questionsAnsweredInStage < totalLetters) ?
-                getString(R.string.exam_progress_letters, questionsAnsweredInStage + 1, totalLetters) :
-                getString(R.string.exam_progress_words);
         if (binding.tvTestProgress != null) {
-            binding.tvTestProgress.setText("[" + typeStr + "] " +
-                    getString(R.string.exam_progress_queue, currentQueue.size(), questionsAnsweredInStage));
+            binding.tvTestProgress.setText(getString(R.string.test_progress_format, currentQ, total, questionsAnsweredInStage));
+            binding.tvTestProgress.setVisibility(View.VISIBLE);
+        }
+        if (binding.pbSendProgress != null) {
+            binding.pbSendProgress.setMax(total);
+            binding.pbSendProgress.setProgress(questionsAnsweredInStage);
+            binding.pbSendProgress.setVisibility(View.VISIBLE);
         }
     }
 

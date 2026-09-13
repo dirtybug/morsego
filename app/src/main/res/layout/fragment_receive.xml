@@ -54,11 +54,47 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="Pontos: 0 / 0"
+                            android:text="Score: 0 / 20"
                             android:textColor="@color/morse_amber"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
+
+                    <!-- Lives Hearts Indicator -->
+                    <TextView
+                        android:id="@+id/tvReceiveLives"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="❤️❤️❤️"
+                        android:textColor="@color/morse_amber"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <!-- Questions Progress (Question X/20 • Done: Y/20) -->
+                    <TextView
+                        android:id="@+id/tvReceiveProgress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:fontFamily="monospace"
+                        android:text="Question 1/20 • Done: 0/20"
+                        android:textColor="@color/morse_cyan"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <ProgressBar
+                        android:id="@+id/pbReceiveProgress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:max="20"
+                        android:progress="0"
+                        android:progressTint="@color/morse_amber" />
 
                     <TextView
                         android:id="@+id/tvPracticeUnlockedInfo"

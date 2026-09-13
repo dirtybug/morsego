@@ -299,17 +299,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:gravity="center"
-                    android:text="❤️❤️❤️   1/20 questions"
+                    android:text="❤️❤️❤️"
                     android:textColor="@color/morse_amber"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:visibility="visible" />
 
+                <!-- Questions Progress (Question X/20 • Done: Y/20) -->
                 <TextView
                     android:id="@+id/tvTestProgress"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:visibility="gone" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:fontFamily="monospace"
+                    android:text="Question 1/20 • Done: 0/20"
+                    android:textColor="@color/morse_cyan"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/pbSendProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:max="20"
+                    android:progress="0"
+                    android:progressTint="@color/morse_amber" />
 
                 <!-- Penalty Notice -->
                 <TextView

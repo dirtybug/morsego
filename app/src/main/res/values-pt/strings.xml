@@ -78,6 +78,10 @@
     <string name="receive_correct_result">✓ Correto! A letra transmitida era \'%1$s\'.</string>
     <string name="receive_incorrect_result">✗ Incorreto. Escolheu \'%1$s\', mas a letra era \'%2$s\'.</string>
     <string name="receive_score_format">Pontos: %1$d / %2$d</string>
+    <string name="test_progress_format">Pergunta %1$d/%2$d • Feitas: %3$d/%2$d</string>
+    <string name="receive_test_passed">🎉 Teste de Receção Concluído! (Pontuação: %1$d/%2$d)</string>
+    <string name="receive_test_failed">❌ Teste de Receção Falhou: Ultrapassou 3 erros.</string>
+    <string name="btn_restart_receive">Reiniciar Teste de Receção 🔄</string>
 
     <!-- Radio Words -->
     <string name="radio_words_title">Palavras de Rádio CW</string>

@@ -26,10 +26,16 @@ import java.util.List;
  */
 public class ReceiveFragment extends Fragment {
 
+    private static final int MAX_LIVES = 3;
+    private static final int DEFAULT_TOTAL_QUESTIONS = 20;
+
     private FragmentReceiveBinding binding;
     private String currentAnswer = "E";
     private int scoreCorrect = 0;
-    private int scoreTotal = 0;
+    private int questionsAnswered = 0;
+    private int totalQuestions = DEFAULT_TOTAL_QUESTIONS;
+    private int currentFailures = 0;
+    private boolean testFinished = false;
     private final List<Button> optionButtons = new ArrayList<>();
 
     @Nullable
@@ -57,21 +63,60 @@ public class ReceiveFragment extends Fragment {
         binding.btnPlayQuestionAudio.setOnClickListener(v -> playQuestionAudio());
 
         binding.btnNextQuestion.setOnClickListener(v -> {
-            binding.btnNextQuestion.setVisibility(View.GONE);
-            binding.tvQuizResult.setVisibility(View.GONE);
-            enableOptionButtons(true);
-            setupNewQuestion();
+            if (testFinished) {
+                resetTest();
+            } else {
+                binding.btnNextQuestion.setVisibility(View.GONE);
+                binding.tvQuizResult.setVisibility(View.GONE);
+                enableOptionButtons(true);
+                setupNewQuestion();
+                updateLivesAndProgressUi();
+            }
         });
 
         applyLocalization();
+        updateLivesAndProgressUi();
         setupNewQuestion();
+    }
+
+    private void resetTest() {
+        currentFailures = 0;
+        questionsAnswered = 0;
+        scoreCorrect = 0;
+        testFinished = false;
+        binding.btnNextQuestion.setVisibility(View.GONE);
+        binding.tvQuizResult.setVisibility(View.GONE);
+        enableOptionButtons(true);
+        setupNewQuestion();
+        updateLivesAndProgressUi();
+    }
+
+    private void updateLivesAndProgressUi() {
+        if (binding == null) return;
+        int remaining = Math.max(0, MAX_LIVES - currentFailures);
+        StringBuilder hearts = new StringBuilder();
+        for (int i = 0; i < MAX_LIVES; i++) {
+            hearts.append(i < remaining ? "❤️ " : "🖤 ");
+        }
+
+        int currentQ = Math.min(questionsAnswered + 1, totalQuestions);
+
+        binding.tvReceiveLives.setText(hearts.toString().trim());
+        binding.tvReceiveProgress.setText(getString(R.string.test_progress_format, currentQ, totalQuestions, questionsAnswered));
+        binding.pbReceiveProgress.setMax(totalQuestions);
+        binding.pbReceiveProgress.setProgress(questionsAnswered);
+        binding.tvPracticeScore.setText(getString(R.string.receive_score_format, scoreCorrect, totalQuestions));
     }
 
     private void applyLocalization() {
         if (binding == null) return;
         binding.tvPracticeHeaderTitle.setText(R.string.receive_test_header);
         binding.tvPracticeTapPrompt.setText(R.string.practice_tap_to_listen);
-        binding.btnNextQuestion.setText(R.string.practice_next_question);
+        if (testFinished) {
+            binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+        } else {
+            binding.btnNextQuestion.setText(R.string.practice_next_question);
+        }
     }
 
     @Override
@@ -84,6 +129,7 @@ public class ReceiveFragment extends Fragment {
             TreeLevel level = MorseBinaryTree.getInstance().getLevel(currentLevel);
             binding.tvPracticeUnlockedInfo.setText(getString(R.string.receive_unlocked_info_format, currentLevel, level.getAllCharacters().size()));
         }
+        updateLivesAndProgressUi();
     }
 
     private void setupNewQuestion() {
@@ -162,7 +208,7 @@ public class ReceiveFragment extends Fragment {
 
     private void handleOptionClicked(String selected) {
         enableOptionButtons(false);
-        scoreTotal++;
+        questionsAnswered++;
 
         boolean isCorrect = selected.equalsIgnoreCase(currentAnswer);
         if (isCorrect) {
@@ -170,6 +216,7 @@ public class ReceiveFragment extends Fragment {
             binding.tvQuizResult.setText(getString(R.string.receive_correct_result, currentAnswer));
             binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
         } else {
+            currentFailures++;
             binding.tvQuizResult.setText(getString(R.string.receive_incorrect_result, selected, currentAnswer));
             binding.tvQuizResult.setTextColor(Color.parseColor("#FF5252"));
         }
@@ -183,9 +230,27 @@ public class ReceiveFragment extends Fragment {
             }
         }
 
-        binding.tvPracticeScore.setText(getString(R.string.receive_score_format, scoreCorrect, scoreTotal));
-        binding.tvQuizResult.setVisibility(View.VISIBLE);
-        binding.btnNextQuestion.setVisibility(View.VISIBLE);
+        updateLivesAndProgressUi();
+
+        if (currentFailures >= MAX_LIVES) {
+            testFinished = true;
+            binding.tvQuizResult.setText(R.string.receive_test_failed);
+            binding.tvQuizResult.setTextColor(Color.parseColor("#FF5252"));
+            binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+            binding.tvQuizResult.setVisibility(View.VISIBLE);
+            binding.btnNextQuestion.setVisibility(View.VISIBLE);
+        } else if (questionsAnswered >= totalQuestions) {
+            testFinished = true;
+            binding.tvQuizResult.setText(getString(R.string.receive_test_passed, scoreCorrect, totalQuestions));
+            binding.tvQuizResult.setTextColor(Color.parseColor("#00E676"));
+            binding.btnNextQuestion.setText(R.string.btn_restart_receive);
+            binding.tvQuizResult.setVisibility(View.VISIBLE);
+            binding.btnNextQuestion.setVisibility(View.VISIBLE);
+        } else {
+            binding.btnNextQuestion.setText(R.string.practice_next_question);
+            binding.tvQuizResult.setVisibility(View.VISIBLE);
+            binding.btnNextQuestion.setVisibility(View.VISIBLE);
+        }
     }
 
     private void enableOptionButtons(boolean enable) {
