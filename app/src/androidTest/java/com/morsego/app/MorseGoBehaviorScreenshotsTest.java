@@ -76,7 +76,7 @@ public class MorseGoBehaviorScreenshotsTest {
         Thread.sleep(600);
 
         // Verify transmission exam is directly visible
-        onView(withId(R.id.tvLevelTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvLevelNumber)).check(matches(isDisplayed()));
         onView(withId(R.id.tvSendingPrompt)).check(matches(isDisplayed()));
         onView(withId(R.id.btnTouchDit)).check(matches(isDisplayed()));
         onView(withId(R.id.btnTouchDah)).check(matches(isDisplayed()));
@@ -304,7 +304,7 @@ public class MorseGoBehaviorScreenshotsTest {
         // Verify and capture Landscape Exam / Learn
         onView(withId(R.id.nav_send)).perform(click());
         Thread.sleep(400);
-        onView(withId(R.id.tvLevelTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvLevelNumber)).check(matches(isDisplayed()));
         ScreenshotHelper.capture("phone_rotation_04_rotated_90_deg_exam");
 
         // Verify and capture Landscape Hardware CW Paddle

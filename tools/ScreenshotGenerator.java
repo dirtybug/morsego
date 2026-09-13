@@ -181,14 +181,14 @@ public class ScreenshotGenerator {
         int curY = startY;
 
         // Level navigation container background
-        int navH = 68;
+        int navH = 64;
         g.setColor(new Color(0x13, 0x19, 0x22));
         g.fillRect(0, curY, WIDTH, navH);
         g.setColor(new Color(0x21, 0x28, 0x36));
         g.drawLine(0, curY + navH, WIDTH, curY + navH);
 
         // Previous Level Button (<)
-        int btnY = curY + 12;
+        int btnY = curY + 10;
         g.setColor(new Color(0x1E, 0x26, 0x33));
         g.fillRoundRect(20, btnY, 44, 44, 10, 10);
         g.setColor(new Color(0x35, 0x40, 0x52));
@@ -206,27 +206,20 @@ public class ScreenshotGenerator {
         g.setFont(new Font("SansSerif", Font.BOLD, 18));
         g.drawString("▶", WIDTH - 51, btnY + 28);
 
-        // Center Level Info: Number, Title, New Characters
+        // Center Level Info: Number, New Characters
         // 1. Level Number
         g.setColor(COLOR_AMBER);
-        g.setFont(new Font("Monospaced", Font.BOLD, 14));
+        g.setFont(new Font("Monospaced", Font.BOLD, 15));
         String levelNumStr = "LEVEL 1 / 21";
         int nw = g.getFontMetrics().stringWidth(levelNumStr);
-        g.drawString(levelNumStr, WIDTH / 2 - nw / 2, curY + 20);
+        g.drawString(levelNumStr, WIDTH / 2 - nw / 2, curY + 24);
 
-        // 2. Level Title
-        g.setColor(COLOR_TEXT_PRI);
-        g.setFont(new Font("SansSerif", Font.BOLD, 15));
-        String titleStr = "A Raiz da Árvore";
-        int tw = g.getFontMetrics().stringWidth(titleStr);
-        g.drawString(titleStr, WIDTH / 2 - tw / 2, curY + 40);
-
-        // 3. New Characters Badge / Text
+        // 2. New Characters Badge / Text
         g.setColor(new Color(0x00, 0xE5, 0xFF)); // cyan
-        g.setFont(new Font("Monospaced", Font.BOLD, 12));
+        g.setFont(new Font("Monospaced", Font.BOLD, 13));
         String newCharsStr = "New Characters: E (•)  T (—)";
         int cw = g.getFontMetrics().stringWidth(newCharsStr);
-        g.drawString(newCharsStr, WIDTH / 2 - cw / 2, curY + 58);
+        g.drawString(newCharsStr, WIDTH / 2 - cw / 2, curY + 48);
 
         curY += navH + 12;
 

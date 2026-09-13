@@ -40,15 +40,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvLevelTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A Raiz da Árvore"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/tvNewCharacters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

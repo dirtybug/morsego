@@ -262,7 +262,6 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
         int maxLevels = MorseBinaryTree.getInstance().getTotalLevels();
         binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), maxLevels) + (isUnlocked ? "" : " 🔒"));
-        binding.tvLevelTitle.setText(currentLevel.getTitle());
         String morse1Visual = currentLevel.getMorse1().replace('.', '•').replace('-', '—');
         String morse2Visual = currentLevel.getMorse2().replace('.', '•').replace('-', '—');
         binding.tvNewCharacters.setText(getString(R.string.new_characters_format,
@@ -1066,7 +1065,6 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             if (currentLevel != null) {
                 boolean isUnlocked = activity.getSettings().isLevelUnlocked(currentLevelNumber);
                 binding.tvLevelNumber.setText(getString(R.string.level_number_format, currentLevel.getLevelNumber(), MorseBinaryTree.getInstance().getTotalLevels()) + (isUnlocked ? "" : " 🔒"));
-                binding.tvLevelTitle.setText(currentLevel.getTitle());
                 String morse1Visual = currentLevel.getMorse1().replace('.', '•').replace('-', '—');
                 String morse2Visual = currentLevel.getMorse2().replace('.', '•').replace('-', '—');
                 binding.tvNewCharacters.setText(getString(R.string.new_characters_format,
