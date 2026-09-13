@@ -210,14 +210,14 @@ public class ScreenshotGenerator {
         // 1. Level Number
         g.setColor(COLOR_AMBER);
         g.setFont(new Font("Monospaced", Font.BOLD, 15));
-        String levelNumStr = "LEVEL 1 / 21";
+        String levelNumStr = "NÍVEL 1 / 21";
         int nw = g.getFontMetrics().stringWidth(levelNumStr);
         g.drawString(levelNumStr, WIDTH / 2 - nw / 2, curY + 24);
 
         // 2. New Characters Badge / Text
         g.setColor(new Color(0x00, 0xE5, 0xFF)); // cyan
         g.setFont(new Font("Monospaced", Font.BOLD, 13));
-        String newCharsStr = "New Characters: E (•)  T (—)";
+        String newCharsStr = "Novas Letras: E (•)  T (—)";
         int cw = g.getFontMetrics().stringWidth(newCharsStr);
         g.drawString(newCharsStr, WIDTH / 2 - cw / 2, curY + 48);
 

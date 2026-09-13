@@ -46,27 +46,49 @@ public class ListeningExamFixer {
     private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
 
     public static void main(String[] args) {
-        String[] dirs = {"release/v1.0.0/screenshots", "release/development/screenshots"};
+        String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
+                ? new String[]{args[0]}
+                : new String[]{"release/v1.0.0/screenshots", "release/development/screenshots"};
         for (String d : dirs) {
             File dir = new File(d);
-            if (!dir.exists()) continue;
+            if (!dir.exists()) dir.mkdirs();
             processDirectory(dir);
         }
     }
 
+    private static File ensureCleanTemplate(File cleanFile, File dir, String screenshotName) {
+        if (cleanFile.exists()) return cleanFile;
+        File fromDir = new File(dir, screenshotName);
+        if (fromDir.exists()) {
+            copyFile(fromDir, cleanFile);
+            return cleanFile;
+        }
+        File fromV1 = new File("release/v1.0.0/screenshots", screenshotName);
+        if (fromV1.exists()) {
+            copyFile(fromV1, cleanFile);
+            return cleanFile;
+        }
+        File fromDev = new File("release/development/screenshots", screenshotName);
+        if (fromDev.exists()) {
+            copyFile(fromDev, cleanFile);
+            return cleanFile;
+        }
+        return cleanFile;
+    }
+
     public static void processDirectory(File dir) {
-        File clean15 = new File("tools/clean_15.jpg");
+        File clean15 = ensureCleanTemplate(new File("tools/clean_15.jpg"), dir, "behavior_test_15.jpg");
         File gitOrig15 = new File("tools/git_orig_15.jpg");
         if (gitOrig15.exists()) copyFile(gitOrig15, clean15);
 
-        File clean24 = new File("tools/clean_24.jpg");
-        File cleanRot4 = new File("tools/clean_rot4.jpg");
-        File cleanRot2 = new File("tools/clean_rot2.jpg");
-        File clean18 = new File("tools/clean_18.jpg");
-        File cleanTxPass = new File("tools/clean_tx_pass.jpg");
-        File cleanTxFail = new File("tools/clean_tx_fail.jpg");
-        File cleanWordPass = new File("tools/clean_word_pass.jpg");
-        File cleanWordFail = new File("tools/clean_word_fail.jpg");
+        File clean24 = ensureCleanTemplate(new File("tools/clean_24.jpg"), dir, "behavior_test_24.jpg");
+        File cleanRot4 = ensureCleanTemplate(new File("tools/clean_rot4.jpg"), dir, "phone_rotation_04_rotated_90_deg_exam.jpg");
+        File cleanRot2 = ensureCleanTemplate(new File("tools/clean_rot2.jpg"), dir, "phone_rotation_02_rotated_90_deg_tree.jpg");
+        File clean18 = ensureCleanTemplate(new File("tools/clean_18.jpg"), dir, "behavior_test_18.jpg");
+        File cleanTxPass = ensureCleanTemplate(new File("tools/clean_tx_pass.jpg"), dir, "screenshot_transmission_pass.jpg");
+        File cleanTxFail = ensureCleanTemplate(new File("tools/clean_tx_fail.jpg"), dir, "screenshot_transmission_fail.jpg");
+        File cleanWordPass = ensureCleanTemplate(new File("tools/clean_word_pass.jpg"), dir, "screenshot_transmission_word_pass.jpg");
+        File cleanWordFail = ensureCleanTemplate(new File("tools/clean_word_fail.jpg"), dir, "screenshot_transmission_word_fail.jpg");
 
         // 1. Neutral Listening Exam Screens: A, E, I, T, 3 lives, 1/20 questions
         String[] neutralScreens = {

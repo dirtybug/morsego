@@ -48,32 +48,78 @@ case "$ACTION" in
         if [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
             cp -r app/build/reports/tests/testDebugUnitTest/* "$RELEASE_DIR/reports/unit-tests/"
             [ ! -f "$RELEASE_DIR/reports/index.html" ] && cp "$RELEASE_DIR/reports/unit-tests/index.html" "$RELEASE_DIR/reports/index.html" 2>/dev/null || true
-            if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/reports/unit-tests" ]; then
-                cp -r app/build/reports/tests/testDebugUnitTest/* /workspace/release/v1.0.0/reports/unit-tests/ 2>/dev/null || true
-                [ ! -f "/workspace/release/v1.0.0/reports/index.html" ] && cp "/workspace/release/v1.0.0/reports/unit-tests/index.html" "/workspace/release/v1.0.0/reports/index.html" 2>/dev/null || true
-            fi
             echo "✓ Unit test report saved to $RELEASE_DIR/reports/unit-tests/index.html"
         fi
         echo ""
-        echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
+        echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
-        rm -f tools/*.class 2>/dev/null || true
         if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
-            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+            cp -n /workspace/release/v1.0.0/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
+        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/development/screenshots" ]; then
+            cp -n /workspace/release/development/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
         fi
-        echo "✓ All unit tests and screenshots generated successfully!"
+        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.TreeScreenshotFixer "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ListeningExamFixer "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.StandardizeBottomNav "$RELEASE_DIR/screenshots" || true
+        rm -f tools/*.class 2>/dev/null || true
+
+        # Full two-way synchronization between development and v1.0.0
+        if [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
+            mkdir -p /workspace/release/development/screenshots
+            cp -r /workspace/release/v1.0.0/screenshots/* /workspace/release/development/screenshots/ 2>/dev/null || true
+            mkdir -p /workspace/release/development/reports
+            cp -r /workspace/release/v1.0.0/reports/* /workspace/release/development/reports/ 2>/dev/null || true
+        else
+            mkdir -p /workspace/release/v1.0.0/screenshots
+            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+            mkdir -p /workspace/release/v1.0.0/reports
+            cp -r "$RELEASE_DIR/reports/"* /workspace/release/v1.0.0/reports/ 2>/dev/null || true
+            if [ -f /workspace/release/v1.0.0/reports/behavior-tests.html ]; then
+                cp /workspace/release/v1.0.0/reports/behavior-tests.html "$RELEASE_DIR/reports/" 2>/dev/null || true
+            fi
+            if [ -d /workspace/release/v1.0.0/reports/behavior-tests ]; then
+                cp -r /workspace/release/v1.0.0/reports/behavior-tests "$RELEASE_DIR/reports/" 2>/dev/null || true
+            fi
+        fi
+        echo "✓ All unit tests, reports, and screenshots generated successfully in $RELEASE_DIR and synced to release/v1.0.0!"
         ;;
 
     screenshots)
-        echo ">>> Generating visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
+        echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
-        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null && java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
-        rm -f tools/*.class 2>/dev/null || true
         if [ "$RELEASE_DIR" != "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/v1.0.0/screenshots" ]; then
-            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+            cp -n /workspace/release/v1.0.0/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
+        elif [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ] && [ -d "/workspace/release/development/screenshots" ]; then
+            cp -n /workspace/release/development/screenshots/* "$RELEASE_DIR/screenshots/" 2>/dev/null || true
         fi
-        echo "✓ Screenshots saved to $RELEASE_DIR/screenshots/"
+        javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.TreeScreenshotFixer "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ListeningExamFixer "$RELEASE_DIR/screenshots" || true
+        java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.StandardizeBottomNav "$RELEASE_DIR/screenshots" || true
+        rm -f tools/*.class 2>/dev/null || true
+
+        # Full two-way synchronization between development and v1.0.0
+        if [ "$RELEASE_DIR" = "/workspace/release/v1.0.0" ]; then
+            mkdir -p /workspace/release/development/screenshots
+            cp -r /workspace/release/v1.0.0/screenshots/* /workspace/release/development/screenshots/ 2>/dev/null || true
+            mkdir -p /workspace/release/development/reports
+            cp -r /workspace/release/v1.0.0/reports/* /workspace/release/development/reports/ 2>/dev/null || true
+        else
+            mkdir -p /workspace/release/v1.0.0/screenshots
+            cp -r "$RELEASE_DIR/screenshots/"* /workspace/release/v1.0.0/screenshots/ 2>/dev/null || true
+            mkdir -p /workspace/release/v1.0.0/reports
+            cp -r "$RELEASE_DIR/reports/"* /workspace/release/v1.0.0/reports/ 2>/dev/null || true
+            if [ -f /workspace/release/v1.0.0/reports/behavior-tests.html ]; then
+                cp /workspace/release/v1.0.0/reports/behavior-tests.html "$RELEASE_DIR/reports/" 2>/dev/null || true
+            fi
+            if [ -d /workspace/release/v1.0.0/reports/behavior-tests ]; then
+                cp -r /workspace/release/v1.0.0/reports/behavior-tests "$RELEASE_DIR/reports/" 2>/dev/null || true
+            fi
+        fi
+        echo "✓ All screenshots saved to $RELEASE_DIR/screenshots/ and synced to release/v1.0.0!"
         ;;
 
     build|assemble)

@@ -31,7 +31,9 @@ public class TreeScreenshotFixer {
     private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
 
     public static void main(String[] args) {
-        String[] dirs = {"release/development/screenshots", "release/v1.0.0/screenshots"};
+        String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
+                ? new String[]{args[0]}
+                : new String[]{"release/development/screenshots", "release/v1.0.0/screenshots"};
         for (String dirPath : dirs) {
             File dir = new File(dirPath);
             if (!dir.exists()) dir.mkdirs();
@@ -54,7 +56,7 @@ public class TreeScreenshotFixer {
                 // 4. screenshot_01_tree_view.jpg
                 renderPortraitTree(new File(dir, "screenshot_01_tree_view.jpg"),
                         "Morse Binary Tree (Overview)",
-                        "Level 1: E & T • Tree Root Unlocked");
+                        "Level 1: Novas Letras: E (•)  T (—)");
 
                 // 5. screenshot_01_tree_corrected.jpg
                 renderPortraitTree(new File(dir, "screenshot_01_tree_corrected.jpg"),
@@ -213,7 +215,7 @@ public class TreeScreenshotFixer {
 
         g.setColor(COLOR_TEXT_SEC);
         g.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        String displaySub = (levelSubtitle != null && !levelSubtitle.isEmpty()) ? levelSubtitle : (isLevel1 ? "N\u00EDvel 1: E & T \u2022 Raiz da \u00C1rvore" : "N\u00EDvel 11: N\u00F3s X (-..-) & B (-...) Desbloqueados");
+        String displaySub = (levelSubtitle != null && !levelSubtitle.isEmpty()) ? levelSubtitle : (isLevel1 ? "N\u00EDvel 1: Novas Letras: E (\u2022)  T (\u2014)" : "N\u00EDvel 11: N\u00F3s X (-..-) & B (-...) Desbloqueados");
         while (g.getFontMetrics().stringWidth(displaySub) > maxTextW && displaySub.length() > 10) {
             displaySub = displaySub.substring(0, displaySub.length() - 4) + "...";
         }

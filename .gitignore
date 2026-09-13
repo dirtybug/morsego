@@ -23,3 +23,11 @@ scratch/
 
 # Local development build deliverables (CI copies to release/<version>)
 release/development/
+
+# Temporary clean screenshot templates generated on-the-fly
+tools/clean_15.jpg
+tools/clean_18.jpg
+tools/clean_24.jpg
+tools/clean_rot*.jpg
+tools/clean_tx_*.jpg
+tools/clean_word_*.jpg

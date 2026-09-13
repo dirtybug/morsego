@@ -24,30 +24,31 @@ public class StandardizeBottomNav {
     private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
 
     public static void main(String[] args) {
-        String dirPath = args.length > 0 ? args[0] : "release/v1.0.0/screenshots";
-        File dir = new File(dirPath);
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.err.println("Directory not found: " + dirPath);
-            return;
-        }
+        String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
+                ? new String[]{args[0]}
+                : new String[]{"release/v1.0.0/screenshots", "release/development/screenshots"};
+        for (String dirPath : dirs) {
+            File dir = new File(dirPath);
+            if (!dir.exists() || !dir.isDirectory()) continue;
 
-        File[] files = dir.listFiles((d, name) -> name.endsWith(".jpg") || name.endsWith(".png"));
-        if (files == null) return;
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".jpg") || name.endsWith(".png"));
+            if (files == null) continue;
 
-        System.out.println("Processing " + files.length + " screenshots in " + dirPath);
+            System.out.println("Processing " + files.length + " screenshots in " + dirPath);
 
-        int updatedCount = 0;
-        for (File file : files) {
-            try {
-                if (processScreenshot(file)) {
-                    updatedCount++;
+            int updatedCount = 0;
+            for (File file : files) {
+                try {
+                    if (processScreenshot(file)) {
+                        updatedCount++;
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error processing " + file.getName() + ": " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.err.println("Error processing " + file.getName() + ": " + e.getMessage());
             }
-        }
 
-        System.out.println("Standardized bottom navigation in " + updatedCount + " screenshots.");
+            System.out.println("Standardized bottom navigation in " + updatedCount + " screenshots in " + dirPath);
+        }
     }
 
     public static boolean processScreenshot(File file) throws Exception {
