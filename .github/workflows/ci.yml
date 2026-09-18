@@ -89,30 +89,33 @@ jobs:
           echo "Verified app/src/main/AndroidManifest.xml:"
           head -n 6 app/src/main/AndroidManifest.xml
 
-      - name: Restore Keystore from Secrets or Base64 File
+      - name: Restore Keystore from Secrets for Release Signing
         run: |
           mkdir -p release
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
             echo ">>> Restoring release/key.jks from GitHub Secrets..."
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release/key.jks
-            echo "imcool" > release/keystore-pass.txt
+            STORE_PASS="${{ secrets.KEYSTORE_PASSWORD }}"
+            echo "${STORE_PASS:-imcool}" > release/keystore-pass.txt
             echo "✓ Keystore restored successfully from Secrets."
-          elif [ -f "release/keystore-base64.txt" ]; then
-            echo ">>> Restoring release/key.jks from release/keystore-base64.txt..."
-            tr -d '\r\n' < release/keystore-base64.txt | base64 --decode > release/key.jks
-            echo "imcool" > release/keystore-pass.txt
-            echo "✓ Keystore restored successfully from base64 file."
+          elif [ -f "release/key.jks" ]; then
+            echo "✓ Local key.jks detected."
           else
-            echo "ℹ️ No keystore provided; proceeding with build."
+            echo "ℹ️ No KEYSTORE_BASE64 secret provided; proceeding with build."
           fi
 
       - name: Build Docker Container
         run: docker compose build
 
-      - name: Run Tests and Build APKs in Docker
+      - name: Run Tests and Build Deliverables (APK and AAB) in Docker
         run: |
-          echo ">>> Running Tests and Building APKs in Docker (Version: ${{ env.APP_VERSION_NAME }}, Code: ${{ env.APP_VERSION_CODE }})..."
-          APP_VERSION_NAME="${{ env.APP_VERSION_NAME }}" APP_VERSION_CODE="${{ env.APP_VERSION_CODE }}" docker compose run --rm test-all
+          echo ">>> Running Tests and Building APKs/AAB in Docker (Version: ${{ env.APP_VERSION_NAME }}, Code: ${{ env.APP_VERSION_CODE }})..."
+          STORE_PASS="${{ secrets.KEYSTORE_PASSWORD }}"
+          APP_VERSION_NAME="${{ env.APP_VERSION_NAME }}" \
+          APP_VERSION_CODE="${{ env.APP_VERSION_CODE }}" \
+          KEYSTORE_PASSWORD="${STORE_PASS:-imcool}" \
+          KEY_ALIAS="${{ secrets.KEY_ALIAS || 'key0' }}" \
+          docker compose run --rm test-all
           sudo chown -R $USER:$USER release/
 
       - name: Organize Release Artifacts
@@ -136,19 +139,27 @@ jobs:
             cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-release.apk"
           fi
 
-          # 2. Ensure Test Reports are copied to TARGET_DIR
+          # 2. Ensure Release AAB (Android App Bundle) is present in TARGET_DIR with versioned name
+          if [ -f "release/development/morseGO-release.aab" ]; then
+            cp "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-${VERSION}.aab"
+            cp "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-release.aab"
+          fi
+
+          # 3. Ensure Test Reports (including all HTML reports and CSS/JS) are copied to TARGET_DIR
           if [ -d "release/development/reports" ] && [ "${TARGET_DIR}" != "release/development" ]; then
             cp -r release/development/reports/* "${TARGET_DIR}/reports/" 2>/dev/null || true
           fi
 
-          # 3. Create a zip of test reports for easy download
+          # 4. Create a zip of test reports for easy download
           if [ -d "${TARGET_DIR}/reports" ]; then
             (cd "${TARGET_DIR}" && python3 -m zipfile -c "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || zip -r "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || true)
           fi
 
           echo "=== ARTIFACTS IN ${TARGET_DIR} ==="
           ls -lh "${TARGET_DIR}/"*.apk 2>/dev/null || true
+          ls -lh "${TARGET_DIR}/"*.aab 2>/dev/null || true
           ls -lh "${TARGET_DIR}/"*.zip 2>/dev/null || true
+          ls -lh "${TARGET_DIR}/reports/" 2>/dev/null || true
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
@@ -158,11 +169,22 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-      - name: Upload Test Report Artifact
+      - name: Upload Release AAB Bundle Artifact (on Tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: morseGO-${{ env.VERSION }}-aab
+          path: release/**/morseGO-${{ env.VERSION }}.aab
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Test Report Artifact (HTML & Zip)
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-${{ env.VERSION }}-test-reports
-          path: release/**/morseGO-${{ env.VERSION }}-test-reports.zip
+          path: |
+            release/**/morseGO-${{ env.VERSION }}-test-reports.zip
+            release/**/reports/**
           retention-days: 30
           if-no-files-found: error
 
@@ -180,6 +202,7 @@ jobs:
             - **Test Suite Status:** 100% Passed (Unit Tests & Behavior Tests)
           files: |
             release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}.apk
+            release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}.aab
             release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}-test-reports.zip
           generate_release_notes: true
           draft: false

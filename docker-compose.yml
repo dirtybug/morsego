@@ -55,6 +55,9 @@ services:
     environment:
       - APP_VERSION_NAME
       - APP_VERSION_CODE
+      - KEYSTORE_PASSWORD
+      - KEY_ALIAS
+      - KEY_PASSWORD
     volumes:
       - .:/workspace
       - gradle-cache:/root/.gradle
@@ -84,6 +87,9 @@ services:
     environment:
       - APP_VERSION_NAME
       - APP_VERSION_CODE
+      - KEYSTORE_PASSWORD
+      - KEY_ALIAS
+      - KEY_PASSWORD
     volumes:
       - .:/workspace
       - gradle-cache:/root/.gradle

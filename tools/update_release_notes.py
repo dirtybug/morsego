@@ -22,6 +22,7 @@ def main():
 | Artefato | Ficheiro | Descrição |
 | :--- | :--- | :--- |
 | **APK Release** | [`morseGO-{version}.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.apk) | Binário de produção Android |
+| **AAB Bundle** | [`morseGO-{version}.aab`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.aab) | Pacote de publicação Google Play Store |
 | **Relatório de Testes** | [`morseGO-{version}-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}-test-reports.zip) | Relatório HTML dos testes |
 
 ---

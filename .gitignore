@@ -42,8 +42,8 @@ scratch/
 /screenshots/
 /releases/
 
-# Local development build deliverables (CI copies to release/<version>)
-release/development/
+# Release output folder (build deliverables, reports, and keystores)
+/release/
 
 # Temporary clean screenshot templates generated on-the-fly
 tools/clean_15.jpg
