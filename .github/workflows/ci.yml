@@ -110,10 +110,12 @@ jobs:
           fi
           mkdir -p "${TARGET_DIR}/reports"
 
-          # 1. Ensure Release APK is present in TARGET_DIR
+          # 1. Ensure Release APK is present in TARGET_DIR with versioned name
           if [ -f "release/development/morseGO-release.apk" ]; then
+            cp "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk"
             cp "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-release.apk"
           elif [ -f "release/development/morseGO-development-release.apk" ]; then
+            cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk"
             cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-release.apk"
           fi
 
@@ -124,26 +126,26 @@ jobs:
 
           # 3. Create a zip of test reports for easy download
           if [ -d "${TARGET_DIR}/reports" ]; then
-            (cd "${TARGET_DIR}" && python3 -m zipfile -c test-reports.zip reports 2>/dev/null || zip -r test-reports.zip reports 2>/dev/null || true)
+            (cd "${TARGET_DIR}" && python3 -m zipfile -c "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || zip -r "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || true)
           fi
 
           echo "=== ARTIFACTS IN ${TARGET_DIR} ==="
           ls -lh "${TARGET_DIR}/"*.apk 2>/dev/null || true
-          ls -lh "${TARGET_DIR}/test-reports.zip" 2>/dev/null || true
+          ls -lh "${TARGET_DIR}/"*.zip 2>/dev/null || true
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morseGO-apk-${{ env.VERSION }}
-          path: release/**/morseGO-release.apk
+          name: morseGO-${{ env.VERSION }}-apk
+          path: release/**/morseGO-${{ env.VERSION }}.apk
           retention-days: 30
           if-no-files-found: error
 
       - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morseGO-test-reports-${{ env.VERSION }}
-          path: release/**/test-reports.zip
+          name: morseGO-${{ env.VERSION }}-test-reports
+          path: release/**/morseGO-${{ env.VERSION }}-test-reports.zip
           retention-days: 30
           if-no-files-found: error
 
@@ -160,8 +162,8 @@ jobs:
             - **Git Commit:** `${{ github.sha }}`
             - **Test Suite Status:** 100% Passed (Unit Tests & Behavior Tests)
           files: |
-            release/${{ env.VERSION }}/morseGO-release.apk
-            release/${{ env.VERSION }}/test-reports.zip
+            release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}.apk
+            release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}-test-reports.zip
           generate_release_notes: true
           draft: false
           prerelease: false
@@ -184,9 +186,9 @@ jobs:
 import sys, os
 from datetime import datetime
 
-version = os.environ.get('VERSION', 'v1.0.0')
-app_version = os.environ.get('APP_VERSION_NAME', '1.0.0')
-app_code = os.environ.get('APP_VERSION_CODE', '10000')
+version = os.environ.get('VERSION', 'v1.0.1')
+app_version = os.environ.get('APP_VERSION_NAME', '1.0.1')
+app_code = os.environ.get('APP_VERSION_CODE', '10001')
 today = datetime.now().strftime('%Y-%m-%d')
 
 entry = f"""## [{version}] - {today}
@@ -197,13 +199,13 @@ entry = f"""## [{version}] - {today}
 
 ### 🧪 Testes e Qualidade
 - **Suíte de Testes:** 100% de Aprovação
-- **Relatório de Testes:** Disponível em `test-reports.zip`
+- **Relatório de Testes:** Disponível em `morseGO-{version}-test-reports.zip`
 
 ### 📥 Artefatos de Instalação
 | Artefato | Ficheiro | Descrição |
 | :--- | :--- | :--- |
-| **APK Release** | [`morseGO-release.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-release.apk) | Binário de produção Android |
-| **Relatório de Testes** | [`test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/test-reports.zip) | Relatório HTML dos testes |
+| **APK Release** | [`morseGO-{version}.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.apk) | Binário de produção Android |
+| **Relatório de Testes** | [`morseGO-{version}-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}-test-reports.zip) | Relatório HTML dos testes |
 
 ---
 
