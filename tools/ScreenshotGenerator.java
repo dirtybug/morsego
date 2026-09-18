@@ -59,8 +59,8 @@ public class ScreenshotGenerator {
             generateSoundMode(new File(outputDir, "02_sound_mode.png"));
             generateBinaryTree(new File(outputDir, "03_binary_tree_screen.png"));
             generateListeningExam(new File(outputDir, "04_exam_listening_stage.png"));
+            generateFreeKeyer(new File(outputDir, "05_free_keyer_paddles.png"));
             generateHardwareSetup(new File(outputDir, "05_hardware_usb_setup.png"));
-            generateHardwareSetup(new File(outputDir, "05_free_keyer_paddles.png"));
             generateHardwareSetup(new File(outputDir, "06_hardware_usb_setup.png"));
             generateHardwareSetupPortrait412(new File(outputDir, "screenshot_05_hw_setup.jpg"));
 
@@ -115,7 +115,7 @@ public class ScreenshotGenerator {
         g.drawString(wpmText, WIDTH - 115, y + 35);
 
         // Settings gear icon (exact vector drawable)
-        AppIcons.drawIcon(g, 4, WIDTH - 33, y + 28, 20, COLOR_TEXT_SEC);
+        AppIcons.drawSettingsIcon(g, WIDTH - 33, y + 28, 20, COLOR_TEXT_SEC);
     }
 
     private static void drawHeart(Graphics2D g, int x, int y, int size) {
@@ -149,7 +149,7 @@ public class ScreenshotGenerator {
         g.setColor(new Color(0x28, 0x2D, 0x36));
         g.drawLine(0, y, WIDTH, y);
 
-        String[] tabs = {"Tree", "Send", "Receive", "USB", "Config"};
+        String[] tabs = {"Tree", "Send", "Receive", "Keyer", "USB"};
         int tabW = WIDTH / tabs.length;
 
         for (int i = 0; i < tabs.length; i++) {
@@ -616,7 +616,7 @@ public class ScreenshotGenerator {
         g.setColor(COLOR_TEXT_SEC);
         g.drawString("Keyboard: Right Ctrl", 35 + paddleW + paddleW / 2 - 60, paddleY + 115);
 
-        drawBottomNav(g, 1); // Send active (Free Keyer is transmission)
+        drawBottomNav(g, 3); // Keyer active (Free Keyer)
 
         g.dispose();
         ImageIO.write(img, "PNG", file);
@@ -724,7 +724,7 @@ public class ScreenshotGenerator {
         g.drawString("[AUDIO] AudioTrack synthesizer active (700 Hz, max volume)", 30, logY + 45);
         g.drawString("[PARIS] Timing clock calibrated to 15 WPM (PARIS cadence)", 30, logY + 65);
 
-        drawBottomNav(g, 3); // USB active
+        drawBottomNav(g, 4); // USB active
 
         g.dispose();
         ImageIO.write(img, "PNG", file);
@@ -778,7 +778,7 @@ public class ScreenshotGenerator {
         g.drawString("20 WPM", w - 134, y + 31);
 
         // Gear icon
-        AppIcons.drawIcon(g, 4, w - 26, y + 27, 18, COLOR_TEXT_SEC);
+        AppIcons.drawSettingsIcon(g, w - 26, y + 27, 18, COLOR_TEXT_SEC);
 
         int curY = 80;
 
@@ -926,7 +926,7 @@ public class ScreenshotGenerator {
         g.drawString("[STATUS] VBand defaults active • Ready for keying", 26, logY + 76);
 
         // Bottom nav
-        drawBottomNavCustom(g, 3, w, h); // USB active
+        drawBottomNavCustom(g, 4, w, h); // USB active
 
         g.dispose();
         writeHighQualityJpeg(img, file);
@@ -942,7 +942,7 @@ public class ScreenshotGenerator {
         g.setColor(new Color(0x28, 0x2D, 0x36));
         g.drawLine(0, y, w, y);
 
-        String[] tabs = {"Tree", "Send", "Receive", "USB", "Config"};
+        String[] tabs = {"Tree", "Send", "Receive", "Keyer", "USB"};
         int tabW = w / tabs.length;
 
         for (int i = 0; i < tabs.length; i++) {

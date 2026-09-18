@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
     public static final int TAB_LEARN = R.id.nav_send;
     public static final int TAB_PRACTICE = R.id.nav_receive;
     public static final int TAB_HARDWARE = R.id.nav_hardware;
+    public static final int TAB_KEYER = R.id.nav_keyer;
     public static final int TAB_SETTINGS = R.id.nav_settings;
 
     private ActivityMainBinding binding;
@@ -113,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
                     pendingTargetLevel = -1;
                 }
                 switchFragment(fragment);
+                return true;
+            } else if (itemId == R.id.nav_keyer) {
+                switchFragment(new FreeKeyerFragment());
                 return true;
             } else if (itemId == R.id.nav_hardware) {
                 switchFragment(new HardwareFragment());

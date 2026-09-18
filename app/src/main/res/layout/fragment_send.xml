@@ -555,6 +555,18 @@
                                 app:strokeColor="@color/morse_cyan" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
+                    <Button
+                        android:id="@+id/btnNextSendingQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/morse_amber"
+                        android:fontFamily="monospace"
+                        android:text="@string/practice_next_question"
+                        android:textColor="@color/radio_dark"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <!-- Cancel Test Button -->

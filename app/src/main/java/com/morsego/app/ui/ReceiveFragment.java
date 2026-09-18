@@ -39,6 +39,11 @@ public class ReceiveFragment extends Fragment {
     private int currentFailures = 0;
     private boolean testFinished = false;
     private final List<Button> optionButtons = new ArrayList<>();
+    private final Runnable autoNextQuestionRunnable = () -> {
+        if (isAdded() && !testFinished && binding != null) {
+            onNextQuestionClicked();
+        }
+    };
 
     @Nullable
     @Override
@@ -126,6 +131,7 @@ public class ReceiveFragment extends Fragment {
         scoreCorrect = 0;
         testFinished = false;
         if (binding != null) {
+            binding.getRoot().removeCallbacks(autoNextQuestionRunnable);
             binding.btnNextQuestion.setVisibility(View.GONE);
             binding.tvQuizResult.setVisibility(View.GONE);
             binding.btnNextQuestion.setText(R.string.practice_next_question);
@@ -138,6 +144,7 @@ public class ReceiveFragment extends Fragment {
 
     private void onNextQuestionClicked() {
         if (binding == null) return;
+        binding.getRoot().removeCallbacks(autoNextQuestionRunnable);
         binding.btnNextQuestion.setVisibility(View.GONE);
         binding.tvQuizResult.setVisibility(View.GONE);
         enableOptionButtons(true);
@@ -344,10 +351,21 @@ public class ReceiveFragment extends Fragment {
                 }
             }
         } else {
-            binding.btnNextQuestion.setText(R.string.practice_next_question);
-            binding.btnNextQuestion.setOnClickListener(v -> onNextQuestionClicked());
-            binding.tvQuizResult.setVisibility(View.VISIBLE);
-            binding.btnNextQuestion.setVisibility(View.VISIBLE);
+            if (isCorrect) {
+                // Acertou: esconde o botão "Próxima Pergunta", exibe o feedback de sucesso e avança automaticamente
+                binding.btnNextQuestion.setVisibility(View.GONE);
+                binding.tvQuizResult.setVisibility(View.VISIBLE);
+                if (binding != null) {
+                    binding.getRoot().removeCallbacks(autoNextQuestionRunnable);
+                    binding.getRoot().postDelayed(autoNextQuestionRunnable, 800);
+                }
+            } else {
+                // Falhou: exibe o botão "Próxima Pergunta" para o utilizador rever a resposta correta e prosseguir quando quiser
+                binding.btnNextQuestion.setText(R.string.practice_next_question);
+                binding.btnNextQuestion.setOnClickListener(v -> onNextQuestionClicked());
+                binding.tvQuizResult.setVisibility(View.VISIBLE);
+                binding.btnNextQuestion.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -360,6 +378,9 @@ public class ReceiveFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (binding != null) {
+            binding.getRoot().removeCallbacks(autoNextQuestionRunnable);
+        }
         binding = null;
     }
 }

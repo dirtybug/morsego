@@ -10,6 +10,7 @@
     <string name="learn_title">Send</string>
     <string name="practice_title">Receive</string>
     <string name="hardware_title">USB</string>
+    <string name="keyer_title">Keyer</string>
     <string name="settings_title">Settings</string>
 
     <string name="cw_listening_practice_title">CW LISTENING TRAINING</string>

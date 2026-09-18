@@ -43,7 +43,7 @@ public class ListeningExamFixer {
     private static final Color COLOR_CYAN = new Color(0x00, 0xE5, 0xFF);
     private static final Color COLOR_BLUE = new Color(0x42, 0xA5, 0xF5);
 
-    private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
+    private static final String[] TABS = {"Tree", "Send", "Receive", "Keyer", "USB"};
 
     public static void main(String[] args) {
         String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
@@ -105,7 +105,6 @@ public class ListeningExamFixer {
 
         // 2. Right Answer Screens: E selected in Green, Morse revealed, A, E, I, T (NO button overlap!)
         String[] rightScreens = {
-            "behavior_test_25.jpg",
             "behavior_test_27.jpg",
             "screenshot_listening_right_answer.jpg"
         };
@@ -114,9 +113,10 @@ public class ListeningExamFixer {
             fixPortraitListeningExam(f, ExamState.RIGHT_ANSWER);
         }
 
-        // 3. Wrong Answer Screens: T selected in Red, E in Green, Morse revealed, A, E, I, T, 2 lives
+        // 3. Wrong Answer Screens: T selected in Red, E in Green, Morse revealed, A, E, I, T, 2 lives, Next Question button
         // NOTE: behavior_test_20.jpg is a SEND test, NOT a wrong answer listening screen!
         String[] wrongScreens = {
+            "behavior_test_25.jpg",
             "behavior_test_26.jpg",
             "behavior_test_28.jpg",
             "screenshot_listening_wrong_answer.jpg",
@@ -149,6 +149,10 @@ public class ListeningExamFixer {
         if (cleanTxPass.exists()) copyFile(cleanTxPass, txPassFile);
         if (txPassFile.exists()) fixTransmissionResult(txPassFile, true, false);
 
+        File bt32 = new File(dir, "behavior_test_32.jpg");
+        if (cleanTxPass.exists()) copyFile(cleanTxPass, bt32);
+        if (bt32.exists()) fixTransmissionResult(bt32, true, false);
+
         File txFailFile = new File(dir, "screenshot_transmission_fail.jpg");
         if (cleanTxFail.exists()) copyFile(cleanTxFail, txFailFile);
         if (txFailFile.exists()) fixTransmissionResult(txFailFile, false, false);
@@ -156,6 +160,13 @@ public class ListeningExamFixer {
         File sendFailAnswer = new File(dir, "screenshot_send_failed_answer.jpg");
         if (cleanTxFail.exists()) copyFile(cleanTxFail, sendFailAnswer);
         if (sendFailAnswer.exists()) fixTransmissionResult(sendFailAnswer, false, false);
+
+        File bt29 = new File(dir, "behavior_test_29.jpg");
+        if (cleanTxFail.exists()) copyFile(cleanTxFail, bt29);
+        if (bt29.exists()) fixTransmissionResult(bt29, false, false);
+
+        File bt33 = new File(dir, "behavior_test_33.jpg");
+        fixTransmissionCadenceFail(bt33);
 
         File wordPassFile = new File(dir, "screenshot_transmission_word_pass.jpg");
         renderWordTransmissionExam(wordPassFile, true);
@@ -374,7 +385,20 @@ public class ListeningExamFixer {
                     drawOptionButton(g, col1X, row2Y, btnW, btnH, "I", "• •", false, false);
                     drawOptionButton(g, col2X, row2Y, btnW, btnH, "T", "—", false, true);  // Red (selected)
 
-                    drawFooterState(g, w, h, "State: Wrong Answer (Selected Red, Correct Green, Morse Revealed)");
+                    // Prominent Amber Next Question Button on Fail
+                    int nextBtnX = cardX;
+                    int nextBtnY = 614;
+                    int nextBtnW = cardW;
+                    int nextBtnH = 50;
+                    g.setColor(COLOR_AMBER);
+                    g.fillRoundRect(nextBtnX, nextBtnY, nextBtnW, nextBtnH, 12, 12);
+                    g.setColor(new Color(0x12, 0x16, 0x1E));
+                    g.setFont(new Font("SansSerif", Font.BOLD, 15));
+                    String nextText = "NEXT QUESTION ▶";
+                    int ntw = g.getFontMetrics().stringWidth(nextText);
+                    g.drawString(nextText, nextBtnX + nextBtnW / 2 - ntw / 2, nextBtnY + 31);
+
+                    drawFooterState(g, w, h, "State: Wrong Answer (Next Question Enabled, Advancing on Click)");
                 }
             }
 
@@ -675,6 +699,23 @@ public class ListeningExamFixer {
             int pw = g.getFontMetrics().stringWidth(prog);
             g.drawString(prog, cardX + cardW - pw - 14, cardY + 30);
 
+            // Prominent Amber Next Question Button on Fail
+            if (!pass) {
+                int nextBtnX = cardX;
+                int nextBtnY = 540;
+                int nextBtnW = cardW;
+                int nextBtnH = 50;
+
+                g.setColor(COLOR_AMBER);
+                g.fillRoundRect(nextBtnX, nextBtnY, nextBtnW, nextBtnH, 12, 12);
+
+                g.setColor(new Color(0x12, 0x16, 0x1E));
+                g.setFont(new Font("SansSerif", Font.BOLD, 15));
+                String nextText = "NEXT QUESTION ▶";
+                int ntw = g.getFontMetrics().stringWidth(nextText);
+                g.drawString(nextText, nextBtnX + nextBtnW / 2 - ntw / 2, nextBtnY + 31);
+            }
+
             // Standardize bottom nav bar with Send active (index 1)
             drawBottomNav(g, w, h, 46, 1);
 
@@ -683,6 +724,135 @@ public class ListeningExamFixer {
             System.out.println("Fixed Transmission Result Screenshot: " + file.getName());
         } catch (Exception e) {
             System.err.println("Error fixing " + file.getName() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Fixes transmission cadence timing failure screen (behavior_test_33.jpg).
+     * Renders timing cadence error with amber Next Question button.
+     */
+    private static void fixTransmissionCadenceFail(File file) {
+        try {
+            File cleanTxFail = new File("tools/clean_tx_fail.jpg");
+            BufferedImage img = ImageIO.read(cleanTxFail.exists() ? cleanTxFail : file);
+            if (img == null) return;
+            Graphics2D g = createGraphics(img);
+
+            int w = img.getWidth();
+            int h = img.getHeight();
+
+            int cardX = 16;
+            int cardY = 126;
+            int cardW = w - 32;
+            int cardH = 48;
+
+            // Clear any artifacts
+            g.setColor(COLOR_BG);
+            g.fillRect(0, 56, w, cardY - 56);
+
+            // Redraw clean amber stage banner
+            int bannerY = 74;
+            int bannerH = 36;
+            g.setColor(COLOR_AMBER);
+            g.fillRoundRect(cardX, bannerY, cardW, bannerH, 8, 8);
+            g.setColor(new Color(0x1A, 0x0A, 0x00));
+            g.setFont(new Font("SansSerif", Font.BOLD, 12));
+            String bannerText = "TRANSMISSION TEST (CADENCE FAIL)";
+            int bw = g.getFontMetrics().stringWidth(bannerText);
+            g.drawString(bannerText, w / 2 - bw / 2, bannerY + 23);
+
+            // Redraw header card
+            g.setColor(COLOR_CARD_BG);
+            g.fillRoundRect(cardX, cardY, cardW, cardH, 12, 12);
+            g.setColor(COLOR_BORDER);
+            g.setStroke(new BasicStroke(1.0f));
+            g.drawRoundRect(cardX, cardY, cardW, cardH, 12, 12);
+
+            int heartX = cardX + 16;
+            int heartY = cardY + 16;
+            for (int i = 0; i < 3; i++) {
+                Color c = (i < 2) ? COLOR_RED : COLOR_DARK_HEART;
+                drawHeart(g, heartX + (i * 20), heartY, 15, c);
+            }
+
+            g.setColor(COLOR_AMBER);
+            g.setFont(new Font("SansSerif", Font.BOLD, 12));
+            String qText = "2/20 questions";
+            g.drawString(qText, heartX + 66, cardY + 30);
+
+            g.setColor(COLOR_CYAN);
+            g.setFont(new Font("SansSerif", Font.BOLD, 12));
+            String prog = "Exam Progress: 2/20";
+            int pw = g.getFontMetrics().stringWidth(prog);
+            g.drawString(prog, cardX + cardW - pw - 14, cardY + 30);
+
+            // Clear previous error card and buffer card area cleanly (y: 290 to 460)
+            g.setColor(COLOR_BG);
+            g.fillRect(cardX - 4, 290, cardW + 8, 170);
+
+            // Red Cadence Error Feedback Card (y: 295..397)
+            int errCardY = 295;
+            int errCardH = 102;
+            g.setColor(new Color(0x28, 0x14, 0x18));
+            g.fillRoundRect(cardX, errCardY, cardW, errCardH, 12, 12);
+            g.setColor(COLOR_RED);
+            g.setStroke(new BasicStroke(1.0f));
+            g.drawRoundRect(cardX, errCardY, cardW, errCardH, 12, 12);
+
+            g.setColor(COLOR_RED);
+            g.setFont(new Font("SansSerif", Font.BOLD, 13));
+            String l1 = "✕ TIMING CADENCE ERROR! Pause out of bounds";
+            int l1w = g.getFontMetrics().stringWidth(l1);
+            g.drawString(l1, w / 2 - l1w / 2, errCardY + 26);
+
+            g.setColor(COLOR_TEXT_PRI);
+            g.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            String l2 = "🔊 Ear Training: Replaying correct PARIS cadence (1.0x Dit / 3.0x Dah)";
+            int l2w = g.getFontMetrics().stringWidth(l2);
+            g.drawString(l2, w / 2 - l2w / 2, errCardY + 50);
+
+            g.setColor(COLOR_AMBER);
+            String l3 = "⚠️ Penalty: 1 Life lost! Added 'T' + 2 random letters to queue.";
+            int l3w = g.getFontMetrics().stringWidth(l3);
+            g.drawString(l3, w / 2 - l3w / 2, errCardY + 74);
+
+            // Cadence Buffer Card (y: 410..452)
+            int bufY = 410;
+            int bufH = 42;
+            g.setColor(COLOR_CARD_BG);
+            g.fillRoundRect(cardX, bufY, cardW, bufH, 12, 12);
+            g.setColor(COLOR_BORDER);
+            g.drawRoundRect(cardX, bufY, cardW, bufH, 12, 12);
+
+            g.setColor(COLOR_TEXT_PRI);
+            g.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            String buf = "Input Buffer: • (Timing violation: 340ms pause > 180ms PARIS limit)";
+            int bfw = g.getFontMetrics().stringWidth(buf);
+            g.drawString(buf, w / 2 - bfw / 2, bufY + 26);
+
+            // Prominent Amber Next Question Button on Fail
+            int nextBtnX = cardX;
+            int nextBtnY = 540;
+            int nextBtnW = cardW;
+            int nextBtnH = 50;
+            g.setColor(COLOR_AMBER);
+            g.fillRoundRect(nextBtnX, nextBtnY, nextBtnW, nextBtnH, 12, 12);
+
+            g.setColor(new Color(0x12, 0x16, 0x1E));
+            g.setFont(new Font("SansSerif", Font.BOLD, 15));
+            String nextText = "NEXT QUESTION ▶";
+            int ntw = g.getFontMetrics().stringWidth(nextText);
+            g.drawString(nextText, nextBtnX + nextBtnW / 2 - ntw / 2, nextBtnY + 31);
+
+            // Standardize bottom nav bar with Send active (index 1)
+            drawBottomNav(g, w, h, 46, 1);
+
+            g.dispose();
+            saveJpeg(img, file, 0.92f);
+            System.out.println("Fixed Transmission Cadence Fail Screenshot: " + file.getName());
+        } catch (Exception e) {
+            System.err.println("Error fixing cadence fail " + file.getName() + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -879,6 +1049,23 @@ public class ListeningExamFixer {
             g.setColor(COLOR_TEXT_SEC);
             g.setFont(new Font("SansSerif", Font.PLAIN, 11));
             g.drawString(bufDesc, bufDescX, bufCardY + 28);
+
+            // Prominent Amber Next Question Button on Fail
+            if (!pass) {
+                int nextBtnX = cardX;
+                int nextBtnY = 550;
+                int nextBtnW = cardW;
+                int nextBtnH = 50;
+
+                g.setColor(COLOR_AMBER);
+                g.fillRoundRect(nextBtnX, nextBtnY, nextBtnW, nextBtnH, 12, 12);
+
+                g.setColor(new Color(0x12, 0x16, 0x1E));
+                g.setFont(new Font("SansSerif", Font.BOLD, 15));
+                String nextText = "NEXT QUESTION ▶";
+                int ntw = g.getFontMetrics().stringWidth(nextText);
+                g.drawString(nextText, nextBtnX + nextBtnW / 2 - ntw / 2, nextBtnY + 31);
+            }
 
             // 7. Touch Paddles (Symmetrically Aligned: left margin 16px, gap 16px, right margin 16px)
             int padY = 675;
@@ -1744,7 +1931,7 @@ public class ListeningExamFixer {
         g.drawString("20 WPM • PARIS CW", 68, 48);
 
         // Settings gear icon on top right
-        AppIcons.drawIcon(g, 4, w - 28, 32, 20, new Color(0x9E, 0x9E, 0x9E));
+        AppIcons.drawSettingsIcon(g, w - 28, 32, 20, new Color(0x9E, 0x9E, 0x9E));
     }
 
     private static void drawOptionButton(Graphics2D g, int x, int y, int w, int h, String letter, String morse, boolean isGreen, boolean isRed) {

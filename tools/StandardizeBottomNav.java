@@ -21,7 +21,7 @@ import javax.imageio.stream.FileImageOutputStream;
  */
 public class StandardizeBottomNav {
 
-    private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
+    private static final String[] TABS = {"Tree", "Send", "Receive", "Keyer", "USB"};
 
     public static void main(String[] args) {
         String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())
@@ -135,37 +135,31 @@ public class StandardizeBottomNav {
                 if (num <= 13 || num == 41 || num == 42) return 0; // Tree
                 if (num == 14 || num == 18 || (num >= 19 && num <= 23) || (num >= 29 && num <= 33) || (num >= 45 && num <= 47) || num == 49) return 1; // Send
                 if ((num >= 15 && num <= 17) || (num >= 24 && num <= 28) || num == 38 || (num >= 43 && num <= 44) || num == 48) return 2; // Receive
-                if (num == 34 || num == 35) return 1; // Send (Free Keyer Sandbox)
-                if (num == 36 || num == 37) return 3; // USB / Hardware Keyer
-                if (num == 39 || num == 40) return 4; // Config / Settings
+                if (num == 34 || num == 35) return 3; // Keyer (Free Keyer Sandbox)
+                if (num == 36 || num == 37) return 4; // USB / Hardware Keyer
+                if (num == 39 || num == 40) return 0; // Settings dialog modal (tree background)
             } catch (Exception ignored) {}
         }
 
-        if (name.contains("05_free_keyer") || name.contains("05_hardware") || name.contains("06_hardware") || name.contains("05_hw_setup")) {
-            return 3; // USB
+        if (name.contains("05_free_keyer") || name.contains("free_keyer") || name.contains("keyer_landscape") || name.contains("rotation_03") || name.contains("screenshot_02_keyer")) {
+            return 3; // Keyer
         }
 
-        if (name.contains("tree")) return 0;
-        if (name.contains("screenshot_05_radio_words") || name.contains("radio_words_landscape") || name.contains("radio_words_stage2") || name.contains("radio_words_transmit")) {
+        if (name.contains("05_hardware") || name.contains("06_hardware") || name.contains("05_hw_setup") || name.contains("hardware") || name.contains("usb") || name.contains("hw") || name.contains("rotation_05") || name.contains("screenshot_04_hardware")) {
+            return 4; // USB
+        }
+
+        if (name.contains("tree") || name.contains("rotation_01") || name.contains("rotation_02") || name.contains("rotation_06")) {
+            return 0; // Tree
+        }
+
+        if (name.contains("screenshot_05_radio_words") || name.contains("radio_words_landscape") || name.contains("radio_words_stage2") || name.contains("radio_words_transmit") || name.contains("send") || name.contains("transmi") || name.contains("paddles")) {
             return 1; // Send
         }
-        if (name.contains("send") || name.contains("transmi") || name.contains("keyer") || name.contains("paddles")) {
-            if (name.contains("hw") || name.contains("hardware") || name.contains("usb")) return 3;
-            return 1;
-        }
-        if (name.contains("receive") || name.contains("listen") || name.contains("hear") || name.contains("exam") || name.contains("quiz")) {
-            return 2;
-        }
-        if (name.contains("hardware") || name.contains("usb") || name.contains("hw")) return 3;
-        if (name.contains("setting") || name.contains("config")) return 4;
-        if (name.contains("radio")) return 2; // default radio words is receive
 
-        if (name.contains("rotation_02")) return 0; // tree landscape
-        if (name.contains("rotation_03")) return 1; // keyer landscape (send)
-        if (name.contains("rotation_04")) return 2; // exam landscape (receive)
-        if (name.contains("rotation_05")) return 3; // hardware landscape (usb)
-        if (name.contains("rotation_06")) return 0; // restored portrait tree
-        if (name.contains("rotation_01")) return 0; // portrait tree
+        if (name.contains("receive") || name.contains("listen") || name.contains("hear") || name.contains("exam") || name.contains("quiz") || name.contains("radio") || name.contains("rotation_04")) {
+            return 2; // Receive
+        }
 
         return 0;
     }

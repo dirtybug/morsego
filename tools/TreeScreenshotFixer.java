@@ -28,7 +28,7 @@ public class TreeScreenshotFixer {
     private static final Color COLOR_TEXT_PRI = new Color(0xEE, 0xEE, 0xEE);
     private static final Color COLOR_TEXT_SEC = new Color(0x8C, 0x98, 0xA8);
 
-    private static final String[] TABS = {"Tree", "Send", "Receive", "USB", "Config"};
+    private static final String[] TABS = {"Tree", "Send", "Receive", "Keyer", "USB"};
 
     public static void main(String[] args) {
         String[] dirs = (args != null && args.length > 0 && args[0] != null && !args[0].isEmpty())

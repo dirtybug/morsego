@@ -13,11 +13,11 @@
         android:icon="@drawable/ic_ear"
         android:title="@string/receive_title" />
     <item
+        android:id="@+id/nav_keyer"
+        android:icon="@drawable/ic_radio"
+        android:title="@string/keyer_title" />
+    <item
         android:id="@+id/nav_hardware"
         android:icon="@drawable/ic_hardware"
         android:title="@string/hardware_title" />
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings_title" />
 </menu>

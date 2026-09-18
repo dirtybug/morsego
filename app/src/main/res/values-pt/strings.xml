@@ -10,6 +10,7 @@
     <string name="learn_title">Transmitir</string>
     <string name="practice_title">Ouvir</string>
     <string name="hardware_title">USB</string>
+    <string name="keyer_title">Keyer</string>
     <string name="settings_title">Configurações</string>
 
     <string name="cw_listening_practice_title">TREINO DE ESCUTA EM CW</string>

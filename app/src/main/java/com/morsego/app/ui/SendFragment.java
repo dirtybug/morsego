@@ -169,8 +169,13 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
         binding.btnReviewLevel.setOnClickListener(v -> showStudyView());
 
+        binding.btnNextSendingQuestion.setOnClickListener(v -> onNextSendingQuestionClicked());
+
         binding.btnResetSendingAttempt.setOnClickListener(v -> {
             cancelQuickCommit();
+            if (binding != null) {
+                binding.btnNextSendingQuestion.setVisibility(View.GONE);
+            }
             currentWordKeyed.setLength(0);
             updateSendingMorseProgress();
             binding.tvSendingBuffer.setText(R.string.keyer_input_empty);
@@ -178,6 +183,8 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             if (act != null) {
                 act.getDecoder().clear();
             }
+            sendingWaitingForInput = true;
+            setSendingPaddlesEnabled(true);
         });
 
         // Dedicated bottom paddle buttons: DIT (•) and DAH (—)
@@ -238,12 +245,19 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         }
     }
 
+    private void onNextSendingQuestionClicked() {
+        if (binding == null) return;
+        binding.btnNextSendingQuestion.setVisibility(View.GONE);
+        nextSendingQuestion();
+    }
+
     private void prepareForNextSendingQuestion(long delayMs) {
         cancelQuickCommit();
         sendingWaitingForInput = false;
         setSendingPaddlesEnabled(false);
 
         if (binding != null) {
+            binding.btnNextSendingQuestion.setVisibility(View.GONE);
             // Hide/dim previous letter and show transition indicator so user clearly sees the change
             binding.tvSendingPrompt.setText("· · ·");
             binding.tvSendingPrompt.setAlpha(0.35f);
@@ -268,6 +282,9 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         binding.tvRequirementsDesc.setText(R.string.level_requirements_desc);
         binding.btnStartLevelTest.setText(R.string.start_exam_button);
         binding.btnReviewLevel.setText(R.string.review_level_button);
+        if (binding.btnNextSendingQuestion != null) {
+            binding.btnNextSendingQuestion.setText(R.string.practice_next_question);
+        }
     }
 
     public void loadLevel(int levelNum) {
@@ -656,6 +673,7 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         binding.layoutStageListening.setVisibility(View.GONE);
         binding.layoutStageSending.setVisibility(View.VISIBLE);
         binding.tvPenaltyNotice.setVisibility(View.GONE);
+        binding.btnNextSendingQuestion.setVisibility(View.GONE);
 
         currentQueue.clear();
         currentQueue.addAll(generateExamQueue());
@@ -668,6 +686,9 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
     private void nextSendingQuestion() {
         cancelQuickCommit();
+        if (binding != null) {
+            binding.btnNextSendingQuestion.setVisibility(View.GONE);
+        }
         if (currentQueue.isEmpty()) {
             sendingTotalFailures = currentStageFailures;
             String passMsg = getString(R.string.exam_pass_send_msg);
@@ -783,6 +804,11 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             } else if (!currentSendingTarget.startsWith(currentWordKeyed.toString())) {
                 // Keyed wrong character in sequence!
                 evaluateSendingResult(currentWordKeyed.toString());
+            } else {
+                // Intermediate letter of multi-letter word successfully completed!
+                char nextExpectedChar = currentSendingTarget.charAt(currentWordKeyed.length());
+                binding.tvSendingFeedback.setText("✓ " + currentWordKeyed.toString() + " • Next: '" + nextExpectedChar + "'");
+                binding.tvSendingFeedback.setTextColor(Color.parseColor("#00E676"));
             }
         }
     }
@@ -826,7 +852,12 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
                 String failMsg = getString(R.string.exam_fail_listening_exceeded);
                 binding.getRoot().postDelayed(() -> showExamResults(false, failMsg), 1200);
             } else {
-                prepareForNextSendingQuestion(900L);
+                setSendingPaddlesEnabled(false);
+                sendingWaitingForInput = false;
+                if (binding != null) {
+                    binding.btnNextSendingQuestion.setText(R.string.practice_next_question);
+                    binding.btnNextSendingQuestion.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -907,16 +938,27 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
             char expectedChar = currentSendingTarget.charAt(nextIndex);
             String expectedMorse = MorseBinaryTree.getInstance().getMorse(String.valueOf(expectedChar));
 
-            if (expectedMorse != null && currentPattern.equals(expectedMorse)) {
-                // Exact match for the expected letter pattern: quick commit responsively!
-                quickCommitRunnable = () -> {
-                    quickCommitRunnable = null;
+            if (expectedMorse != null) {
+                if (currentPattern.equals(expectedMorse)) {
+                    // Exact match for the expected letter pattern on the fly!
+                    // Automatically commit this letter and move to the next letter immediately without delay.
                     MainActivity activity = (MainActivity) getActivity();
                     if (activity != null && activity.getDecoder() != null && sendingWaitingForInput) {
                         activity.getDecoder().commitCharacter();
                     }
-                };
-                binding.getRoot().postDelayed(quickCommitRunnable, 400L);
+                } else if (!expectedMorse.startsWith(currentPattern)) {
+                    // Pattern cannot possibly form the expected character: fail on the fly!
+                    String pattern = currentPattern;
+                    String found = MorseBinaryTree.getInstance().getChar(pattern);
+                    char wrongChar = (found != null && !found.isEmpty()) ? found.charAt(0) : '?';
+
+                    MainActivity activity = (MainActivity) getActivity();
+                    if (activity != null && activity.getDecoder() != null) {
+                        activity.getDecoder().clear();
+                    }
+                    currentWordKeyed.append(wrongChar);
+                    evaluateSendingResult(currentWordKeyed.toString());
+                }
             }
         }
     }

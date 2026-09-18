@@ -4,6 +4,9 @@ echo ====================================================
 echo             morseGO - Docker Test Runner             
 echo ====================================================
 
+set TARGET=%1
+if "%TARGET%"=="" set TARGET=all
+
 where docker >nul 2>nul
 if %errorlevel% neq 0 (
     echo [ERROR] Docker not found in PATH. Please install Docker Desktop.
@@ -11,14 +14,20 @@ if %errorlevel% neq 0 (
 )
 
 docker info >nul 2>nul
-if %errorlevel% neq 0 (
-    echo [ERROR] Docker Desktop is not running or the engine is still initializing.
-    echo Please open Docker Desktop and wait for "Engine running" status before running tests.
-    exit /b 1
+if %errorlevel% equ 0 goto :DOCKER_READY
+
+where wsl >nul 2>nul
+if %errorlevel% equ 0 (
+    echo [INFO] Windows Docker Desktop not active. Running via WSL Docker engine...
+    wsl -d Ubuntu --cd "%~dp0" -e ./run-docker-tests.sh %TARGET%
+    exit /b %errorlevel%
 )
 
-set TARGET=%1
-if "%TARGET%"=="" set TARGET=all
+echo [ERROR] Docker Desktop is not running or the engine is still initializing.
+echo Please open Docker Desktop and wait for "Engine running" status before running tests.
+exit /b 1
+
+:DOCKER_READY
 
 echo Running Docker container for target: %TARGET%...
 if "%TARGET%"=="clean" (
