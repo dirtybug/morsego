@@ -10,21 +10,22 @@ def main():
 
     entry = f"""## [{version}] - {today}
 
-### 📱 Metadados Google Play Store
-- **Nome da Versão (`versionName`):** `{app_version}`
-- **Código da Versão (`versionCode`):** `{app_code}`
+### 📱 Google Play Store Metadata
+- **Version Name (`versionName`):** `{app_version}`
+- **Version Code (`versionCode`):** `{app_code}`
+- **Application ID:** `com.morsego.app`
 
-### 🧪 Testes e Qualidade
-- **Suíte de Testes:** 100% de Aprovação
-- **Relatório de Testes:** Disponível em `morseGO-{version}-test-reports.zip`
+### 🧪 Tests & Quality
+- **Test Suite:** 100% Passed (Unit Tests & Behavior Tests)
+- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 34)
 
-### 📥 Artefatos de Instalação
-| Artefato | Ficheiro | Descrição |
+### 📥 Release Deliverables
+| Artifact | File | Description |
 | :--- | :--- | :--- |
-| **APK Release** | [`morseGO-{version}.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.apk) | Binário de produção Android |
-| **AAB Bundle** | [`morseGO-{version}.aab`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.aab) | Pacote de publicação Google Play Store |
-| **Relatório de Testes** | [`morseGO-{version}-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}-test-reports.zip) | Relatório HTML dos testes |
-| **Galeria de Screenshots** | [`morseGO-{version}-screenshots.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}-screenshots.zip) | Capturas de ecrã dos testes de comportamento |
+| **AAB Bundle** | [`morseGO-{version}.aab`](https://github.com/dirtybug/morsego/releases/tag/{version}) | Signed production Android App Bundle for Google Play Store |
+| **APK Release** | [`morseGO-{version}.apk`](https://github.com/dirtybug/morsego/releases/tag/{version}) | Signed production Android APK for direct device installation |
+| **Test Reports** | [`morseGO-{version}-test-reports.zip`](https://github.com/dirtybug/morsego/releases/tag/{version}) | Full HTML test execution reports and summaries |
+| **Screenshots** | [`morseGO-{version}-screenshots.zip`](https://github.com/dirtybug/morsego/releases/tag/{version}) | UI behavior test screenshots across device orientations |
 
 ---
 

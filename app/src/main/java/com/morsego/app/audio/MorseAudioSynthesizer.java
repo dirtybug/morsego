@@ -135,7 +135,7 @@ public class MorseAudioSynthesizer {
      * Plays a complete Morse sequence with PARIS timing asynchronously
      */
     public void playMorsePattern(String pattern, int wpm, Runnable onFinished) {
-        playMorsePattern(pattern, wpm, 3, 7, onFinished);
+        playMorsePattern(pattern, wpm, 6, 13, onFinished);
     }
 
     public void playMorsePattern(String pattern, int wpm, int letterSpacingDits, int wordSpacingDits, Runnable onFinished) {

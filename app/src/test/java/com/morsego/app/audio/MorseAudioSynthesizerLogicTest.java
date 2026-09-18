@@ -33,8 +33,8 @@ public class MorseAudioSynthesizerLogicTest {
         long dit = MorseTiming.ditDurationMs(wpm);
         long dah = MorseTiming.dahDurationMs(wpm);
         long intra = MorseTiming.intraCharSpaceMs(wpm);
-        long inter = MorseTiming.interCharSpaceMs(wpm);
-        long word = MorseTiming.wordSpaceMs(wpm);
+        long inter = MorseTiming.interCharSpaceMs(wpm, 3);
+        long word = MorseTiming.wordSpaceMs(wpm, 7);
 
         assertEquals("Dit duration at 20 WPM must be 60ms", 60L, dit);
         assertEquals("Dah duration must be 3x dit (180ms)", 180L, dah);

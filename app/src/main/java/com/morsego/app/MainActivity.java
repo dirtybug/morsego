@@ -270,8 +270,8 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         } else if (silent) {
             vibrateMorsePattern(pattern, wpm, onFinished);
         } else {
-            int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
-            int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
+            int letterDits = settings != null ? settings.getLetterSpacingDits() : 6;
+            int wordDits = settings != null ? settings.getWordSpacingDits() : 13;
             synthesizer.playMorsePattern(pattern, wpm, letterDits, wordDits, onFinished);
         }
     }
@@ -319,8 +319,8 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
             return;
         }
         java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
-            int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
-            int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
+            int letterDits = settings != null ? settings.getLetterSpacingDits() : 6;
+            int wordDits = settings != null ? settings.getWordSpacingDits() : 13;
             long dit = MorseTiming.ditDurationMs(wpm);
             long dah = MorseTiming.dahDurationMs(wpm);
             long intra = MorseTiming.intraCharSpaceMs(wpm);

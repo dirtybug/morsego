@@ -40,7 +40,11 @@ public class KeyerSettings {
         }
     }
 
-    private int wpm = 15;
+    public static final int DEFAULT_WPM = 10;
+    public static final int DEFAULT_LETTER_SPACING_DITS = 6;
+    public static final int DEFAULT_WORD_SPACING_DITS = 13;
+
+    private int wpm = DEFAULT_WPM;
     private float pitchHz = 700.0f;
     private Mode mode = Mode.IAMBIC_B;
     private boolean reversePaddles = false;
@@ -49,8 +53,8 @@ public class KeyerSettings {
     private boolean soundEnabled = true;
     private boolean hapticsEnabled = true;
     private int currentUnlockedLevel = 1;
-    private int letterSpacingDits = 3;
-    private int wordSpacingDits = 7;
+    private int letterSpacingDits = DEFAULT_LETTER_SPACING_DITS;
+    private int wordSpacingDits = DEFAULT_WORD_SPACING_DITS;
 
     private static final String KEY_BACKUP_LEVEL = "highest_unlocked_level_backup";
 
@@ -72,15 +76,15 @@ public class KeyerSettings {
 
     public void load() {
         if (prefs == null) return;
-        this.wpm = prefs.getInt(KEY_WPM, 15);
+        this.wpm = prefs.getInt(KEY_WPM, DEFAULT_WPM);
         this.pitchHz = prefs.getFloat(KEY_PITCH, 700.0f);
         this.reversePaddles = prefs.getBoolean(KEY_REVERSE, false);
         this.ditKeyCode = prefs.getInt(KEY_DIT_KEY, KeyEvent.KEYCODE_CTRL_LEFT);
         this.dahKeyCode = prefs.getInt(KEY_DAH_KEY, KeyEvent.KEYCODE_CTRL_RIGHT);
         this.soundEnabled = prefs.getBoolean(KEY_SOUND, true);
         this.hapticsEnabled = prefs.getBoolean(KEY_HAPTICS, true);
-        this.letterSpacingDits = prefs.getInt(KEY_LETTER_SPACING, 3);
-        this.wordSpacingDits = prefs.getInt(KEY_WORD_SPACING, 7);
+        this.letterSpacingDits = prefs.getInt(KEY_LETTER_SPACING, DEFAULT_LETTER_SPACING_DITS);
+        this.wordSpacingDits = prefs.getInt(KEY_WORD_SPACING, DEFAULT_WORD_SPACING_DITS);
 
         // Persistent level restoration with backup redundancy
         int savedLevel = prefs.getInt(KEY_LEVEL, 1);
@@ -117,10 +121,10 @@ public class KeyerSettings {
     public void setWpm(int wpm) { this.wpm = Math.max(5, Math.min(45, wpm)); save(); }
 
     public int getLetterSpacingDits() { return letterSpacingDits; }
-    public void setLetterSpacingDits(int dits) { this.letterSpacingDits = Math.max(2, Math.min(8, dits)); save(); }
+    public void setLetterSpacingDits(int dits) { this.letterSpacingDits = Math.max(2, Math.min(12, dits)); save(); }
 
     public int getWordSpacingDits() { return wordSpacingDits; }
-    public void setWordSpacingDits(int dits) { this.wordSpacingDits = Math.max(5, Math.min(14, dits)); save(); }
+    public void setWordSpacingDits(int dits) { this.wordSpacingDits = Math.max(5, Math.min(20, dits)); save(); }
 
     public float getPitchHz() { return pitchHz; }
     public void setPitchHz(float pitchHz) { this.pitchHz = Math.max(400.0f, Math.min(1000.0f, pitchHz)); save(); }

@@ -96,7 +96,7 @@ public class MorseDecoder {
                 }
             } else if (lastCharToneStopTime > 0) {
                 // Inter-letter pause between letters of a word
-                int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+                int letterDits = settings != null ? settings.getLetterSpacingDits() : 6;
                 MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(pause, settings.getWpm(), letterDits);
                 notifyTimingFeedback(eval);
                 // Pause between letters is instructional guidance, never abort the user
@@ -139,8 +139,8 @@ public class MorseDecoder {
         cancelPauseWatchers();
 
         int wpm = settings.getWpm();
-        int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
-        int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
+        int letterDits = settings != null ? settings.getLetterSpacingDits() : 6;
+        int wordDits = settings != null ? settings.getWordSpacingDits() : 13;
         long charPause = customCharPauseMs > 0 ? customCharPauseMs :
                 MorseTiming.interCharSpaceMs(wpm, letterDits);
         long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm, wordDits), charPause + MorseTiming.ditDurationMs(wpm));
@@ -173,7 +173,7 @@ public class MorseDecoder {
     private void scheduleMaxLetterPauseWatcher() {
         cancelMaxLetterPauseWatcher();
         int wpm = settings.getWpm();
-        int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+        int letterDits = settings != null ? settings.getLetterSpacingDits() : 6;
         // Generous letter pause tolerance relative to configured letter spacing
         long maxWait = Math.max(MorseTiming.interCharSpaceMs(wpm, letterDits) * 4L, 2500L);
         maxLetterPauseRunnable = () -> {

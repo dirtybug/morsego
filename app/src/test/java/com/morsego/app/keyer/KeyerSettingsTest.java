@@ -23,7 +23,7 @@ public class KeyerSettingsTest {
 
     @Test
     public void testDefaultConfigurationValues() {
-        assertEquals("Default WPM should be 15", 15, settings.getWpm());
+        assertEquals("Default WPM should be 10", 10, settings.getWpm());
         assertEquals("Default Pitch should be 700Hz", 700.0f, settings.getPitchHz(), 0.01f);
         assertEquals("Default Mode should be IAMBIC_B", KeyerSettings.Mode.IAMBIC_B, settings.getMode());
         assertFalse("Default paddle orientation should not be reversed", settings.isReversePaddles());
@@ -163,8 +163,8 @@ public class KeyerSettingsTest {
 
     @Test
     public void testLetterAndWordSpacingSettings() {
-        assertEquals("Default letter spacing should be 3 dits", 3, settings.getLetterSpacingDits());
-        assertEquals("Default word spacing should be 7 dits", 7, settings.getWordSpacingDits());
+        assertEquals("Default letter spacing should be 6 dits", 6, settings.getLetterSpacingDits());
+        assertEquals("Default word spacing should be 13 dits", 13, settings.getWordSpacingDits());
 
         // Custom valid values
         settings.setLetterSpacingDits(4);
@@ -173,16 +173,16 @@ public class KeyerSettingsTest {
         settings.setWordSpacingDits(10);
         assertEquals(10, settings.getWordSpacingDits());
 
-        // Bounds clamping: Letter spacing (min 2, max 8)
+        // Bounds clamping: Letter spacing (min 2, max 12)
         settings.setLetterSpacingDits(1);
         assertEquals(2, settings.getLetterSpacingDits());
         settings.setLetterSpacingDits(15);
-        assertEquals(8, settings.getLetterSpacingDits());
+        assertEquals(12, settings.getLetterSpacingDits());
 
-        // Bounds clamping: Word spacing (min 5, max 14)
+        // Bounds clamping: Word spacing (min 5, max 20)
         settings.setWordSpacingDits(2);
         assertEquals(5, settings.getWordSpacingDits());
-        settings.setWordSpacingDits(20);
-        assertEquals(14, settings.getWordSpacingDits());
+        settings.setWordSpacingDits(25);
+        assertEquals(20, settings.getWordSpacingDits());
     }
 }

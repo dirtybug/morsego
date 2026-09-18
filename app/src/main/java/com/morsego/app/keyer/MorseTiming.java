@@ -19,8 +19,11 @@ public class MorseTiming {
         return ditDurationMs(wpm);
     }
 
+    public static final int DEFAULT_LETTER_SPACING_DITS = 6;
+    public static final int DEFAULT_WORD_SPACING_DITS = 13;
+
     public static long interCharSpaceMs(int wpm) {
-        return interCharSpaceMs(wpm, 3);
+        return interCharSpaceMs(wpm, DEFAULT_LETTER_SPACING_DITS);
     }
 
     public static long interCharSpaceMs(int wpm, int letterSpacingDits) {
@@ -28,7 +31,7 @@ public class MorseTiming {
     }
 
     public static long wordSpaceMs(int wpm) {
-        return wordSpaceMs(wpm, 7);
+        return wordSpaceMs(wpm, DEFAULT_WORD_SPACING_DITS);
     }
 
     public static long wordSpaceMs(int wpm, int wordSpacingDits) {
@@ -73,11 +76,11 @@ public class MorseTiming {
     }
 
     /**
-     * Evaluates pause between letters in a word (Nominal: 3 Dits default).
-     * Violating minimum (< 0.40x) or maximum (> 3.2x) is considered a TIMING FAILURE.
+     * Evaluates pause between letters in a word (Nominal: 6 Dits default = 720ms at 10 WPM).
+     * Violating minimum (< 0.35x) or maximum (> 5.0x) is considered a TIMING FAILURE.
      */
     public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm) {
-        return evaluateLetterPause(pauseMs, wpm, 3);
+        return evaluateLetterPause(pauseMs, wpm, DEFAULT_LETTER_SPACING_DITS);
     }
 
     public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm, int letterSpacingDits) {

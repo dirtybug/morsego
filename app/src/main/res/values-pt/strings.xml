@@ -155,13 +155,13 @@
     <!-- Settings Dialog -->
     <string name="settings_dialog_title">CONFIGURAÇÕES MORSEGO</string>
     <string name="settings_wpm_label">Velocidade: %d WPM</string>
-    <string name="settings_wpm_default">Velocidade: 15 WPM</string>
+    <string name="settings_wpm_default">Velocidade: 10 WPM</string>
     <string name="settings_pitch_label">Tom CW: %d Hz</string>
     <string name="settings_pitch_default">Tom CW: 700 Hz</string>
     <string name="settings_letter_spacing_label">Espaço entre Letras: %1$d dits (%2$d ms)</string>
-    <string name="settings_letter_spacing_default">Espaço entre Letras: 3 dits (240 ms)</string>
+    <string name="settings_letter_spacing_default">Espaço entre Letras: 6 dits (720 ms)</string>
     <string name="settings_word_spacing_label">Espaço entre Palavras: %1$d dits (%2$d ms)</string>
-    <string name="settings_word_spacing_default">Espaço entre Palavras: 7 dits (560 ms)</string>
+    <string name="settings_word_spacing_default">Espaço entre Palavras: 13 dits (1560 ms)</string>
     <string name="settings_test_tone">Testar</string>
     <string name="settings_keyer_mode">MODO DO MANIPULADOR:</string>
     <string name="settings_mode_iambic_b">Iambic Modo B (Curtis com memória)</string>

@@ -1,54 +1,65 @@
-# 📦 MorseGO - Lista de Releases Oficiais
+# 📦 MorseGO - Official Releases
 
-Este documento mantém o registo histórico oficial de todas as versões lançadas do **MorseGO**, incluindo metadados da Google Play Store, pacotes APK, relatórios de testes e integridade SHA256.
+This document maintains the official release history of **MorseGO**, including Google Play Store metadata, release deliverables, test validation, and release notes.
+
+Official release assets can also be directly downloaded from the [GitHub Releases](https://github.com/dirtybug/morsego/releases) page.
 
 ---
 
 <!-- RELEASES_LIST_START -->
 ## [v1.0.1] - 2026-09-18
 
-### 📱 Metadados Google Play Store
-- **Nome da Versão (`versionName`):** `1.0.1`
-- **Código da Versão (`versionCode`):** `10001`
+### 📱 Google Play Store Metadata
+- **Version Name (`versionName`):** `1.0.1`
+- **Version Code (`versionCode`):** `10001`
+- **Application ID:** `com.morsego.app`
+- **Target SDK:** Android 34 (Android 14) / **Min SDK:** Android 24 (Android 7.0)
 
-### 🧪 Testes e Qualidade
-- **Suíte de Testes:** 100% de Aprovação
-- **Relatório de Testes:** Disponível em `morseGO-v1.0.1-test-reports.zip`
+### 🧪 Tests and Quality
+- **Test Suite:** 100% Passed (Unit Tests & Behavior Tests)
+- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 34)
 
-### 📥 Artefatos de Instalação
-| Artefato | Ficheiro | Descrição |
+### 📥 Release Deliverables
+| Artifact | File | Description |
 | :--- | :--- | :--- |
-| **APK Release** | [`morseGO-v1.0.1.apk`](https://github.com/dirtybug/morsego/releases/download/v1.0.1/morseGO-v1.0.1.apk) | Binário de produção Android |
-| **Relatório de Testes** | [`morseGO-v1.0.1-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/v1.0.1/morseGO-v1.0.1-test-reports.zip) | Relatório HTML dos testes |
+| **AAB Bundle** | [`morseGO-v1.0.1.aab`](https://github.com/dirtybug/morsego/releases/tag/v1.0.1) | Signed production Android App Bundle for Google Play Store |
+| **APK Release** | [`morseGO-v1.0.1.apk`](https://github.com/dirtybug/morsego/releases/tag/v1.0.1) | Signed production Android APK for direct device installation |
+| **Test Reports** | [`morseGO-v1.0.1-test-reports.zip`](https://github.com/dirtybug/morsego/releases/tag/v1.0.1) | Full HTML test execution reports and summaries |
+| **Screenshots** | [`morseGO-v1.0.1-screenshots.zip`](https://github.com/dirtybug/morsego/releases/tag/v1.0.1) | Visual UI behavior test screenshots across orientations |
+
+### 🚀 Key Improvements in v1.0.1
+- **Updated Default Timings:** Default 10 WPM, 720ms letter spacing (6 dits), 1560ms word spacing (13 dits).
+- **Expanded Spacing Controls:** Letter spacing slider configurable from 2 to 12 dits; word spacing slider configurable from 5 to 20 dits.
+- **Flattened Release Artifacts:** Clean, non-nested GitHub Actions artifact zips without redundant internal zips.
+- **Documentation Overhaul:** English documentation with direct GitHub Releases links.
 
 ---
 
-## [v1.0.0] - 2026-09-11
+## [v1.0.0] - 2026-09-18
 
-### 📱 Metadados Google Play Store
-- **Nome da Versão (`versionName`):** `1.0.0`
-- **Código da Versão (`versionCode`):** `10000`
-- **Ambiente de Build:** Docker Hermético (OpenJDK 17 + Android SDK 34)
-- **Target SDK:** Android 34 (Android 14) / Min SDK: Android 24 (Android 7.0)
+### 📱 Google Play Store Metadata
+- **Version Name (`versionName`):** `1.0.0`
+- **Version Code (`versionCode`):** `10000`
+- **Application ID:** `com.morsego.app`
+- **Target SDK:** Android 34 (Android 14) / **Min SDK:** Android 24 (Android 7.0)
 
-### 🧪 Testes e Qualidade
-- **Suíte de Testes:** 100% de Aprovação (86 Testes Unitários JVM + 49 Testes de Comportamento Android)
-- **Relatório de Testes:** [Dashboard Central de Testes](release/v1.0.0/reports/index.html)
-- **Galeria Visual:** [Screenshots de Comportamento](release/v1.0.0/reports/behavior-tests/index.html) (95 capturas em modo retrato, paisagem e rotação a 90°)
+### 🧪 Tests and Quality
+- **Test Suite:** 100% Passed (Unit Tests & Behavior Tests)
+- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 34)
 
-### 📥 Artefatos de Instalação
-| Artefato | Ficheiro | Descrição |
+### 📥 Release Deliverables
+| Artifact | File | Description |
 | :--- | :--- | :--- |
-| **APK Release** | [`morseGO-v1.0.0-release.apk`](release/v1.0.0/morseGO-v1.0.0-release.apk) | Binário de produção otimizado para a Google Play Store |
-| **APK Debug** | [`morseGO-v1.0.0-debug.apk`](release/v1.0.0/morseGO-v1.0.0-debug.apk) | Binário com logging ativado para depuração |
-| **Manifesto JSON** | [`release-manifest.json`](release/v1.0.0/release-manifest.json) | Metadados da release para consumo automatizado |
-| **Sumário de Testes** | [`test-summary.json`](release/v1.0.0/test-summary.json) | Registo de cobertura e validações dos testes |
-| **Checksums** | [`SHA256SUMS.txt`](release/v1.0.0/SHA256SUMS.txt) | Assinaturas de verificação de integridade dos ficheiros |
+| **AAB Bundle** | [`morseGO-v1.0.0.aab`](https://github.com/dirtybug/morsego/releases/tag/v1.0.0) | Signed production Android App Bundle for Google Play Store |
+| **APK Release** | [`morseGO-v1.0.0.apk`](https://github.com/dirtybug/morsego/releases/tag/v1.0.0) | Signed production Android APK for direct device installation |
+| **Test Reports** | [`morseGO-v1.0.0-test-reports.zip`](https://github.com/dirtybug/morsego/releases/tag/v1.0.0) | Full HTML test execution reports and summaries |
+| **Screenshots** | [`morseGO-v1.0.0-screenshots.zip`](https://github.com/dirtybug/morsego/releases/tag/v1.0.0) | Visual UI behavior test screenshots across orientations |
 
-### 🚀 Funcionalidades da Versão
-- **Árvore Binária de Morse Completa:** 21 níveis de aprendizagem progressiva (letras, números e sinais prosigns).
-- **Temporização PARIS de Alta Precisão:** Ritmo a 20 WPM com tolerância dinâmica adaptativa.
-- **Manipulador Físico USB Type-C:** Suporte nativo ao manipulador de pás duplas da Amazon (*CW Keyer Automatic Trainer PCB*).
-- **Modos de Operação:** Transmissão (Keyer), Recepção (Árvore interativa), Exames de Escuta e Envio.
-- **Layouts Adaptativos:** Orientação vertical (*portrait*) e horizontal (*landscape*) em ecrãs de telemóveis e tablets.
+### 🚀 Key Features
+- **Complete Morse Binary Tree:** 21 progressive training levels (letters, numbers, prosigns).
+- **Default Timing Configuration:** 10 WPM, 720ms inter-letter spacing (6 dits), 1560ms word spacing (13 dits).
+- **Physical USB Type-C Paddle Keyer:** Native plug-and-play support for dual-paddle keyers (*CW Keyer Automatic Trainer PCB*).
+- **Multiple Keyer Modes:** Iambic Mode B (Curtis with memory), Iambic Mode A, and Straight Key / Manual.
+- **Adaptive Screen Layouts:** Responsive portrait and landscape views for phones and tablets.
+- **100% Free & Open Source:** No ads, no tracking, completely open on GitHub.
 <!-- RELEASES_LIST_END -->

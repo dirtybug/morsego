@@ -82,8 +82,8 @@ public class SettingsDialogFragment extends DialogFragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Letter Spacing (Inter-Character: 2 - 8 dits, progress = dits - 2)
-        binding.seekSettingsLetterSpacing.setMax(6);
+        // Letter Spacing (Inter-Character: 2 - 12 dits, progress = dits - 2)
+        binding.seekSettingsLetterSpacing.setMax(10);
         binding.seekSettingsLetterSpacing.setProgress(settings.getLetterSpacingDits() - 2);
         binding.seekSettingsLetterSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -98,8 +98,8 @@ public class SettingsDialogFragment extends DialogFragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Word Spacing (Inter-Word: 5 - 14 dits, progress = dits - 5)
-        binding.seekSettingsWordSpacing.setMax(9);
+        // Word Spacing (Inter-Word: 5 - 20 dits, progress = dits - 5)
+        binding.seekSettingsWordSpacing.setMax(15);
         binding.seekSettingsWordSpacing.setProgress(settings.getWordSpacingDits() - 5);
         binding.seekSettingsWordSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
