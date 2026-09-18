@@ -67,6 +67,11 @@ jobs:
           echo "APP_VERSION_NAME=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "APP_VERSION_CODE=$CODE" >> $GITHUB_ENV
           echo "IS_TAG_RELEASE=$IS_TAG_RELEASE" >> $GITHUB_ENV
+          if [[ "$IS_TAG_RELEASE" == "true" ]]; then
+            echo "TARGET_DIR=release/${TAG_NAME}" >> $GITHUB_ENV
+          else
+            echo "TARGET_DIR=release/development" >> $GITHUB_ENV
+          fi
 
           echo "====================================================="
           echo "🏷️ Git Tag / Version:     $TAG_NAME"
@@ -128,6 +133,7 @@ jobs:
           else
             TARGET_DIR="release/development"
           fi
+          echo "TARGET_DIR=${TARGET_DIR}" >> $GITHUB_ENV
           mkdir -p "${TARGET_DIR}/reports"
 
           # 1. Ensure Release APK is present in TARGET_DIR with versioned name
@@ -162,12 +168,25 @@ jobs:
             cp -r release/development/screenshots/* "${TARGET_DIR}/screenshots/" 2>/dev/null || true
           fi
 
-          # 5. Create zip archives for easy download
+          # 5. Create zip archives for GitHub Release asset attachment
           if [ -d "${TARGET_DIR}/reports" ]; then
             (cd "${TARGET_DIR}" && python3 -m zipfile -c "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || zip -r "morseGO-${VERSION}-test-reports.zip" reports 2>/dev/null || true)
           fi
           if [ -d "${TARGET_DIR}/screenshots" ]; then
             (cd "${TARGET_DIR}" && python3 -m zipfile -c "morseGO-${VERSION}-screenshots.zip" screenshots 2>/dev/null || zip -r "morseGO-${VERSION}-screenshots.zip" screenshots 2>/dev/null || true)
+          fi
+
+          # 6. Prepare clean flat staging directory for GitHub Actions Artifacts
+          rm -rf staging && mkdir -p staging/reports staging/screenshots
+          cp -f "${TARGET_DIR}/morseGO-${VERSION}.apk" staging/
+          if [ -f "${TARGET_DIR}/morseGO-${VERSION}.aab" ]; then
+            cp -f "${TARGET_DIR}/morseGO-${VERSION}.aab" staging/
+          fi
+          if [ -d "${TARGET_DIR}/reports" ]; then
+            cp -r "${TARGET_DIR}/reports/"* staging/reports/ 2>/dev/null || true
+          fi
+          if [ -d "${TARGET_DIR}/screenshots" ]; then
+            cp -r "${TARGET_DIR}/screenshots/"* staging/screenshots/ 2>/dev/null || true
           fi
 
           echo "=== ARTIFACTS IN ${TARGET_DIR} ==="
@@ -181,7 +200,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-${{ env.VERSION }}-apk
-          path: release/**/morseGO-${{ env.VERSION }}.apk
+          path: staging/morseGO-${{ env.VERSION }}.apk
           retention-days: 30
           if-no-files-found: error
 
@@ -190,17 +209,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-${{ env.VERSION }}-aab
-          path: release/**/morseGO-${{ env.VERSION }}.aab
+          path: staging/morseGO-${{ env.VERSION }}.aab
           retention-days: 30
           if-no-files-found: error
 
-      - name: Upload Test Report Artifact (HTML & Zip)
+      - name: Upload Test Report Artifact (HTML)
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-${{ env.VERSION }}-test-reports
-          path: |
-            release/**/morseGO-${{ env.VERSION }}-test-reports.zip
-            release/**/reports/**
+          path: staging/reports
           retention-days: 30
           if-no-files-found: error
 
@@ -208,9 +225,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: morseGO-${{ env.VERSION }}-screenshots
-          path: |
-            release/**/morseGO-${{ env.VERSION }}-screenshots.zip
-            release/**/screenshots/**
+          path: staging/screenshots
           retention-days: 30
           if-no-files-found: warn
 
@@ -224,8 +239,15 @@ jobs:
             ## 🚀 MorseGO Official Release ${{ env.VERSION }}
             - **Google Play Store Version Name (`versionName`):** `${{ env.APP_VERSION_NAME }}`
             - **Google Play Store Version Code (`versionCode`):** `${{ env.APP_VERSION_CODE }}`
+            - **Application ID / Package Name:** `com.morsego.app`
             - **Git Commit:** `${{ github.sha }}`
             - **Test Suite Status:** 100% Passed (Unit Tests & Behavior Tests)
+
+            ### 📦 Release Assets
+            - **`morseGO-${{ env.VERSION }}.aab`**: Google Play Store Android App Bundle (Production Signed). Direct file upload for Google Play Console.
+            - **`morseGO-${{ env.VERSION }}.apk`**: Android APK installer package (Production Signed).
+            - **`morseGO-${{ env.VERSION }}-test-reports.zip`**: All Unit and Behavior Test HTML Reports.
+            - **`morseGO-${{ env.VERSION }}-screenshots.zip`**: Behavior and UI Test Screenshot captures.
           files: |
             release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}.apk
             release/${{ env.VERSION }}/morseGO-${{ env.VERSION }}.aab
