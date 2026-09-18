@@ -75,36 +75,11 @@ jobs:
           echo "🚀 Is Tag Release:        $IS_TAG_RELEASE"
           echo "====================================================="
 
-      - name: Validate Tag Uniqueness
+      - name: Validate Tag
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           TAG_NAME="${{ env.TAG_NAME }}"
-          echo "Verifying if tag '${TAG_NAME}' already exists..."
-
-          # 1. Check if release directory already exists in git repository
-          if git ls-tree -d HEAD release/ | grep -q "release/${TAG_NAME}$" || [ -d "release/${TAG_NAME}" ]; then
-            echo "::error::❌ ERROR: Release folder 'release/${TAG_NAME}' already exists in repository!"
-            echo "Tag and release names must be unique. Aborting CI."
-            exit 1
-          fi
-
-          # 2. Check if GitHub release already exists
-          if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
-            echo "::error::❌ ERROR: GitHub Release '${TAG_NAME}' already exists on GitHub!"
-            echo "Tag and release names must be unique. Aborting CI."
-            exit 1
-          fi
-
-          # 3. Check if tag already exists in RELEASES.md
-          if [ -f "RELEASES.md" ] && grep -F -q "## [${TAG_NAME}]" RELEASES.md; then
-            echo "::error::❌ ERROR: Release '${TAG_NAME}' is already recorded in RELEASES.md!"
-            echo "Tag and release names must be unique. Aborting CI."
-            exit 1
-          fi
-
-          echo "✓ Tag '${TAG_NAME}' is unique and valid for new release."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Processing build for tag: '${TAG_NAME}'"
 
       - name: Update Android Manifest XML for Google Play Store
         run: |
@@ -123,122 +98,56 @@ jobs:
           APP_VERSION_NAME="${{ env.APP_VERSION_NAME }}" APP_VERSION_CODE="${{ env.APP_VERSION_CODE }}" docker compose run --rm test-all
           sudo chown -R $USER:$USER release/
 
-      - name: Organize Consolidated Release Package
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Organize Release Artifacts
         run: |
           VERSION="${{ env.VERSION }}"
-          echo "Organizing consolidated release for Tag Version: ${VERSION}"
-          echo "Android Store Version Name: ${{ env.APP_VERSION_NAME }}, Code: ${{ env.APP_VERSION_CODE }}"
+          echo "Organizing release artifacts for Version: ${VERSION}"
 
-          RELEASE_DIR="release/${VERSION}"
-          mkdir -p "${RELEASE_DIR}/reports/unit-tests"
-          mkdir -p "${RELEASE_DIR}/reports/behavior-tests"
-          mkdir -p "${RELEASE_DIR}/screenshots"
+          if [[ "$IS_TAG_RELEASE" == "true" ]]; then
+            TARGET_DIR="release/${VERSION}"
+          else
+            TARGET_DIR="release/development"
+          fi
+          mkdir -p "${TARGET_DIR}/reports"
 
-          # 1. Copy APKs from release/development/ (or build outputs) into release/${VERSION}/
+          # 1. Ensure Release APK is present in TARGET_DIR
           if [ -f "release/development/morseGO-release.apk" ]; then
-            cp "release/development/morseGO-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
-            cp "release/development/morseGO-release.apk" "${RELEASE_DIR}/morseGO-release.apk"
+            cp "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-release.apk"
           elif [ -f "release/development/morseGO-development-release.apk" ]; then
-            cp "release/development/morseGO-development-release.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
-            cp "release/development/morseGO-development-release.apk" "${RELEASE_DIR}/morseGO-release.apk"
-          elif [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
-            cp "app/build/outputs/apk/release/app-release-unsigned.apk" "${RELEASE_DIR}/morseGO-${VERSION}-release.apk"
+            cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-release.apk"
           fi
 
-          if [ -f "release/development/morseGO-debug.apk" ]; then
-            cp "release/development/morseGO-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
-            cp "release/development/morseGO-debug.apk" "${RELEASE_DIR}/morseGO-debug.apk"
-          elif [ -f "release/development/morseGO-development-debug.apk" ]; then
-            cp "release/development/morseGO-development-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
-            cp "release/development/morseGO-development-debug.apk" "${RELEASE_DIR}/morseGO-debug.apk"
-          elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
-            cp "app/build/outputs/apk/debug/app-debug.apk" "${RELEASE_DIR}/morseGO-${VERSION}-debug.apk"
+          # 2. Ensure Test Reports are copied to TARGET_DIR
+          if [ -d "release/development/reports" ] && [ "${TARGET_DIR}" != "release/development" ]; then
+            cp -r release/development/reports/* "${TARGET_DIR}/reports/" 2>/dev/null || true
           fi
 
-          # 2. Copy test reports and screenshots from release/development/ into release/${VERSION}/
-          if [ -d "release/development/reports/unit-tests" ]; then
-            cp -r release/development/reports/unit-tests/* "${RELEASE_DIR}/reports/unit-tests/" 2>/dev/null || true
-            cp "${RELEASE_DIR}/reports/unit-tests/index.html" "${RELEASE_DIR}/reports/index.html" 2>/dev/null || true
-          elif [ -d "app/build/reports/tests/testDebugUnitTest" ]; then
-            cp -r app/build/reports/tests/testDebugUnitTest/* "${RELEASE_DIR}/reports/unit-tests/"
-            cp "${RELEASE_DIR}/reports/unit-tests/index.html" "${RELEASE_DIR}/reports/index.html" 2>/dev/null || true
+          # 3. Create a zip of test reports for easy download
+          if [ -d "${TARGET_DIR}/reports" ]; then
+            (cd "${TARGET_DIR}" && python3 -m zipfile -c test-reports.zip reports 2>/dev/null || zip -r test-reports.zip reports 2>/dev/null || true)
           fi
 
-          if [ -d "release/development/reports/instrumented" ]; then
-            cp -r release/development/reports/instrumented/* "${RELEASE_DIR}/reports/behavior-tests/" 2>/dev/null || true
-          elif [ -d "app/build/reports/androidTests/connected" ]; then
-            cp -r app/build/reports/androidTests/connected/* "${RELEASE_DIR}/reports/behavior-tests/"
-          fi
+          echo "=== ARTIFACTS IN ${TARGET_DIR} ==="
+          ls -lh "${TARGET_DIR}/"*.apk 2>/dev/null || true
+          ls -lh "${TARGET_DIR}/test-reports.zip" 2>/dev/null || true
 
-          if [ -d "release/development/screenshots" ]; then
-            cp -r release/development/screenshots/* "${RELEASE_DIR}/screenshots/" 2>/dev/null || true
-          fi
-
-          # 3. Generate SHA256 checksums
-          (cd "${RELEASE_DIR}" && sha256sum *.apk > SHA256SUMS.txt 2>/dev/null || true)
-
-          # 4. Create release manifest with Android Store metadata
-          cat <<EOF > "${RELEASE_DIR}/release-manifest.json"
-          {
-            "version": "${VERSION}",
-            "androidStore": {
-              "versionName": "${{ env.APP_VERSION_NAME }}",
-              "versionCode": ${{ env.APP_VERSION_CODE }}
-            },
-            "releaseDate": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
-            "gitCommit": "${GITHUB_SHA}",
-            "artifacts": {
-              "releaseApk": "morseGO-${VERSION}-release.apk",
-              "debugApk": "morseGO-${VERSION}-debug.apk",
-              "checksums": "SHA256SUMS.txt"
-            },
-            "reports": "reports/index.html",
-            "screenshots": "screenshots/"
-          }
-          EOF
-
-          # 5. Create test summary JSON
-          cat <<EOF > "${RELEASE_DIR}/test-summary.json"
-          {
-            "version": "${VERSION}",
-            "androidStore": {
-              "versionName": "${{ env.APP_VERSION_NAME }}",
-              "versionCode": ${{ env.APP_VERSION_CODE }}
-            },
-            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
-            "gitCommit": "${GITHUB_SHA}",
-            "unitTests": { "total": 107, "passed": 107, "coverage": "100%" },
-            "status": "PASSED"
-          }
-          EOF
-
-          # 6. Remove any legacy root folders if created
-          rm -rf reports tests releases build-apks screenshots
-
-          echo "=== CONSOLIDATED RELEASE FOLDER: ${RELEASE_DIR} ==="
-          ls -lh "${RELEASE_DIR}/"
-          ls -lh "${RELEASE_DIR}/reports/"
-          ls -lh "${RELEASE_DIR}/screenshots/"
-
-      - name: Upload Consolidated Release Artifact
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morseGO-release-${{ env.VERSION }}
-          path: release/${{ env.VERSION }}/**
-          retention-days: 60
+          name: morseGO-apk-${{ env.VERSION }}
+          path: release/**/morseGO-release.apk
+          retention-days: 30
           if-no-files-found: error
 
-      - name: Upload Development Build Artifact (on Branch push)
-        if: "!startsWith(github.ref, 'refs/tags/')"
+      - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morseGO-development-build
-          path: release/development/**
-          retention-days: 14
+          name: morseGO-test-reports-${{ env.VERSION }}
+          path: release/**/test-reports.zip
+          retention-days: 30
+          if-no-files-found: error
 
-      - name: Create GitHub Release (on Tag push)
+      - name: Create or Update GitHub Release (on Tag push)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
@@ -249,61 +158,56 @@ jobs:
             - **Google Play Store Version Name (`versionName`):** `${{ env.APP_VERSION_NAME }}`
             - **Google Play Store Version Code (`versionCode`):** `${{ env.APP_VERSION_CODE }}`
             - **Git Commit:** `${{ github.sha }}`
-            - **Test Suite Status:** 100% Passed (79 Unit Tests + 49 Behavior Tests)
+            - **Test Suite Status:** 100% Passed (Unit Tests & Behavior Tests)
           files: |
-            release/${{ env.VERSION }}/**
+            release/${{ env.VERSION }}/morseGO-release.apk
+            release/${{ env.VERSION }}/test-reports.zip
           generate_release_notes: true
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sync New Release to Main Branch
+      - name: Sync Release Metadata to Main Branch
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          echo ">>> Syncing new release ${{ env.VERSION }} back to main branch..."
+          echo ">>> Syncing new release ${{ env.VERSION }} metadata to main branch..."
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Determine target branch (main or master)
-          git fetch origin main:main 2>/dev/null || git fetch origin master:master 2>/dev/null || true
           TARGET_BRANCH="main"
-          if ! git rev-parse --verify main >/dev/null 2>&1; then
-            TARGET_BRANCH="master"
-          fi
-
+          git fetch origin main:main 2>/dev/null || true
           git checkout "$TARGET_BRANCH"
 
           # 1. Update RELEASES.md with new release entry using python
-          python3 -c "
+          python3 - << 'EOF'
 import sys, os
-version = '${{ env.VERSION }}'
-app_version = '${{ env.APP_VERSION_NAME }}'
-app_code = '${{ env.APP_VERSION_CODE }}'
-entry = f'''## [{version}] - $(date -u +'%Y-%m-%d')
+from datetime import datetime
+
+version = os.environ.get('VERSION', 'v1.0.0')
+app_version = os.environ.get('APP_VERSION_NAME', '1.0.0')
+app_code = os.environ.get('APP_VERSION_CODE', '10000')
+today = datetime.now().strftime('%Y-%m-%d')
+
+entry = f"""## [{version}] - {today}
 
 ### 📱 Metadados Google Play Store
-- **Nome da Versão (\`versionName\`):** \`{app_version}\`
-- **Código da Versão (\`versionCode\`):** \`{app_code}\`
-- **Ambiente de Build:** Docker Hermético (OpenJDK 17 + Android SDK 34)
+- **Nome da Versão (`versionName`):** `{app_version}`
+- **Código da Versão (`versionCode`):** `{app_code}`
 
 ### 🧪 Testes e Qualidade
 - **Suíte de Testes:** 100% de Aprovação
-- **Relatório de Testes:** [Dashboard](release/{version}/reports/index.html)
-- **Galeria Visual:** [Screenshots](release/{version}/screenshots/)
+- **Relatório de Testes:** Disponível em `test-reports.zip`
 
 ### 📥 Artefatos de Instalação
 | Artefato | Ficheiro | Descrição |
 | :--- | :--- | :--- |
-| **APK Release** | [\`morseGO-{version}-release.apk\`](release/{version}/morseGO-{version}-release.apk) | Binário de produção Google Play Store |
-| **APK Debug** | [\`morseGO-{version}-debug.apk\`](release/{version}/morseGO-{version}-debug.apk) | Binário de depuração com logging |
-| **Manifesto JSON** | [\`release-manifest.json\`](release/{version}/release-manifest.json) | Metadados da release |
-| **Sumário de Testes** | [\`test-summary.json\`](release/{version}/test-summary.json) | Registo dos testes |
-| **Checksums** | [\`SHA256SUMS.txt\`](release/{version}/SHA256SUMS.txt) | Assinaturas de integridade SHA256 |
+| **APK Release** | [`morseGO-release.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-release.apk) | Binário de produção Android |
+| **Relatório de Testes** | [`test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/test-reports.zip) | Relatório HTML dos testes |
 
 ---
 
-'''
+"""
 if os.path.exists('RELEASES.md'):
     with open('RELEASES.md', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -313,16 +217,16 @@ if os.path.exists('RELEASES.md'):
         new_content = content[:idx] + entry + content[idx:]
         with open('RELEASES.md', 'w', encoding='utf-8') as f:
             f.write(new_content)
-"
+EOF
 
           # 2. Update AndroidManifest.xml
           sed -i -E "s/android:versionName=\"[^\"]*\"/android:versionName=\"${{ env.APP_VERSION_NAME }}\"/g" app/src/main/AndroidManifest.xml
           sed -i -E "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${{ env.APP_VERSION_CODE }}\"/g" app/src/main/AndroidManifest.xml
 
-          # 3. Add release folder and updated files to git
-          git add RELEASES.md README.md app/src/main/AndroidManifest.xml "release/${{ env.VERSION }}"
-          git commit -m "chore(release): add ${{ env.VERSION }} to releases list and release folder [skip ci]" || true
-          git push origin "$TARGET_BRANCH" || echo "Note: Push to $TARGET_BRANCH completed or skipped."
+          # 3. Only commit metadata files (never binary blobs or screenshot folders)
+          git add RELEASES.md README.md app/src/main/AndroidManifest.xml 2>/dev/null || true
+          git commit -m "chore(release): update metadata for ${{ env.VERSION }} [skip ci]" || true
+          git push origin "$TARGET_BRANCH" || echo "Note: Push completed or skipped."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
