@@ -132,17 +132,23 @@ jobs:
 
           # 1. Ensure Release APK is present in TARGET_DIR with versioned name
           if [ -f "release/development/morseGO-release.apk" ]; then
-            cp "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk"
-            cp "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-release.apk"
+            cp -f "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk" 2>/dev/null || true
+            if [ "${TARGET_DIR}" != "release/development" ]; then
+              cp -f "release/development/morseGO-release.apk" "${TARGET_DIR}/morseGO-release.apk" 2>/dev/null || true
+            fi
           elif [ -f "release/development/morseGO-development-release.apk" ]; then
-            cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk"
-            cp "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-release.apk"
+            cp -f "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-${VERSION}.apk" 2>/dev/null || true
+            if [ "${TARGET_DIR}" != "release/development" ]; then
+              cp -f "release/development/morseGO-development-release.apk" "${TARGET_DIR}/morseGO-release.apk" 2>/dev/null || true
+            fi
           fi
 
           # 2. Ensure Release AAB (Android App Bundle) is present in TARGET_DIR with versioned name
           if [ -f "release/development/morseGO-release.aab" ]; then
-            cp "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-${VERSION}.aab"
-            cp "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-release.aab"
+            cp -f "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-${VERSION}.aab" 2>/dev/null || true
+            if [ "${TARGET_DIR}" != "release/development" ]; then
+              cp -f "release/development/morseGO-release.aab" "${TARGET_DIR}/morseGO-release.aab" 2>/dev/null || true
+            fi
           fi
 
           # 3. Ensure Test Reports (including all HTML reports and CSS/JS) are copied to TARGET_DIR
