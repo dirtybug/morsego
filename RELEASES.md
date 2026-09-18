@@ -5,6 +5,24 @@ Este documento mantém o registo histórico oficial de todas as versões lançad
 ---
 
 <!-- RELEASES_LIST_START -->
+## [v1.0.1] - 2026-09-18
+
+### 📱 Metadados Google Play Store
+- **Nome da Versão (`versionName`):** `1.0.1`
+- **Código da Versão (`versionCode`):** `10001`
+
+### 🧪 Testes e Qualidade
+- **Suíte de Testes:** 100% de Aprovação
+- **Relatório de Testes:** Disponível em `morseGO-v1.0.1-test-reports.zip`
+
+### 📥 Artefatos de Instalação
+| Artefato | Ficheiro | Descrição |
+| :--- | :--- | :--- |
+| **APK Release** | [`morseGO-v1.0.1.apk`](https://github.com/dirtybug/morsego/releases/download/v1.0.1/morseGO-v1.0.1.apk) | Binário de produção Android |
+| **Relatório de Testes** | [`morseGO-v1.0.1-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/v1.0.1/morseGO-v1.0.1-test-reports.zip) | Relatório HTML dos testes |
+
+---
+
 ## [v1.0.0] - 2026-09-11
 
 ### 📱 Metadados Google Play Store
