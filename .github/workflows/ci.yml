@@ -178,57 +178,27 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           TARGET_BRANCH="main"
-          git fetch origin main:main 2>/dev/null || true
-          git checkout "$TARGET_BRANCH"
+          git fetch origin "${TARGET_BRANCH}"
+          git checkout "${TARGET_BRANCH}"
+          git pull origin "${TARGET_BRANCH}"
 
-          # 1. Update RELEASES.md with new release entry using python
-          python3 - << 'EOF'
-import sys, os
-from datetime import datetime
-
-version = os.environ.get('VERSION', 'v1.0.1')
-app_version = os.environ.get('APP_VERSION_NAME', '1.0.1')
-app_code = os.environ.get('APP_VERSION_CODE', '10001')
-today = datetime.now().strftime('%Y-%m-%d')
-
-entry = f"""## [{version}] - {today}
-
-### 📱 Metadados Google Play Store
-- **Nome da Versão (`versionName`):** `{app_version}`
-- **Código da Versão (`versionCode`):** `{app_code}`
-
-### 🧪 Testes e Qualidade
-- **Suíte de Testes:** 100% de Aprovação
-- **Relatório de Testes:** Disponível em `morseGO-{version}-test-reports.zip`
-
-### 📥 Artefatos de Instalação
-| Artefato | Ficheiro | Descrição |
-| :--- | :--- | :--- |
-| **APK Release** | [`morseGO-{version}.apk`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}.apk) | Binário de produção Android |
-| **Relatório de Testes** | [`morseGO-{version}-test-reports.zip`](https://github.com/dirtybug/morsego/releases/download/{version}/morseGO-{version}-test-reports.zip) | Relatório HTML dos testes |
-
----
-
-"""
-if os.path.exists('RELEASES.md'):
-    with open('RELEASES.md', 'r', encoding='utf-8') as f:
-        content = f.read()
-    marker = '<!-- RELEASES_LIST_START -->\n'
-    if marker in content and f'## [{version}]' not in content:
-        idx = content.index(marker) + len(marker)
-        new_content = content[:idx] + entry + content[idx:]
-        with open('RELEASES.md', 'w', encoding='utf-8') as f:
-            f.write(new_content)
-EOF
-
-          # 2. Update AndroidManifest.xml
+          # 1. Update AndroidManifest.xml with the tag's version
+          echo "Updating AndroidManifest.xml to version ${{ env.APP_VERSION_NAME }} (code: ${{ env.APP_VERSION_CODE }})..."
           sed -i -E "s/android:versionName=\"[^\"]*\"/android:versionName=\"${{ env.APP_VERSION_NAME }}\"/g" app/src/main/AndroidManifest.xml
           sed -i -E "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${{ env.APP_VERSION_CODE }}\"/g" app/src/main/AndroidManifest.xml
 
+          # 2. Update RELEASES.md with new release entry using python tool
+          python3 tools/update_release_notes.py
+
           # 3. Only commit metadata files (never binary blobs or screenshot folders)
-          git add RELEASES.md README.md app/src/main/AndroidManifest.xml 2>/dev/null || true
-          git commit -m "chore(release): update metadata for ${{ env.VERSION }} [skip ci]" || true
-          git push origin "$TARGET_BRANCH" || echo "Note: Push completed or skipped."
+          git add RELEASES.md app/src/main/AndroidManifest.xml
+          if git diff --staged --quiet; then
+            echo "No changes to commit for AndroidManifest.xml or RELEASES.md."
+          else
+            git commit -m "chore(release): update AndroidManifest.xml and release notes for ${{ env.VERSION }} [skip ci]"
+            git push origin "${TARGET_BRANCH}"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
