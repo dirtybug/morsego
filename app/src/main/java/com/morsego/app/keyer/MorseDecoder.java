@@ -142,8 +142,8 @@ public class MorseDecoder {
         int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
         int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
         long charPause = customCharPauseMs > 0 ? customCharPauseMs :
-                Math.max((long) (MorseTiming.interCharSpaceMs(wpm, letterDits) * 3.5f), 1500L);
-        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm, wordDits), charPause + 500L);
+                MorseTiming.interCharSpaceMs(wpm, letterDits);
+        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm, wordDits), charPause + MorseTiming.ditDurationMs(wpm));
 
         charPauseRunnable = () -> {
             commitCharacter();
@@ -173,8 +173,9 @@ public class MorseDecoder {
     private void scheduleMaxLetterPauseWatcher() {
         cancelMaxLetterPauseWatcher();
         int wpm = settings.getWpm();
-        // Generous letter pause tolerance: minimum floor of 6000ms
-        long maxWait = Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 6.0f) + 500L, 6000L);
+        int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+        // Generous letter pause tolerance relative to configured letter spacing
+        long maxWait = Math.max(MorseTiming.interCharSpaceMs(wpm, letterDits) * 4L, 2500L);
         maxLetterPauseRunnable = () -> {
             if (listener != null && decodedText.length() > 0) {
                 String feedback = "Pause cadence: Generous pause between letters";

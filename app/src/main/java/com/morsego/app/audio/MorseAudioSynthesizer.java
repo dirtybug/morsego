@@ -160,9 +160,11 @@ public class MorseAudioSynthesizer {
                         stopTone();
                         Thread.sleep(intra);
                     } else if (c == ' ') {
-                        Thread.sleep(inter);
+                        long extraPause = Math.max(0, inter - intra);
+                        if (extraPause > 0) Thread.sleep(extraPause);
                     } else if (c == '/') {
-                        Thread.sleep(word);
+                        long extraPause = Math.max(0, word - intra);
+                        if (extraPause > 0) Thread.sleep(extraPause);
                     }
                 }
             } catch (InterruptedException ignored) {

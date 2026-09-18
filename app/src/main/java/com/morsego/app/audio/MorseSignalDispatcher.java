@@ -176,9 +176,11 @@ public class MorseSignalDispatcher {
                     sleepMs(intra);
                 }
             } else if (c == ' ') {
-                sleepMs(inter);
+                long extraPause = Math.max(0, inter - intra);
+                if (extraPause > 0) sleepMs(extraPause);
             } else if (c == '/') {
-                sleepMs(word);
+                long extraPause = Math.max(0, word - intra);
+                if (extraPause > 0) sleepMs(extraPause);
             }
         }
 

@@ -664,10 +664,6 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
     private void startSendingStage() {
         cancelQuickCommit();
         currentStage = TestStage.SENDING;
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            activity.getDecoder().setCustomCharPauseMs(2000L);
-        }
         binding.tvTestPhaseBanner.setText(R.string.exam_send_banner);
         binding.tvTestPhaseBanner.setBackgroundColor(Color.parseColor("#FFB300"));
         binding.layoutStageListening.setVisibility(View.GONE);
@@ -717,7 +713,6 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
 
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
-            activity.getDecoder().setCustomCharPauseMs(2000L);
             activity.getDecoder().clear();
         }
     }
