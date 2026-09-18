@@ -120,13 +120,21 @@ case "$ACTION" in
 
     release)
         echo ">>> Building Release Deliverables (Version: ${APP_VERSION_NAME:-1.0.0}, Code: ${APP_VERSION_CODE:-1})..."
-        ./gradlew assembleRelease bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" --info
+        KEY_ALIAS_PARAM=""
+        if [ -n "$KEY_ALIAS" ]; then
+            KEY_ALIAS_PARAM="-PkeyAlias=$KEY_ALIAS"
+        fi
+        KEY_PASS_PARAM=""
+        if [ -n "$KEYSTORE_PASSWORD" ]; then
+            KEY_PASS_PARAM="-PkeystorePassword=$KEYSTORE_PASSWORD"
+        fi
+        ./gradlew assembleRelease bundleRelease -PversionName="${APP_VERSION_NAME:-1.0.0}" -PversionCode="${APP_VERSION_CODE:-1}" $KEY_PASS_PARAM $KEY_ALIAS_PARAM --info
         find app/build/outputs/apk/release -name "*.apk" -exec cp {} "$RELEASE_DIR/morseGO-release.apk" \; 2>/dev/null || true
         cp -f "$RELEASE_DIR/morseGO-release.apk" "$RELEASE_DIR/morseGO-development-release.apk" 2>/dev/null || true
         find app/build/outputs/bundle/release -name "*.aab" -exec cp {} "$RELEASE_DIR/morseGO-release.aab" \; 2>/dev/null || true
         (cd "$RELEASE_DIR" && sha256sum *.apk *.aab > SHA256SUMS.txt 2>/dev/null || true)
         echo "✓ Release APK saved to $RELEASE_DIR/morseGO-release.apk"
-        [ -f "$RELEASE_DIR/morseGO-release.aab" ] && echo "✓ Development AAB saved to $RELEASE_DIR/morseGO-release.aab"
+        [ -f "$RELEASE_DIR/morseGO-release.aab" ] && echo "✓ Release AAB saved to $RELEASE_DIR/morseGO-release.aab"
         ;;
 
     bundle|aab)
