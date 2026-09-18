@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.morsego.app.MainActivity;
+import com.morsego.app.R;
 import com.morsego.app.databinding.FragmentHardwareBinding;
 import com.morsego.app.keyer.KeyerInputManager;
 
@@ -46,19 +47,19 @@ public class HardwareFragment extends Fragment {
 
         binding.btnCalibrateDit.setOnClickListener(v -> {
             activity.getInputManager().startCalibration(KeyerInputManager.CalibrationState.DIT);
-            binding.btnCalibrateDit.setText("Tap DIT paddle...");
+            binding.btnCalibrateDit.setText(getString(R.string.hw_tap_dit_paddle));
         });
 
         binding.btnCalibrateDah.setOnClickListener(v -> {
             activity.getInputManager().startCalibration(KeyerInputManager.CalibrationState.DAH);
-            binding.btnCalibrateDah.setText("Tap DAH paddle...");
+            binding.btnCalibrateDah.setText(getString(R.string.hw_tap_dah_paddle));
         });
 
         binding.btnResetVband.setOnClickListener(v -> {
             activity.getSettings().setDitKeyCode(KeyEvent.KEYCODE_CTRL_LEFT);
             activity.getSettings().setDahKeyCode(KeyEvent.KEYCODE_CTRL_RIGHT);
-            binding.btnCalibrateDit.setText("Calibrate Dit (Ctrl Left)");
-            binding.btnCalibrateDah.setText("Calibrate Dah (Ctrl Right)");
+            binding.btnCalibrateDit.setText(getString(R.string.hw_calibrate_dit_format, "Ctrl Left"));
+            binding.btnCalibrateDah.setText(getString(R.string.hw_calibrate_dah_format, "Ctrl Right"));
         });
 
         activity.getInputManager().setOnLogUpdated(() -> {
@@ -81,22 +82,22 @@ public class HardwareFragment extends Fragment {
         boolean rightDown = !reversed ? dahDown : ditDown;
 
         binding.cardLeftPaddle.setBackgroundColor(leftDown ? Color.parseColor("#FFB300") : Color.parseColor("#21262D"));
-        binding.tvLeftPaddleState.setText(leftDown ? "PRESSED" : "RELEASED");
+        binding.tvLeftPaddleState.setText(getString(leftDown ? R.string.hw_paddle_pressed : R.string.hw_paddle_released));
         binding.tvLeftPaddleState.setTextColor(leftDown ? Color.parseColor("#0E1117") : Color.parseColor("#8B949E"));
 
         binding.cardRightPaddle.setBackgroundColor(rightDown ? Color.parseColor("#00E5FF") : Color.parseColor("#21262D"));
-        binding.tvRightPaddleState.setText(rightDown ? "PRESSED" : "RELEASED");
+        binding.tvRightPaddleState.setText(getString(rightDown ? R.string.hw_paddle_pressed : R.string.hw_paddle_released));
         binding.tvRightPaddleState.setTextColor(rightDown ? Color.parseColor("#0E1117") : Color.parseColor("#8B949E"));
     }
 
     private void updateReverseLabels(boolean reversed) {
         if (binding == null) return;
-        binding.tvReverseDesc.setText(reversed ?
-                "Left = Dah (—) | Right = Dit (•)" :
-                "Left = Dit (•) | Right = Dah (—)");
+        binding.tvReverseDesc.setText(getString(reversed ?
+                R.string.hw_reverse_paddles_reversed :
+                R.string.hw_reverse_paddles_normal));
 
-        binding.tvLeftPaddleName.setText(reversed ? "LEFT PADDLE (DAH —)" : "LEFT PADDLE (DIT •)");
-        binding.tvRightPaddleName.setText(reversed ? "RIGHT PADDLE (DIT •)" : "RIGHT PADDLE (DAH —)");
+        binding.tvLeftPaddleName.setText(getString(reversed ? R.string.hw_left_paddle_rev : R.string.hw_left_paddle));
+        binding.tvRightPaddleName.setText(getString(reversed ? R.string.hw_right_paddle_rev : R.string.hw_right_paddle));
     }
 
     private void updateLogs() {
@@ -106,7 +107,7 @@ public class HardwareFragment extends Fragment {
 
         List<KeyerInputManager.HardwareLog> logs = activity.getInputManager().getRecentLogs();
         if (logs.isEmpty()) {
-            binding.tvHardwareLogs.setText("Waiting for USB keyer events...");
+            binding.tvHardwareLogs.setText(getString(R.string.hw_waiting_events));
             return;
         }
 
@@ -121,8 +122,8 @@ public class HardwareFragment extends Fragment {
 
         // Also reset calibration button labels if calibration finished
         if (activity.getInputManager().getCalibrationState() == KeyerInputManager.CalibrationState.NONE) {
-            binding.btnCalibrateDit.setText("Calibrate Dit (" + KeyEvent.keyCodeToString(activity.getSettings().getDitKeyCode()) + ")");
-            binding.btnCalibrateDah.setText("Calibrate Dah (" + KeyEvent.keyCodeToString(activity.getSettings().getDahKeyCode()) + ")");
+            binding.btnCalibrateDit.setText(getString(R.string.hw_calibrate_dit_format, KeyEvent.keyCodeToString(activity.getSettings().getDitKeyCode())));
+            binding.btnCalibrateDah.setText(getString(R.string.hw_calibrate_dah_format, KeyEvent.keyCodeToString(activity.getSettings().getDahKeyCode())));
         }
     }
 

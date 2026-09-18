@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
-                android:text="NÍVEL 1 / 21"
+                android:text="LEVEL 1 / 21"
                 android:textColor="@color/morse_amber"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:fontFamily="monospace"
-                android:text="Novas Letras: E (•)  T (—)"
+                android:text="New Characters: E (•)  T (—)"
                 android:textColor="@color/morse_cyan"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -489,7 +489,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="monospace"
-                                android:text="TRANSMITA (LETRA OU PALAVRA):"
+                                android:text="@string/exam_transmit_header"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -577,7 +577,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
-                    android:text="Cancel Exam"
+                    android:text="@string/btn_cancel_exam"
                     android:textColor="@color/text_secondary" />
             </LinearLayout>
 

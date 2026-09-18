@@ -160,4 +160,29 @@ public class KeyerSettingsTest {
         assertEquals(7, settings.getCurrentUnlockedLevel());
         assertTrue(settings.isReversePaddles());
     }
+
+    @Test
+    public void testLetterAndWordSpacingSettings() {
+        assertEquals("Default letter spacing should be 3 dits", 3, settings.getLetterSpacingDits());
+        assertEquals("Default word spacing should be 7 dits", 7, settings.getWordSpacingDits());
+
+        // Custom valid values
+        settings.setLetterSpacingDits(4);
+        assertEquals(4, settings.getLetterSpacingDits());
+
+        settings.setWordSpacingDits(10);
+        assertEquals(10, settings.getWordSpacingDits());
+
+        // Bounds clamping: Letter spacing (min 2, max 8)
+        settings.setLetterSpacingDits(1);
+        assertEquals(2, settings.getLetterSpacingDits());
+        settings.setLetterSpacingDits(15);
+        assertEquals(8, settings.getLetterSpacingDits());
+
+        // Bounds clamping: Word spacing (min 5, max 14)
+        settings.setWordSpacingDits(2);
+        assertEquals(5, settings.getWordSpacingDits());
+        settings.setWordSpacingDits(20);
+        assertEquals(14, settings.getWordSpacingDits());
+    }
 }

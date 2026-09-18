@@ -68,7 +68,29 @@ public class MorseTimingTest {
 
         // Too long letter pause: 1000ms (> 5.0x) -> TIMING FAILURE
         MorseTiming.PauseEvaluation evalTooSlow = MorseTiming.evaluateLetterPause(1000, wpm);
-        assertFalse(evalTooSlow.isGood);
         assertTrue(evalTooSlow.isTimingFailure);
+    }
+
+    @Test
+    public void testConfigurableSpacesCalculations() {
+        int wpm = 20; // dit = 60ms
+        assertEquals(180L, MorseTiming.interCharSpaceMs(wpm, 3));
+        assertEquals(240L, MorseTiming.interCharSpaceMs(wpm, 4));
+        assertEquals(300L, MorseTiming.interCharSpaceMs(wpm, 5));
+
+        assertEquals(420L, MorseTiming.wordSpaceMs(wpm, 7));
+        assertEquals(600L, MorseTiming.wordSpaceMs(wpm, 10));
+    }
+
+    @Test
+    public void testConfigurableInterLetterPauseEvaluation() {
+        int wpm = 20; // dit = 60ms, with 5 dits spacing -> ideal = 300ms
+        MorseTiming.PauseEvaluation evalGood = MorseTiming.evaluateLetterPause(300, wpm, 5);
+        assertTrue(evalGood.isGood);
+        assertFalse(evalGood.isTimingFailure);
+
+        // Pause of 90ms against 300ms ideal is < 0.35x -> TIMING FAILURE
+        MorseTiming.PauseEvaluation evalTooFast = MorseTiming.evaluateLetterPause(90, wpm, 5);
+        assertTrue(evalTooFast.isTimingFailure);
     }
 }

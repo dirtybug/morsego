@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
-            android:text="CONFIGURAÇÕES MORSEGO"
+            android:text="@string/settings_dialog_title"
             android:textColor="@color/morse_amber"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="monospace"
-            android:text="VELOCIDADE: 15 WPM"
+            android:text="@string/settings_wpm_default"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:max="40"
-            android:progress="15" />
+            android:progress="10" />
 
         <!-- Tone Pitch -->
         <LinearLayout
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:text="TOM CW: 700 HZ"
+                android:text="@string/settings_pitch_default"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Testar"
+                android:text="@string/settings_test_tone"
                 android:textColor="@color/morse_cyan" />
         </LinearLayout>
 
@@ -76,13 +76,53 @@
             android:max="600"
             android:progress="300" />
 
+        <!-- Letter Spacing (Inter-Character Space) -->
+        <TextView
+            android:id="@+id/tvSettingsLetterSpacingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="monospace"
+            android:text="@string/settings_letter_spacing_default"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:id="@+id/seekSettingsLetterSpacing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:max="6"
+            android:progress="1" />
+
+        <!-- Word Spacing (Inter-Word Space) -->
+        <TextView
+            android:id="@+id/tvSettingsWordSpacingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="monospace"
+            android:text="@string/settings_word_spacing_default"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:id="@+id/seekSettingsWordSpacing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:max="9"
+            android:progress="2" />
+
         <!-- Keyer Mode -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="monospace"
-            android:text="MODO DO MANIPULADOR:"
+            android:text="@string/settings_keyer_mode"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -98,21 +138,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Iambic Mode B (Curtis com memória)"
+                android:text="@string/settings_mode_iambic_b"
                 android:textColor="@color/text_primary" />
 
             <RadioButton
                 android:id="@+id/rbIambicA"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Iambic Mode A (Clássico)"
+                android:text="@string/settings_mode_iambic_a"
                 android:textColor="@color/text_primary" />
 
             <RadioButton
                 android:id="@+id/rbStraightKey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Straight Key / Manual"
+                android:text="@string/settings_mode_straight_key"
                 android:textColor="@color/text_primary" />
         </RadioGroup>
 
@@ -123,7 +163,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:checked="true"
-            android:text="Sidetone de Áudio Ativo"
+            android:text="@string/settings_sound_sidetone"
             android:textColor="@color/text_primary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -132,7 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:checked="true"
-            android:text="Vibração Tátil"
+            android:text="@string/settings_vibration"
             android:textColor="@color/text_primary" />
 
         <Button
@@ -141,7 +181,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/morse_amber"
-            android:text="Fechar"
+            android:text="@string/settings_close"
             android:textColor="@color/radio_dark"
             android:textStyle="bold" />
 

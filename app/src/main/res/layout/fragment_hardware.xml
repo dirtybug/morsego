@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:text="MANIPULADOR CW TRAINER TYPE-C"
+                    android:text="@string/hw_trainer_title"
                     android:textColor="@color/morse_cyan"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Compatível com o manipulador da Amazon de 4 ímanes Nd, ficha Jack 3.5mm e ligação direta USB Type-C OTG."
+                    android:text="@string/hw_trainer_desc"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:text="ESTADO DAS PÁS FÍSICAS (TEMPO REAL):"
+                    android:text="@string/hw_paddles_state_header"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -95,7 +95,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="PÁ ESQUERDA (DIT •)"
+                            android:text="@string/hw_left_paddle"
                             android:textColor="@color/text_primary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -106,7 +106,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:fontFamily="monospace"
-                            android:text="LIVRE"
+                            android:text="@string/hw_paddle_released"
                             android:textColor="@color/text_secondary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -128,7 +128,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
-                            android:text="PÁ DIREITA (DAH —)"
+                            android:text="@string/hw_right_paddle"
                             android:textColor="@color/text_primary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -139,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:fontFamily="monospace"
-                            android:text="LIVRE"
+                            android:text="@string/hw_paddle_released"
                             android:textColor="@color/text_secondary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -169,7 +169,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:text="CALIBRAÇÃO DE TECLAS DO HARDWARE:"
+                    android:text="@string/hw_calibration_header"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Clique no botão e toque na pá do manipulador para gravar o sinal."
+                    android:text="@string/hw_calibration_desc"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -196,7 +196,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/radio_surface_variant"
                         android:fontFamily="monospace"
-                        android:text="Calibrar Dit"
+                        android:text="@string/hw_btn_calibrate_dit"
                         android:textColor="@color/morse_amber"
                         android:textSize="12sp" />
 
@@ -208,7 +208,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/radio_surface_variant"
                         android:fontFamily="monospace"
-                        android:text="Calibrar Dah"
+                        android:text="@string/hw_btn_calibrate_dah"
                         android:textColor="@color/morse_cyan"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -219,7 +219,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Restaurar Padrão VBand (Ctrl Esq/Dir)"
+                    android:text="@string/hw_btn_reset_vband"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -252,7 +252,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Inverter Pás (Mão Esquerda / Destro)"
+                        android:text="@string/hw_reverse_paddles_title"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Esquerda = Dit (•) | Direita = Dah (—)"
+                        android:text="@string/hw_reverse_paddles_normal"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -295,7 +295,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:text="DICAS DE USO DO TRAINER CW:"
+                    android:text="@string/hw_tips_title"
                     android:textColor="@color/morse_cyan"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:lineSpacingExtra="3dp"
-                    android:text="1. Modo 2 (Recomendado / LED a piscar): Emula teclado USB VBand. O MorseGO interceta nativamente o Ctrl Esquerdo (Dit) e Ctrl Direito (Dah).\n\n2. Modo 1 (LED contínuo): Emula rato USB. Também suportado automaticamente.\n\n3. Alternar Modo: Mantenha premido o botão do circuito PCB ao ligar o cabo USB-C ao telemóvel."
+                    android:text="@string/hw_tips_content"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -317,7 +317,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:fontFamily="monospace"
-            android:text="LOG DE EVENTOS USB EM TEMPO REAL:"
+            android:text="@string/hw_logs_header"
             android:textColor="@color/text_secondary"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -331,7 +331,7 @@
             android:background="@color/radio_surface"
             android:fontFamily="monospace"
             android:padding="12dp"
-            android:text="A aguardar toques no manipulador USB..."
+            android:text="@string/hw_waiting_events"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 

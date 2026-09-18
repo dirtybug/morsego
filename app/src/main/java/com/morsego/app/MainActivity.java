@@ -261,7 +261,9 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
         } else if (silent) {
             vibrateMorsePattern(pattern, wpm, onFinished);
         } else {
-            synthesizer.playMorsePattern(pattern, wpm, onFinished);
+            int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+            int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
+            synthesizer.playMorsePattern(pattern, wpm, letterDits, wordDits, onFinished);
         }
     }
 
@@ -308,10 +310,13 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
             return;
         }
         java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+            int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
             long dit = MorseTiming.ditDurationMs(wpm);
             long dah = MorseTiming.dahDurationMs(wpm);
             long intra = MorseTiming.intraCharSpaceMs(wpm);
-            long inter = MorseTiming.interCharSpaceMs(wpm);
+            long inter = MorseTiming.interCharSpaceMs(wpm, letterDits);
+            long word = MorseTiming.wordSpaceMs(wpm, wordDits);
             try {
                 for (int i = 0; i < pattern.length(); i++) {
                     char c = pattern.charAt(i);
@@ -324,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
                     } else if (c == ' ') {
                         Thread.sleep(inter);
                     } else if (c == '/') {
-                        Thread.sleep(dit * 7);
+                        Thread.sleep(word);
                     }
                 }
             } catch (InterruptedException ignored) {

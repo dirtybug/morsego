@@ -145,10 +145,13 @@ public class MorseSignalDispatcher {
             return;
         }
 
+        int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+        int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
         long dit = MorseTiming.ditDurationMs(wpm);
         long dah = MorseTiming.dahDurationMs(wpm);
         long intra = MorseTiming.intraCharSpaceMs(wpm);
-        long inter = MorseTiming.interCharSpaceMs(wpm);
+        long inter = MorseTiming.interCharSpaceMs(wpm, letterDits);
+        long word = MorseTiming.wordSpaceMs(wpm, wordDits);
 
         for (int i = 0; i < pattern.length() && isRunning.get(); i++) {
             char c = pattern.charAt(i);
@@ -175,7 +178,7 @@ public class MorseSignalDispatcher {
             } else if (c == ' ') {
                 sleepMs(inter);
             } else if (c == '/') {
-                sleepMs(dit * 7);
+                sleepMs(word);
             }
         }
 

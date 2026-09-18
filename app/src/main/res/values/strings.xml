@@ -113,6 +113,69 @@
     <string name="hw_connected">USB Keyer Connected (ASIN B0F666MVG6)</string>
     <string name="hw_disconnected">Touch Paddles Active (USB Keyer not connected)</string>
     <string name="hw_reverse_paddles">Reverse Dit/Dah (Left-Handed)</string>
+    <string name="hw_trainer_title">CW TRAINER TYPE-C KEYER</string>
+    <string name="hw_trainer_desc">Compatible with Amazon 4 Nd-magnets keyer, 3.5mm jack, and direct USB Type-C OTG connection.</string>
+    <string name="hw_paddles_state_header">PHYSICAL PADDLES STATE (REAL TIME):</string>
+    <string name="hw_left_paddle">LEFT PADDLE (DIT •)</string>
+    <string name="hw_right_paddle">RIGHT PADDLE (DAH —)</string>
+    <string name="hw_left_paddle_rev">LEFT PADDLE (DAH —)</string>
+    <string name="hw_right_paddle_rev">RIGHT PADDLE (DIT •)</string>
+    <string name="hw_paddle_released">RELEASED</string>
+    <string name="hw_paddle_pressed">PRESSED</string>
+    <string name="hw_calibration_header">HARDWARE KEY CALIBRATION:</string>
+    <string name="hw_calibration_desc">Click a button and tap the keyer paddle to calibrate the key code.</string>
+    <string name="hw_btn_calibrate_dit">Calibrate Dit</string>
+    <string name="hw_btn_calibrate_dah">Calibrate Dah</string>
+    <string name="hw_btn_reset_vband">Restore VBand Defaults (Ctrl Left/Right)</string>
+    <string name="hw_reverse_paddles_title">Reverse Paddles (Left-Handed / Right-Handed)</string>
+    <string name="hw_reverse_paddles_normal">Left = Dit (•) | Right = Dah (—)</string>
+    <string name="hw_reverse_paddles_reversed">Left = Dah (—) | Right = Dit (•)</string>
+    <string name="hw_tips_title">CW TRAINER USAGE TIPS:</string>
+    <string name="hw_tips_content">1. Mode 2 (Recommended / LED blinking): Emulates USB VBand keyboard. MorseGO natively intercepts Left Ctrl (Dit) and Right Ctrl (Dah).\n\n2. Mode 1 (Solid LED): Emulates USB mouse. Also automatically supported.\n\n3. Switch Mode: Hold the PCB circuit button while plugging the USB-C cable into your phone.</string>
+    <string name="hw_logs_header">REAL-TIME USB EVENT LOG:</string>
+    <string name="hw_waiting_events">Waiting for USB keyer events...</string>
+    <string name="hw_tap_dit_paddle">Tap DIT paddle...</string>
+    <string name="hw_tap_dah_paddle">Tap DAH paddle...</string>
+    <string name="hw_calibrate_dit_format">Calibrate Dit (%s)</string>
+    <string name="hw_calibrate_dah_format">Calibrate Dah (%s)</string>
+
+    <!-- Keyer Strings -->
+    <string name="keyer_tx_status_format">READ CW (%s)</string>
+    <string name="keyer_buffer_label">BUFFER: %s</string>
+    <string name="keyer_decoded_text_header">DECODED TEXT:</string>
+    <string name="keyer_btn_copy">Copy</string>
+    <string name="keyer_btn_backspace">Backspace</string>
+    <string name="keyer_btn_clear">Clear</string>
+    <string name="keyer_decoded_hint">Tap physical paddles or virtual buttons below...</string>
+    <string name="keyer_wpm_label">WPM:</string>
+    <string name="keyer_paddles_header">KEYING PADDLES (OR USE TYPE-C HARDWARE):</string>
+    <string name="keyer_paddle_dit">DIT (•)\nDOT [LEFT]</string>
+    <string name="keyer_paddle_dah">DAH (—)\nDASH [RIGHT]</string>
+
+    <!-- Settings Dialog -->
+    <string name="settings_dialog_title">MORSEGO SETTINGS</string>
+    <string name="settings_wpm_label">Speed: %d WPM</string>
+    <string name="settings_wpm_default">Speed: 15 WPM</string>
+    <string name="settings_pitch_label">CW Tone: %d Hz</string>
+    <string name="settings_pitch_default">CW Tone: 700 Hz</string>
+    <string name="settings_letter_spacing_label">Letter Spacing: %1$d dits (%2$d ms)</string>
+    <string name="settings_letter_spacing_default">Letter Spacing: 3 dits (240 ms)</string>
+    <string name="settings_word_spacing_label">Word Spacing: %1$d dits (%2$d ms)</string>
+    <string name="settings_word_spacing_default">Word Spacing: 7 dits (560 ms)</string>
+    <string name="settings_test_tone">Test</string>
+    <string name="settings_keyer_mode">KEYER MODE:</string>
+    <string name="settings_mode_iambic_b">Iambic Mode B (Curtis with memory)</string>
+    <string name="settings_mode_iambic_a">Iambic Mode A (Classic)</string>
+    <string name="settings_mode_straight_key">Straight Key / Manual</string>
+    <string name="settings_sound_sidetone">Audio Sidetone Enabled</string>
+    <string name="settings_vibration">Haptic Vibration</string>
+    <string name="settings_close">Close</string>
+
+    <!-- Send Fragment Extras -->
+    <string name="exam_transmit_header">TRANSMIT (LETTER OR WORD):</string>
+    <string name="btn_cancel_exam">Cancel Exam</string>
+    <string name="exam_timing_cadence_empty">Pause cadence: —</string>
+    <string name="exam_send_feedback_instruction">Use DI and DAH buttons below to transmit \'%s\'</string>
 
     <!-- Silent Mode & Errors -->
     <string name="silent_mode_warning">🔇 Device in silent mode: Haptic vibration enabled for Morse signals.</string>

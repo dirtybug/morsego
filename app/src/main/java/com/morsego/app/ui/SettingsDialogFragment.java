@@ -15,6 +15,7 @@ import com.morsego.app.MainActivity;
 import com.morsego.app.R;
 import com.morsego.app.databinding.DialogSettingsBinding;
 import com.morsego.app.keyer.KeyerSettings;
+import com.morsego.app.keyer.MorseTiming;
 
 public class SettingsDialogFragment extends DialogFragment {
 
@@ -46,7 +47,7 @@ public class SettingsDialogFragment extends DialogFragment {
         KeyerSettings settings = activity.getSettings();
 
         // Speed WPM
-        binding.tvSettingsWpmLabel.setText("VELOCIDADE: " + settings.getWpm() + " WPM");
+        binding.tvSettingsWpmLabel.setText(getString(R.string.settings_wpm_label, settings.getWpm()));
         binding.seekSettingsWpm.setProgress(settings.getWpm() - 5);
         binding.seekSettingsWpm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -54,8 +55,9 @@ public class SettingsDialogFragment extends DialogFragment {
                 if (fromUser) {
                     int wpm = progress + 5;
                     settings.setWpm(wpm);
-                    binding.tvSettingsWpmLabel.setText("VELOCIDADE: " + wpm + " WPM");
+                    binding.tvSettingsWpmLabel.setText(getString(R.string.settings_wpm_label, wpm));
                     activity.updateTopWpm(wpm);
+                    updateSpacingLabels(settings);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -64,7 +66,7 @@ public class SettingsDialogFragment extends DialogFragment {
 
         // Pitch Frequency
         int pitch = (int) settings.getPitchHz();
-        binding.tvSettingsPitchLabel.setText("TOM CW: " + pitch + " HZ");
+        binding.tvSettingsPitchLabel.setText(getString(R.string.settings_pitch_label, pitch));
         binding.seekSettingsPitch.setProgress(pitch - 400);
         binding.seekSettingsPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -73,12 +75,46 @@ public class SettingsDialogFragment extends DialogFragment {
                     int f = progress + 400;
                     settings.setPitchHz(f);
                     activity.getSynthesizer().setFrequency(f);
-                    binding.tvSettingsPitchLabel.setText("TOM CW: " + f + " HZ");
+                    binding.tvSettingsPitchLabel.setText(getString(R.string.settings_pitch_label, f));
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        // Letter Spacing (Inter-Character: 2 - 8 dits, progress = dits - 2)
+        binding.seekSettingsLetterSpacing.setMax(6);
+        binding.seekSettingsLetterSpacing.setProgress(settings.getLetterSpacingDits() - 2);
+        binding.seekSettingsLetterSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    int dits = progress + 2;
+                    settings.setLetterSpacingDits(dits);
+                    updateLetterSpacingLabel(settings);
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Word Spacing (Inter-Word: 5 - 14 dits, progress = dits - 5)
+        binding.seekSettingsWordSpacing.setMax(9);
+        binding.seekSettingsWordSpacing.setProgress(settings.getWordSpacingDits() - 5);
+        binding.seekSettingsWordSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    int dits = progress + 5;
+                    settings.setWordSpacingDits(dits);
+                    updateWordSpacingLabel(settings);
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        updateSpacingLabels(settings);
 
         binding.btnTestTone.setOnClickListener(v -> {
             activity.playMorse("... --- ...", settings.getWpm(), null);
@@ -123,6 +159,23 @@ public class SettingsDialogFragment extends DialogFragment {
         binding.btnCloseSettings.setOnClickListener(v -> dismiss());
 
         binding.tvSettingsVersionBuild.setText("MorseGO v" + com.morsego.app.BuildConfig.VERSION_NAME + " • Build: " + com.morsego.app.BuildConfig.BUILD_TIME);
+    }
+
+    private void updateSpacingLabels(KeyerSettings settings) {
+        updateLetterSpacingLabel(settings);
+        updateWordSpacingLabel(settings);
+    }
+
+    private void updateLetterSpacingLabel(KeyerSettings settings) {
+        int dits = settings.getLetterSpacingDits();
+        long ms = MorseTiming.interCharSpaceMs(settings.getWpm(), dits);
+        binding.tvSettingsLetterSpacingLabel.setText(getString(R.string.settings_letter_spacing_label, dits, ms));
+    }
+
+    private void updateWordSpacingLabel(KeyerSettings settings) {
+        int dits = settings.getWordSpacingDits();
+        long ms = MorseTiming.wordSpaceMs(settings.getWpm(), dits);
+        binding.tvSettingsWordSpacingLabel.setText(getString(R.string.settings_word_spacing_label, dits, ms));
     }
 
     @Override

@@ -96,7 +96,8 @@ public class MorseDecoder {
                 }
             } else if (lastCharToneStopTime > 0) {
                 // Inter-letter pause between letters of a word
-                MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(pause, settings.getWpm());
+                int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+                MorseTiming.PauseEvaluation eval = MorseTiming.evaluateLetterPause(pause, settings.getWpm(), letterDits);
                 notifyTimingFeedback(eval);
                 // Pause between letters is instructional guidance, never abort the user
             }
@@ -138,9 +139,11 @@ public class MorseDecoder {
         cancelPauseWatchers();
 
         int wpm = settings.getWpm();
+        int letterDits = settings != null ? settings.getLetterSpacingDits() : 3;
+        int wordDits = settings != null ? settings.getWordSpacingDits() : 7;
         long charPause = customCharPauseMs > 0 ? customCharPauseMs :
-                Math.max((long) (MorseTiming.interCharSpaceMs(wpm) * 3.5f), 1500L);
-        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm), charPause + 500L);
+                Math.max((long) (MorseTiming.interCharSpaceMs(wpm, letterDits) * 3.5f), 1500L);
+        long wordPause = Math.max(MorseTiming.wordSpaceMs(wpm, wordDits), charPause + 500L);
 
         charPauseRunnable = () -> {
             commitCharacter();

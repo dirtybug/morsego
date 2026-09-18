@@ -113,6 +113,69 @@
     <string name="hw_connected">Manipulador USB Conectado (ASIN B0F666MVG6)</string>
     <string name="hw_disconnected">Pás Táteis Ativas (USB não conectado)</string>
     <string name="hw_reverse_paddles">Inverter Dit/Dah (Canhoto)</string>
+    <string name="hw_trainer_title">MANIPULADOR CW TRAINER TYPE-C</string>
+    <string name="hw_trainer_desc">Compatível com o manipulador da Amazon de 4 ímanes Nd, ficha Jack 3.5mm e ligação direta USB Type-C OTG.</string>
+    <string name="hw_paddles_state_header">ESTADO DAS PÁS FÍSICAS (TEMPO REAL):</string>
+    <string name="hw_left_paddle">PÁ ESQUERDA (DIT •)</string>
+    <string name="hw_right_paddle">PÁ DIREITA (DAH —)</string>
+    <string name="hw_left_paddle_rev">PÁ ESQUERDA (DAH —)</string>
+    <string name="hw_right_paddle_rev">PÁ DIREITA (DIT •)</string>
+    <string name="hw_paddle_released">LIVRE</string>
+    <string name="hw_paddle_pressed">PREMIDO</string>
+    <string name="hw_calibration_header">CALIBRAÇÃO DE TECLAS DO HARDWARE:</string>
+    <string name="hw_calibration_desc">Clique no botão e toque na pá do manipulador para gravar o sinal.</string>
+    <string name="hw_btn_calibrate_dit">Calibrar Dit</string>
+    <string name="hw_btn_calibrate_dah">Calibrar Dah</string>
+    <string name="hw_btn_reset_vband">Restaurar Padrão VBand (Ctrl Esq/Dir)</string>
+    <string name="hw_reverse_paddles_title">Inverter Pás (Mão Esquerda / Destro)</string>
+    <string name="hw_reverse_paddles_normal">Esquerda = Dit (•) | Direita = Dah (—)</string>
+    <string name="hw_reverse_paddles_reversed">Esquerda = Dah (—) | Direita = Dit (•)</string>
+    <string name="hw_tips_title">DICAS DE USO DO TRAINER CW:</string>
+    <string name="hw_tips_content">1. Modo 2 (Recomendado / LED a piscar): Emula teclado USB VBand. O MorseGO interceta nativamente o Ctrl Esquerdo (Dit) e Ctrl Direito (Dah).\n\n2. Modo 1 (LED contínuo): Emula rato USB. Também suportado automaticamente.\n\n3. Alternar Modo: Mantenha premido o botão do circuito PCB ao ligar o cabo USB-C ao telemóvel.</string>
+    <string name="hw_logs_header">LOG DE EVENTOS USB EM TEMPO REAL:</string>
+    <string name="hw_waiting_events">A aguardar toques no manipulador USB...</string>
+    <string name="hw_tap_dit_paddle">Toque na pá DIT...</string>
+    <string name="hw_tap_dah_paddle">Toque na pá DAH...</string>
+    <string name="hw_calibrate_dit_format">Calibrar Dit (%s)</string>
+    <string name="hw_calibrate_dah_format">Calibrar Dah (%s)</string>
+
+    <!-- Keyer Strings -->
+    <string name="keyer_tx_status_format">LER CW (%s)</string>
+    <string name="keyer_buffer_label">BUFFER: %s</string>
+    <string name="keyer_decoded_text_header">TEXTO DESCODIFICADO:</string>
+    <string name="keyer_btn_copy">Copiar</string>
+    <string name="keyer_btn_backspace">Apagar</string>
+    <string name="keyer_btn_clear">Limpar</string>
+    <string name="keyer_decoded_hint">Toque nas pás físicas ou nos botões virtuais abaixo...</string>
+    <string name="keyer_wpm_label">WPM:</string>
+    <string name="keyer_paddles_header">PÁS DE MANIPULAÇÃO (OU USE O HARDWARE TYPE-C):</string>
+    <string name="keyer_paddle_dit">DI (•)\nPONTO [ESQ]</string>
+    <string name="keyer_paddle_dah">DAH (—)\nTRAÇO [DIR]</string>
+
+    <!-- Settings Dialog -->
+    <string name="settings_dialog_title">CONFIGURAÇÕES MORSEGO</string>
+    <string name="settings_wpm_label">Velocidade: %d WPM</string>
+    <string name="settings_wpm_default">Velocidade: 15 WPM</string>
+    <string name="settings_pitch_label">Tom CW: %d Hz</string>
+    <string name="settings_pitch_default">Tom CW: 700 Hz</string>
+    <string name="settings_letter_spacing_label">Espaço entre Letras: %1$d dits (%2$d ms)</string>
+    <string name="settings_letter_spacing_default">Espaço entre Letras: 3 dits (240 ms)</string>
+    <string name="settings_word_spacing_label">Espaço entre Palavras: %1$d dits (%2$d ms)</string>
+    <string name="settings_word_spacing_default">Espaço entre Palavras: 7 dits (560 ms)</string>
+    <string name="settings_test_tone">Testar</string>
+    <string name="settings_keyer_mode">MODO DO MANIPULADOR:</string>
+    <string name="settings_mode_iambic_b">Iambic Modo B (Curtis com memória)</string>
+    <string name="settings_mode_iambic_a">Iambic Modo A (Clássico)</string>
+    <string name="settings_mode_straight_key">Manipulador Manual / Straight Key</string>
+    <string name="settings_sound_sidetone">Sidetone de Áudio Ativo</string>
+    <string name="settings_vibration">Vibração Tátil</string>
+    <string name="settings_close">Fechar</string>
+
+    <!-- Send Fragment Extras -->
+    <string name="exam_transmit_header">TRANSMITA (LETRA OU PALAVRA):</string>
+    <string name="btn_cancel_exam">Cancelar Teste</string>
+    <string name="exam_timing_cadence_empty">Cadência de pausa: —</string>
+    <string name="exam_send_feedback_instruction">Use as pás DI e DAH abaixo para transmitir \'%s\'</string>
 
     <!-- Silent Mode & Errors -->
     <string name="silent_mode_warning">🔇 Telemóvel em silêncio: Vibração tátil ativada para sinais de Morse.</string>

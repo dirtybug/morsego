@@ -135,11 +135,16 @@ public class MorseAudioSynthesizer {
      * Plays a complete Morse sequence with PARIS timing asynchronously
      */
     public void playMorsePattern(String pattern, int wpm, Runnable onFinished) {
+        playMorsePattern(pattern, wpm, 3, 7, onFinished);
+    }
+
+    public void playMorsePattern(String pattern, int wpm, int letterSpacingDits, int wordSpacingDits, Runnable onFinished) {
         Executors.newSingleThreadExecutor().execute(() -> {
             long dit = MorseTiming.ditDurationMs(wpm);
             long dah = MorseTiming.dahDurationMs(wpm);
             long intra = MorseTiming.intraCharSpaceMs(wpm);
-            long inter = MorseTiming.interCharSpaceMs(wpm);
+            long inter = MorseTiming.interCharSpaceMs(wpm, letterSpacingDits);
+            long word = MorseTiming.wordSpaceMs(wpm, wordSpacingDits);
 
             try {
                 for (int i = 0; i < pattern.length(); i++) {
@@ -157,7 +162,7 @@ public class MorseAudioSynthesizer {
                     } else if (c == ' ') {
                         Thread.sleep(inter);
                     } else if (c == '/') {
-                        Thread.sleep(dit * 7);
+                        Thread.sleep(word);
                     }
                 }
             } catch (InterruptedException ignored) {

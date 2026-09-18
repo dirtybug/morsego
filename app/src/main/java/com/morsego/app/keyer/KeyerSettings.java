@@ -15,6 +15,8 @@ public class KeyerSettings {
     private static final String KEY_SOUND = "sound";
     private static final String KEY_HAPTICS = "haptics";
     private static final String KEY_LEVEL = "current_level";
+    private static final String KEY_LETTER_SPACING = "letter_spacing_dits";
+    private static final String KEY_WORD_SPACING = "word_spacing_dits";
 
     public enum Mode {
         IAMBIC_B("Iambic B", "Standard mode with alternate insertion on release (Curtis)."),
@@ -47,6 +49,8 @@ public class KeyerSettings {
     private boolean soundEnabled = true;
     private boolean hapticsEnabled = true;
     private int currentUnlockedLevel = 1;
+    private int letterSpacingDits = 3;
+    private int wordSpacingDits = 7;
 
     private static final String KEY_BACKUP_LEVEL = "highest_unlocked_level_backup";
 
@@ -75,6 +79,8 @@ public class KeyerSettings {
         this.dahKeyCode = prefs.getInt(KEY_DAH_KEY, KeyEvent.KEYCODE_CTRL_RIGHT);
         this.soundEnabled = prefs.getBoolean(KEY_SOUND, true);
         this.hapticsEnabled = prefs.getBoolean(KEY_HAPTICS, true);
+        this.letterSpacingDits = prefs.getInt(KEY_LETTER_SPACING, 3);
+        this.wordSpacingDits = prefs.getInt(KEY_WORD_SPACING, 7);
 
         // Persistent level restoration with backup redundancy
         int savedLevel = prefs.getInt(KEY_LEVEL, 1);
@@ -100,6 +106,8 @@ public class KeyerSettings {
                 .putInt(KEY_DAH_KEY, dahKeyCode)
                 .putBoolean(KEY_SOUND, soundEnabled)
                 .putBoolean(KEY_HAPTICS, hapticsEnabled)
+                .putInt(KEY_LETTER_SPACING, letterSpacingDits)
+                .putInt(KEY_WORD_SPACING, wordSpacingDits)
                 .putInt(KEY_LEVEL, currentUnlockedLevel)
                 .putInt(KEY_BACKUP_LEVEL, currentUnlockedLevel)
                 .commit();
@@ -107,6 +115,12 @@ public class KeyerSettings {
 
     public int getWpm() { return wpm; }
     public void setWpm(int wpm) { this.wpm = Math.max(5, Math.min(45, wpm)); save(); }
+
+    public int getLetterSpacingDits() { return letterSpacingDits; }
+    public void setLetterSpacingDits(int dits) { this.letterSpacingDits = Math.max(2, Math.min(8, dits)); save(); }
+
+    public int getWordSpacingDits() { return wordSpacingDits; }
+    public void setWordSpacingDits(int dits) { this.wordSpacingDits = Math.max(5, Math.min(14, dits)); save(); }
 
     public float getPitchHz() { return pitchHz; }
     public void setPitchHz(float pitchHz) { this.pitchHz = Math.max(400.0f, Math.min(1000.0f, pitchHz)); save(); }

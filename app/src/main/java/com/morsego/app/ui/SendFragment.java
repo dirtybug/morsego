@@ -711,8 +711,8 @@ public class SendFragment extends Fragment implements MorseDecoder.DecoderListen
         updateSendingMorseProgress();
 
         binding.tvSendingBuffer.setText(R.string.keyer_input_empty);
-        binding.tvTimingFeedback.setText("Pause cadence: —");
-        binding.tvSendingFeedback.setText("Use DI and DAH buttons below to transmit '" + currentSendingTarget + "'");
+        binding.tvTimingFeedback.setText(R.string.exam_timing_cadence_empty);
+        binding.tvSendingFeedback.setText(getString(R.string.exam_send_feedback_instruction, currentSendingTarget));
         binding.tvSendingFeedback.setTextColor(Color.parseColor("#8B949E"));
 
         MainActivity activity = (MainActivity) getActivity();

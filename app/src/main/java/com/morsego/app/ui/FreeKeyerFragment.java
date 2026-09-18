@@ -41,7 +41,7 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
 
         MainActivity activity = (MainActivity) requireActivity();
 
-        binding.tvTxStatus.setText("READ CW (" + activity.getSettings().getMode().getLabel().toUpperCase() + ")");
+        binding.tvTxStatus.setText(getString(R.string.keyer_tx_status_format, activity.getSettings().getMode().getLabel().toUpperCase()));
         binding.tvKeyerWpm.setText(activity.getSettings().getWpm() + " WPM");
         binding.tvSeekWpmValue.setText(String.valueOf(activity.getSettings().getWpm()));
         binding.seekWpm.setProgress(activity.getSettings().getWpm() - 5);
@@ -119,7 +119,7 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null) {
             activity.getDecoder().setListener(this);
-            binding.tvBuffer.setText("BUFFER: " + (activity.getDecoder().getCurrentPattern().isEmpty() ? "—" : activity.getDecoder().getCurrentPattern()));
+            binding.tvBuffer.setText(getString(R.string.keyer_buffer_label, (activity.getDecoder().getCurrentPattern().isEmpty() ? "—" : activity.getDecoder().getCurrentPattern())));
             binding.tvDecodedOutput.setText(activity.getDecoder().getDecodedText());
         }
     }
@@ -127,7 +127,7 @@ public class FreeKeyerFragment extends Fragment implements MorseDecoder.DecoderL
     @Override
     public void onPatternChanged(String currentPattern) {
         if (binding != null) {
-            binding.tvBuffer.setText("BUFFER: " + (currentPattern.isEmpty() ? "—" : currentPattern));
+            binding.tvBuffer.setText(getString(R.string.keyer_buffer_label, (currentPattern.isEmpty() ? "—" : currentPattern)));
         }
     }
 

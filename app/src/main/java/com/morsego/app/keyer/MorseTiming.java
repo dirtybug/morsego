@@ -20,11 +20,19 @@ public class MorseTiming {
     }
 
     public static long interCharSpaceMs(int wpm) {
-        return ditDurationMs(wpm) * 3;
+        return interCharSpaceMs(wpm, 3);
+    }
+
+    public static long interCharSpaceMs(int wpm, int letterSpacingDits) {
+        return ditDurationMs(wpm) * Math.max(1, letterSpacingDits);
     }
 
     public static long wordSpaceMs(int wpm) {
-        return ditDurationMs(wpm) * 7;
+        return wordSpaceMs(wpm, 7);
+    }
+
+    public static long wordSpaceMs(int wpm, int wordSpacingDits) {
+        return ditDurationMs(wpm) * Math.max(1, wordSpacingDits);
     }
 
     public static class PauseEvaluation {
@@ -65,11 +73,15 @@ public class MorseTiming {
     }
 
     /**
-     * Evaluates pause between letters in a word (Nominal: 3 Dits).
+     * Evaluates pause between letters in a word (Nominal: 3 Dits default).
      * Violating minimum (< 0.40x) or maximum (> 3.2x) is considered a TIMING FAILURE.
      */
     public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm) {
-        long ideal = interCharSpaceMs(wpm);
+        return evaluateLetterPause(pauseMs, wpm, 3);
+    }
+
+    public static PauseEvaluation evaluateLetterPause(long pauseMs, int wpm, int letterSpacingDits) {
+        long ideal = interCharSpaceMs(wpm, letterSpacingDits);
         float ratio = (float) pauseMs / ideal;
 
         if (ratio < 0.35f) {
