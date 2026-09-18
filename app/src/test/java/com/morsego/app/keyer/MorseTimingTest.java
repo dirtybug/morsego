@@ -24,10 +24,14 @@ public class MorseTimingTest {
 
     @Test
     public void testSpacesCalculations() {
-        int wpm = 10; // dit = 120ms
-        assertEquals(120L, MorseTiming.intraCharSpaceMs(wpm));
-        assertEquals(720L, MorseTiming.interCharSpaceMs(wpm)); // default 6 dits = 720ms
-        assertEquals(1560L, MorseTiming.wordSpaceMs(wpm));      // default 13 dits = 1560ms (1.560s)
+        int wpm = 20; // dit = 60ms
+        assertEquals(60L, MorseTiming.intraCharSpaceMs(wpm));
+        assertEquals(180L, MorseTiming.interCharSpaceMs(wpm)); // 3 dits (Nominal PARIS)
+        assertEquals(420L, MorseTiming.wordSpaceMs(wpm));      // 7 dits (Nominal PARIS)
+
+        // MorseGO Default Timings at 10 WPM (6 dits = 720ms, 13 dits = 1560ms)
+        assertEquals(720L, MorseTiming.defaultInterCharSpaceMs(10));
+        assertEquals(1560L, MorseTiming.defaultWordSpaceMs(10));
     }
 
     @Test
@@ -51,37 +55,36 @@ public class MorseTimingTest {
 
     @Test
     public void testInterLetterPauseEvaluation() {
-        int wpm = 10; // default inter-letter space (6 dits) = 720ms
-        // Ideal pause: 720ms -> ratio 1.0x (Good, no failure)
-        MorseTiming.PauseEvaluation evalGood = MorseTiming.evaluateLetterPause(720, wpm);
+        int wpm = 20; // inter-letter space = 180ms
+        // Ideal pause: 180ms -> ratio 1.0x (Good, no failure)
+        MorseTiming.PauseEvaluation evalGood = MorseTiming.evaluateLetterPause(180, wpm);
         assertTrue(evalGood.isGood);
         assertFalse(evalGood.isTimingFailure);
 
-        // Too fast letter pause: 200ms (< 0.35x = 252ms) -> TIMING FAILURE
-        MorseTiming.PauseEvaluation evalTooFast = MorseTiming.evaluateLetterPause(200, wpm);
+        // Too fast letter pause: 50ms (< 0.35x) -> TIMING FAILURE
+        MorseTiming.PauseEvaluation evalTooFast = MorseTiming.evaluateLetterPause(50, wpm);
         assertFalse(evalTooFast.isGood);
         assertTrue(evalTooFast.isTimingFailure);
 
-        // Generous pause of 1500ms (approx 2.1x) is accepted with generous tolerance
-        MorseTiming.PauseEvaluation evalTolerated = MorseTiming.evaluateLetterPause(1500, wpm);
+        // Generous pause of 650ms (3.6x) is accepted with the generous tolerance
+        MorseTiming.PauseEvaluation evalTolerated = MorseTiming.evaluateLetterPause(650, wpm);
         assertFalse(evalTolerated.isTimingFailure);
 
-        // Too long letter pause: 4000ms (> 5.0x = 3600ms) -> TIMING FAILURE
-        MorseTiming.PauseEvaluation evalTooSlow = MorseTiming.evaluateLetterPause(4000, wpm);
+        // Too long letter pause: 1000ms (> 5.0x) -> TIMING FAILURE
+        MorseTiming.PauseEvaluation evalTooSlow = MorseTiming.evaluateLetterPause(1000, wpm);
         assertTrue(evalTooSlow.isTimingFailure);
     }
 
     @Test
     public void testConfigurableSpacesCalculations() {
-        int wpm = 20; // dit = 60ms
-        assertEquals(180L, MorseTiming.interCharSpaceMs(wpm, 3));
-        assertEquals(240L, MorseTiming.interCharSpaceMs(wpm, 4));
-        assertEquals(300L, MorseTiming.interCharSpaceMs(wpm, 5));
-        assertEquals(360L, MorseTiming.interCharSpaceMs(wpm, 6));
+        int wpm = 10; // dit = 120ms
+        // Default 6 dits = 720ms, 13 dits = 1560ms at 10 WPM
+        assertEquals(720L, MorseTiming.interCharSpaceMs(wpm, 6));
+        assertEquals(1560L, MorseTiming.wordSpaceMs(wpm, 13));
 
-        assertEquals(420L, MorseTiming.wordSpaceMs(wpm, 7));
-        assertEquals(600L, MorseTiming.wordSpaceMs(wpm, 10));
-        assertEquals(780L, MorseTiming.wordSpaceMs(wpm, 13));
+        // Nominal 3 dits and 7 dits at 20 WPM
+        assertEquals(180L, MorseTiming.interCharSpaceMs(20, 3));
+        assertEquals(420L, MorseTiming.wordSpaceMs(20, 7));
     }
 
     @Test
