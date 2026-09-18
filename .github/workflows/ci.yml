@@ -89,6 +89,23 @@ jobs:
           echo "Verified app/src/main/AndroidManifest.xml:"
           head -n 6 app/src/main/AndroidManifest.xml
 
+      - name: Restore Keystore from Secrets or Base64 File
+        run: |
+          mkdir -p release
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo ">>> Restoring release/key.jks from GitHub Secrets..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release/key.jks
+            echo "imcool" > release/keystore-pass.txt
+            echo "✓ Keystore restored successfully from Secrets."
+          elif [ -f "release/keystore-base64.txt" ]; then
+            echo ">>> Restoring release/key.jks from release/keystore-base64.txt..."
+            tr -d '\r\n' < release/keystore-base64.txt | base64 --decode > release/key.jks
+            echo "imcool" > release/keystore-pass.txt
+            echo "✓ Keystore restored successfully from base64 file."
+          else
+            echo "ℹ️ No keystore provided; proceeding with build."
+          fi
+
       - name: Build Docker Container
         run: docker compose build
 

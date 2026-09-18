@@ -182,4 +182,16 @@
     <string name="error_wrong_letter">❌ Erro de Letra Errada! Transmitiu \'%1$s\', esperado \'%2$s\'.</string>
     <string name="error_timing">❌ Erro de Tempo! Cadência de pausa fora dos limites: %1$s.</string>
     <string name="text_copied">Texto copiado!</string>
+
+    <!-- About Dialog -->
+    <string name="about_title">Sobre o MorseGO</string>
+    <string name="about_app_description">O MorseGO é uma aplicação 100% gratuita e de código aberto para treino e aprendizagem de Código Morse. Inclui árvore binária interativa, treino auditivo, exames de transmissão adaptativos e suporte para manipulador USB físico.</string>
+    <string name="about_free_title">100% Gratuita e Código Aberto</string>
+    <string name="about_free_description">Esta aplicação é totalmente gratuita, sem anúncios, sem rastreamento e sem compras na app. Foi criada com dedicação para radioamadores, entusiastas de telegrafia e aprendizes em todo o mundo.</string>
+    <string name="about_open_source_title">Código Aberto no GitHub</string>
+    <string name="about_open_source_description">O código-fonte completo é público e aberto para qualquer pessoa que queira aprender, modificar o código, contribuir ou criar a sua própria versão.</string>
+    <string name="about_repo_url">https://github.com/dirtybug/morsego</string>
+    <string name="about_btn_github">Ver no GitHub ↗</string>
+    <string name="about_license_info">Código Aberto • Contribuições são bem-vindas!</string>
+    <string name="about_close">Fechar</string>
 </resources>

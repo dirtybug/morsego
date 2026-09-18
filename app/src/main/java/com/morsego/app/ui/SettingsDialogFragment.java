@@ -156,6 +156,10 @@ public class SettingsDialogFragment extends DialogFragment {
             settings.setHapticsEnabled(isChecked);
         });
 
+        binding.btnOpenAbout.setOnClickListener(v -> {
+            new AboutDialogFragment().show(getParentFragmentManager(), "about_dialog");
+        });
+
         binding.btnCloseSettings.setOnClickListener(v -> dismiss());
 
         binding.tvSettingsVersionBuild.setText("MorseGO v" + com.morsego.app.BuildConfig.VERSION_NAME + " • Build: " + com.morsego.app.BuildConfig.BUILD_TIME);

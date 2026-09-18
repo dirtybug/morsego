@@ -29,6 +29,7 @@ import com.morsego.app.keyer.KeyerInputManager;
 import com.morsego.app.keyer.KeyerSettings;
 import com.morsego.app.keyer.MorseDecoder;
 import com.morsego.app.keyer.MorseTiming;
+import com.morsego.app.ui.AboutDialogFragment;
 import com.morsego.app.ui.FreeKeyerFragment;
 import com.morsego.app.ui.HardwareFragment;
 import com.morsego.app.ui.ReceiveFragment;
@@ -85,6 +86,14 @@ public class MainActivity extends AppCompatActivity implements KeyerInputManager
 
         binding.tvTopWpm.setText(settings.getWpm() + " WPM");
         binding.tvAppVersionBuild.setText("v" + BuildConfig.VERSION_NAME + " • " + BuildConfig.BUILD_TIME);
+
+        View.OnClickListener openAbout = v -> {
+            new AboutDialogFragment().show(getSupportFragmentManager(), "about_dialog");
+        };
+        binding.btnAbout.setOnClickListener(openAbout);
+        binding.ivAppLogo.setOnClickListener(openAbout);
+        binding.tvAppTitle.setOnClickListener(openAbout);
+        binding.tvAppVersionBuild.setOnClickListener(openAbout);
 
         binding.btnSettings.setOnClickListener(v -> {
             new SettingsDialogFragment().show(getSupportFragmentManager(), "settings_dialog");

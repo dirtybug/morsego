@@ -182,4 +182,16 @@
     <string name="error_wrong_letter">❌ Wrong Letter Error! Keyed \'%1$s\', expected \'%2$s\'.</string>
     <string name="error_timing">❌ Timing Error! Pause cadence out of bounds: %1$s.</string>
     <string name="text_copied">Text copied!</string>
+
+    <!-- About Dialog -->
+    <string name="about_title">About MorseGO</string>
+    <string name="about_app_description">MorseGO is a 100% free and open-source Morse Code learning and keying app. It features an interactive binary tree, acoustic ear training, adaptive transmission exams, and hardware USB keyer support.</string>
+    <string name="about_free_title">100% Free &amp; Open Source</string>
+    <string name="about_free_description">This application is completely free, with no ads, no trackers, and no in-app purchases. It was built with passion for amateur radio operators, telegraphy enthusiasts, and learners worldwide.</string>
+    <string name="about_open_source_title">Open Source on GitHub</string>
+    <string name="about_open_source_description">The entire source code is public and open for anyone who wants to learn, modify, contribute, or build their own version.</string>
+    <string name="about_repo_url">https://github.com/dirtybug/morsego</string>
+    <string name="about_btn_github">View on GitHub ↗</string>
+    <string name="about_license_info">Open Source • Contributions welcome!</string>
+    <string name="about_close">Close</string>
 </resources>

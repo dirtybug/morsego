@@ -176,10 +176,20 @@
             android:textColor="@color/text_primary" />
 
         <Button
-            android:id="@+id/btnCloseSettings"
+            android:id="@+id/btnOpenAbout"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
+            android:text="@string/about_title"
+            android:textColor="@color/morse_cyan"
+            app:strokeColor="@color/morse_cyan" />
+
+        <Button
+            android:id="@+id/btnCloseSettings"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="@color/morse_amber"
             android:text="@string/settings_close"
             android:textColor="@color/radio_dark"
