@@ -67,6 +67,16 @@ case "$ACTION" in
             echo "✓ Unit test report saved to $RELEASE_DIR/reports/unit-tests/index.html"
         fi
         echo ""
+        echo ">>> Setting up Behavior Tests report in $RELEASE_DIR/reports/behavior-tests..."
+        mkdir -p "$RELEASE_DIR/reports/behavior-tests"
+        if [ -f "/workspace/tools/reports/behavior-tests/index.html" ]; then
+            cp "/workspace/tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests/index.html"
+            cp "/workspace/tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests.html"
+        elif [ -f "tools/reports/behavior-tests/index.html" ]; then
+            cp "tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests/index.html"
+            cp "tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests.html"
+        fi
+        echo ""
         echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
@@ -82,6 +92,14 @@ case "$ACTION" in
     screenshots)
         echo ">>> Generating all visual behavior and mode screenshots into $RELEASE_DIR/screenshots..."
         mkdir -p "$RELEASE_DIR/screenshots"
+        mkdir -p "$RELEASE_DIR/reports/behavior-tests"
+        if [ -f "/workspace/tools/reports/behavior-tests/index.html" ]; then
+            cp "/workspace/tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests/index.html"
+            cp "/workspace/tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests.html"
+        elif [ -f "tools/reports/behavior-tests/index.html" ]; then
+            cp "tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests/index.html"
+            cp "tools/reports/behavior-tests/index.html" "$RELEASE_DIR/reports/behavior-tests.html"
+        fi
         javac -encoding UTF-8 -cp ".:app/src/main/java" tools/*.java 2>/dev/null
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.ScreenshotGenerator "$RELEASE_DIR/screenshots" || true
         java -Djava.awt.headless=true -cp ".:app/src/main/java" tools.TreeScreenshotFixer "$RELEASE_DIR/screenshots" || true
