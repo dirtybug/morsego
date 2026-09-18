@@ -17,7 +17,7 @@ def main():
 
 ### 🧪 Tests & Quality
 - **Test Suite:** 100% Passed (Unit Tests & Behavior Tests)
-- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 34)
+- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 36)
 
 ### 📥 Release Deliverables
 | Artifact | File | Description |

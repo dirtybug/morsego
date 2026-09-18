@@ -4,12 +4,13 @@ plugins {
 
 android {
     namespace 'com.morsego.app'
-    compileSdk 34
+    compileSdk 36
+    buildToolsVersion "36.0.0"
 
     defaultConfig {
         applicationId "com.morsego.app"
         minSdk 24
-        targetSdk 34
+        targetSdk 36
         def appVersionName = project.hasProperty('versionName') ? project.property('versionName').toString() : (System.getenv("APP_VERSION_NAME") ?: "1.0.0")
         if (appVersionName.startsWith("v")) {
             appVersionName = appVersionName.substring(1)
@@ -113,7 +114,8 @@ android {
             } else {
                 signingConfig null
             }
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

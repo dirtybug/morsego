@@ -33,20 +33,22 @@ RUN echo 'alias ll="ls -la"' >> /root/.bashrc && \
     echo 'alias lint="./gradlew lint"' >> /root/.bashrc
 
 
-# Download and install Android SDK Commandline Tools (version 11076708)
-ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+# Download and install Android SDK Commandline Tools (version 15859902)
+ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q ${CMDLINE_TOOLS_URL} -O /tmp/cmdline-tools.zip && \
     unzip -q /tmp/cmdline-tools.zip -d ${ANDROID_HOME}/cmdline-tools && \
     mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
     rm /tmp/cmdline-tools.zip
 
-# Pre-accept all Android SDK licenses and install required SDK packages (API 34 & build-tools 34.0.0)
+# Pre-accept all Android SDK licenses and install required SDK packages (API 34 & 36, build-tools 34.0.0 & 36.0.0)
 RUN yes | sdkmanager --licenses && \
     sdkmanager --install \
         "platform-tools" \
         "platforms;android-34" \
-        "build-tools;34.0.0"
+        "platforms;android-36" \
+        "build-tools;34.0.0" \
+        "build-tools;36.0.0"
 
 # Set working directory
 WORKDIR /workspace

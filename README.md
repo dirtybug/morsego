@@ -84,7 +84,7 @@ The project is built entirely in **Java** using the official Android SDK and Mat
 
 > 📖 **Complete Build & Test Guide:** For full prerequisites, commands, and troubleshooting details, see [`BUILD_AND_TEST_GUIDE.md`](BUILD_AND_TEST_GUIDE.md).
 
-The project includes containerized build and test scripts to guarantee 100% reproducible environments (OpenJDK 17 + Android SDK 34):
+The project includes containerized build and test scripts to guarantee 100% reproducible environments (OpenJDK 17 + Android SDK 36):
 
 ### 0. Interactive Development Container (Dev Shell):
 ```cmd

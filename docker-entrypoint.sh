@@ -43,7 +43,7 @@ case "$ACTION" in
         echo "        morseGO - Development Environment            "
         echo "====================================================="
         echo "Java:        $(java -version 2>&1 | head -n 1)"
-        echo "Android SDK: $ANDROID_HOME (API 34, Build-Tools 34.0.0)"
+        echo "Android SDK: $ANDROID_HOME (API 36, Build-Tools 36.0.0)"
         echo "Workspace:   $(pwd)"
         echo "Available quick commands:"
         echo "  test                        -> Run unit tests"

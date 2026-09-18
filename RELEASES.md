@@ -14,11 +14,11 @@ Official release assets can also be directly downloaded from the [GitHub Release
 - **Version Name (`versionName`):** `1.0.0`
 - **Version Code (`versionCode`):** `10000`
 - **Application ID:** `com.morsego.app`
-- **Target SDK:** Android 34 (Android 14) / **Min SDK:** Android 24 (Android 7.0)
+- **Target SDK:** Android 36 (Android 16) / **Min SDK:** Android 24 (Android 7.0)
 
 ### 🧪 Tests and Quality
 - **Test Suite:** 100% Passed (Unit Tests & Behavior Tests)
-- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 34)
+- **Hermetic Build Environment:** Docker (OpenJDK 17 + Android SDK 36)
 
 ### 📥 Release Deliverables
 | Artifact | File | Description |

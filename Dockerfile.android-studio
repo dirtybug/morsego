@@ -49,20 +49,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Symlink noVNC index.html so root URL opens directly
 RUN ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
-# 2. Download and install Android SDK Commandline Tools (API 34 & build-tools 34.0.0)
-ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+# 2. Download and install Android SDK Commandline Tools (version 15859902)
+ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q ${CMDLINE_TOOLS_URL} -O /tmp/cmdline-tools.zip && \
     unzip -q /tmp/cmdline-tools.zip -d ${ANDROID_HOME}/cmdline-tools && \
     mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
     rm /tmp/cmdline-tools.zip
 
-# Pre-accept all Android SDK licenses and install packages
+# Pre-accept all Android SDK licenses and install packages (API 34 & 36, build-tools 34.0.0 & 36.0.0)
 RUN yes | sdkmanager --licenses && \
     sdkmanager --install \
         "platform-tools" \
         "platforms;android-34" \
-        "build-tools;34.0.0"
+        "platforms;android-36" \
+        "build-tools;34.0.0" \
+        "build-tools;36.0.0"
 
 # 3. Download and install Android Studio IDE
 ARG STUDIO_URL=https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2024.2.1.11/android-studio-2024.2.1.11-linux.tar.gz
