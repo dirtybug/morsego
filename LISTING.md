@@ -106,16 +106,57 @@ All graphic assets are pre-rendered at the exact specifications required by Goog
 
 ---
 
-## 3. Store Settings & Categorization (Definições e Categorias)
+## 3. Store Settings, Categorization & Tags (Definições, Categorias e Etiquetas)
 
-- **Application Type:** App (*Aplicação*)
-- **Category:** Education (*Educação*) or Tools (*Ferramentas*)
-- **Tags / Keywords:**
-  `Morse Code`, `Ham Radio`, `Amateur Radio`, `CW Keyer`, `Telegraph`, `Education`, `Tools`
-- **Developer Email:** *(Your contact email)*
-- **Website URL:** `https://github.com/dirtybug/morsego`
+Vá a **Crescimento > Presença na loja > Definições da loja** (*Growth > Store presence > Store settings*):
+
+### 🏷️ 3.1 Application Type (Tipo de Aplicação)
+- **Tipo:** **App** (*Aplicação*)
 
 ---
+
+### 📂 3.2 Category (Categoria da Aplicação)
+- **Categoria Principal (Recomendada):** **Education** (*Educação*)
+  > *Motivo:* O MorseGO é estruturado pedagogicamente como um curso progressivo de 21 níveis baseado na Árvore Binária para aprender e memorizar código Morse.
+- **Categoria Alternativa:** **Communication** (*Comunicação*) ou **Tools** (*Ferramentas*).
+
+---
+
+### 🔖 3.3 Official Google Play Console Tags (Etiquetas Oficiais da Play Store)
+Na Google Play Console, clique em **Gerir etiquetas** (*Manage tags*) e selecione **até 5 etiquetas** da lista oficial:
+
+| # | Etiqueta na Consola (PT) | Tag in Console (EN) | Relevância para o MorseGO |
+| :-: | :--- | :--- | :--- |
+| **1** | **Educação** | **Education** | Aprendizagem guiada da Árvore Binária e descodificação |
+| **2** | **Comunicação** | **Communication** | Telegrafia CW e telecomunicações de rádio amador |
+| **3** | **Ferramentas** | **Tools** | Manipulador eletrónico iâmbico e sintetizador de sinais |
+| **4** | **Treino cerebral** | **Brain training** | Treino de agilidade auditiva e reflexos de transmissão |
+| **5** | **Música e áudio** | **Music & audio** | Treino de ouvido acústico em tons sinusoidais de 400–1000 Hz |
+
+---
+
+### 🔍 3.4 Search Engine Optimization & Keywords (Palavras-Chave ASO para Pesquisa)
+Termos estratégicos para garantir que os utilizadores encontram a aplicação ao pesquisar na Play Store:
+
+#### 🇬🇧 English Keywords:
+```text
+Morse Code, CW Keyer, CW Trainer, Amateur Radio, Ham Radio, Telegraph, Iambic Keyer, VBand, Morse Binary Tree, Morse Code Learner, CW Telegraphy, Paddle Keyer, Straight Key, PARIS Timing, Morse Audio Tutor
+```
+
+#### 🇵🇹 Palavras-Chave em Português:
+```text
+Código Morse, Radioamadorismo, Manipulador Morse, Telegrafia CW, Treino Morse, Radioamador, Árvore Binária Morse, Aprender Código Morse, Pás Morse, Transmissor CW, Exame de Radioamador
+```
+
+---
+
+### 📬 3.5 Contact Details (Detalhes de Contacto do Programador)
+- **Email:** *(O seu email de contacto para suporte na Play Store)*
+- **Website:** `https://github.com/dirtybug/morsego`
+- **Telefone:** *(Opcional)*
+
+---
+
 
 ## 4. App Content & Declarations Checklist (Conteúdo da Aplicação)
 
